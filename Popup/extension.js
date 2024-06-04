@@ -24,10 +24,10 @@
     var min = 0;
     var hour = 0;
     var day = 0;
-    var secString;
-    var minString;
-    var hourString;
-    var dayString;
+    var secString = "00";
+    var minString = "00";
+    var hourString = "00";
+    var dayString = "00";
     var timer;
     var isTimerActive = 0;
     function startTimer(){
@@ -67,12 +67,13 @@
                 day += 1;
                 hour -= 24;
             }
+            dayString = day;
             if (day >= 99)
             {
                 StopTimer()
                 timerDisplayInstance.textContent("Max Value Reached");
             }
-            timerDisplayInstance.textContent = hourString + ':' + minString + ':' + secString;
+            timerDisplayInstance.textContent = dayString + ":" + hourString + ':' + minString + ':' + secString;
         }, 1000);
     }
     function StopTimer()
