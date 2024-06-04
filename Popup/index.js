@@ -63,5 +63,6 @@ stopButton.addEventListener('click',function ()
 {
     console.log("Start Button Clicked");
     StopTimer()
+    
 });
 //startButton.onclick() = startTimer()

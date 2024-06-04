@@ -9,5 +9,14 @@
   },
   "action": {
     "default_popup": "Popup/index.html"
-  }
+  },
+  "background": {
+    "service_worker": "Popup/serviceWorker.js",
+    "type": "module"
+  },
+  "content_scripts": [{
+        "js": ["Popup/extension.js"],
+        "run_at": "document_start",
+        "matches": ["https://github.com/*/issues/*"]
+    }]
 }
