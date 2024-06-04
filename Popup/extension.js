@@ -57,21 +57,25 @@
             {
                 minString = "0" + min;
             }
-            hourString = hour;
-            if (hour < 10)
-            {
-                hourString = "0" + hour;
-            }
             if (hour >= 24)
             {
                 day += 1;
                 hour -= 24;
             }
-            dayString = day;
+            hourString = hour;
+            if (hour < 10)
+            {
+                hourString = "0" + hour;
+            }
             if (day >= 99)
             {
                 StopTimer()
                 timerDisplayInstance.textContent("Max Value Reached");
+            }
+            dayString = day;
+            if (day < 10)
+            {
+                dayString = "0" + day;
             }
             timerDisplayInstance.textContent = dayString + ":" + hourString + ':' + minString + ':' + secString;
         }, 1000);
