@@ -3,7 +3,7 @@ var startButton = document.getElementById("startButton");
 var pauseButton = document.getElementById("pauseButton");
 var stopButton = document.getElementById("stopButton");
 var timerDisplay = document.getElementById("timerDisplay");
-var sec = 55;
+var sec = 0;
 var min = 0;
 var hour = 0;
 var secString;
@@ -51,7 +51,7 @@ function StopTimer()
 }
 startButton.addEventListener('click',function ()
 {
-    console.log("Start Button Clicked")
+    console.log("Start Butt on Clicked")
     startTimer()
 }); 
 pauseButton.addEventListener('click',function ()
