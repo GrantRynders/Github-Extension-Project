@@ -1,13 +1,13 @@
 
-destinationDiv = document.getElementById("partial-discussion-sidebar");
-timerDiv = document.createElement(div);
-var startButton = document.createElement(button);
+var destinationDiv = document.getElementById("partial-discussion-sidebar");
+//var timerDiv = document.createElement(div);
+var startButton = document.createElement('button');
 startButton.textContent = "<";
-var pauseButton = document.createElement(button);
+var pauseButton = document.createElement('button');
 startButton.textContent = "||"
-var stopButton = document.createElement(button);
+var stopButton = document.createElement('button');
 stopButton.textContent = "X";
-var timerDisplay = document.createElement(h1);
+var timerDisplay = document.createElement('h1');
 timerDisplay.textContent = "DD:HH:MM:SS";
 var sec = 0;
 var min = 0;
@@ -91,9 +91,9 @@ stopButton.addEventListener('click',function ()
     hour = 0;
     StopTimer();
 });
-timerDiv.appendChild(timerDisplay);
-timerDiv.appendChild(startButton);
-timerDiv.appendChild(pauseButton);
-timerDiv.appendChild(stopButton);
+destinationDiv.appendChild(timerDisplay);
+destinationDiv.appendChild(startButton);
+destinationDiv.appendChild(pauseButton);
+destinationDiv.appendChild(stopButton);
 destinationDiv.appendChild(timerDiv);
 console.Log('Child appended');
