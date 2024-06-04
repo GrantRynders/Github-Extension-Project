@@ -1,31 +1,67 @@
 // This javascript will affect the index page
-function onButtonClick() {
-    timer()
-}
-function timer(){
-    var sec = 0;
-    var min = 0;
-    var secString;
-    var minString;
-    var timer = setInterval(function(){
+var startButton = document.getElementById("startButton");
+var pauseButton = document.getElementById("pauseButton");
+var stopButton = document.getElementById("stopButton");
+var timerDisplay = document.getElementById("timerDisplay");
+var sec = 55;
+var min = 0;
+var hour = 0;
+var secString;
+var minString;
+var hourString;
+var timer;
+function startTimer(){
+    //hh:MM:SS
+    timer = setInterval(function(){
+        sec +=1
+        console.log('Second: ' + sec)
         
-        sec++;
-        while (sec > 60)
+        if (sec >= 60)
         {
-            sec - 60
-            min + 1
+            min += 1
+            sec -= 60
         }
+        secString = sec
+        if (sec < 10)
+        {
+            secString = "0" +sec
+        }
+        if (min >= 60)
+        {
+            hour += 1
+            min -= 60
+        }
+        minString = min
         if (min < 10)
         {
             minString = "0" + min
         }
-        if (sec < 10)
+        hourString = hour
+        if (hour < 10)
         {
-            secString = "0" + sec
+            hourString = "0" + hour
         }
-        document.getElementById('timerDisplay').innerHTML= minString + ':' + secString;
-        if (sec < 0) {
-            clearInterval(timer);
-        }
+        
+        timerDisplay.textContent = hourString + ':' + minString + ':' + secString;
     }, 1000);
 }
+function StopTimer()
+{
+    clearInterval(timer);
+}
+startButton.addEventListener('click',function ()
+{
+    console.log("Start Button Clicked")
+    startTimer()
+}); 
+pauseButton.addEventListener('click',function ()
+{
+    console.log("Start Button Clicked");
+    startTimer()
+}); 
+stopButton.addEventListener('click',function ()
+{
+    console.log("Start Button Clicked");
+    StopTimer()
+});
+//startButton.onclick() = startTimer()
