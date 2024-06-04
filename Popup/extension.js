@@ -1,14 +1,25 @@
-window.onload = () => {
-    var destinationDiv = document.getElementById("partial-discussion-sidebar");
+// window.onload = () => {
+    console.log("Script Injected");
+    var destinationDiv = document.getElementById("js-repo-pjax-container");
     //var timerDiv = document.createElement(div);
     var startButton = document.createElement('button');
     startButton.textContent = "<";
+    startButton.id = "startButton";
     var pauseButton = document.createElement('button');
     pauseButton.textContent = "||"
+    pauseButton.id = "pauseButton";
     var stopButton = document.createElement('button');
     stopButton.textContent = "X";
+    stopButton.id = "stopButton";
     var timerDisplay = document.createElement('h1');
     timerDisplay.textContent = "DD:HH:MM:SS";
+    timerDisplay.id = "timerDisplay";
+    AppendAdditions();
+    var startButtonInstance = document.getElementById("startButton");
+    var pauseButtonInstance = document.getElementById("pauseButton");
+    var stopButtonInstance = document.getElementById("stopButton");
+    var timerDisplayInstance = document.getElementById("timerDisplay");
+    console.log(timerDisplayInstance.textContent);
     var sec = 0;
     var min = 0;
     var hour = 0;
@@ -21,7 +32,7 @@ window.onload = () => {
     var isTimerActive = 0;
     function startTimer(){
         isTimerActive = 1;
-        //hh:MM:SS
+        //DD:HH:MM:SS
         timer = setInterval(function(){
             sec +=1;
             console.log('Second: ' + sec);
@@ -59,9 +70,9 @@ window.onload = () => {
             if (day >= 99)
             {
                 StopTimer()
-                timerDisplay.textContent("Max Value Reached");
+                timerDisplayInstance.textContent("Max Value Reached");
             }
-            timerDisplay.textContent = hourString + ':' + minString + ':' + secString;
+            timerDisplayInstance.textContent = hourString + ':' + minString + ':' + secString;
         }, 1000);
     }
     function StopTimer()
@@ -69,7 +80,7 @@ window.onload = () => {
         isTimerActive = 0;
         clearInterval(timer);
     }
-    startButton.addEventListener('click',function ()
+    startButtonInstance.addEventListener('click',function ()
     {
         console.log("Start Button Clicked");
         if (isTimerActive == 0)
@@ -78,23 +89,24 @@ window.onload = () => {
         }
         
     }); 
-    pauseButton.addEventListener('click',function ()
+    pauseButtonInstance.addEventListener('click',function ()
     {
         console.log("PAUSE Button Clicked");
         StopTimer();
     }); 
-    stopButton.addEventListener('click',function ()
+    stopButtonInstance.addEventListener('click',function ()
     {
         console.log("STOP Button Clicked");
         sec = 0;
         min = 0;
         hour = 0;
-        timerDisplay.textContent = "00:00:00:00";
+        timerDisplayInstance.textContent = "00:00:00:00";
         StopTimer();
     });
-    destinationDiv.appendChild(timerDisplay);
-    destinationDiv.appendChild(startButton);
-    destinationDiv.appendChild(pauseButton);
-    destinationDiv.appendChild(stopButton);
-    destinationDiv.appendChild(timerDiv);
-}
+    function AppendAdditions()
+    {
+        destinationDiv.appendChild(timerDisplay);
+        destinationDiv.appendChild(startButton);
+        destinationDiv.appendChild(pauseButton);
+        destinationDiv.appendChild(stopButton);
+    }
