@@ -127,21 +127,26 @@
         StopTimer();
         ResetTimerValues();
     });
-    closeIssueButton.addEventListener('click',function () //Potentially overrides original functionality, needs testing
+    if (closeIssueButton != null)
     {
-        console.log("CLOSE ISSUE button Clicked");
-        LogEndOfTimer();
-        StopTimer();
-        ResetTimerValues();
-        
-    });
+        closeIssueButton.addEventListener('click',function () //Potentially overrides original functionality, needs testing
+        {
+            console.log("CLOSE ISSUE button Clicked");
+            LogEndOfTimer();
+            StopTimer();
+            ResetTimerValues();
+        });
+    }
+    else
+    {
+        console.log("CloseIssue button is null"); //error handling
+    }
     function AppendAdditions() //Append new elements to the destination for the extension
     {
         if (destinationDiv != null)
         {
             destinationDiv.appendChild(timerDisplay);
             destinationDiv.appendChild(startButton);
-            //startButton.appendChild(startIcon);
             destinationDiv.appendChild(pauseButton);
             destinationDiv.appendChild(stopButton);
         }
