@@ -23,30 +23,33 @@
     var pauseButtonInstance = document.getElementById("pauseButton");
     var stopButtonInstance = document.getElementById("stopButton");
     var timerDisplayInstance = document.getElementById("timerDisplay");
+    //Numbers for our time variables
     var sec = 0;
     var min = 0;
     var hour = 0;
     var day = 0;
+    //The formatted strings for our numbers
     var secString = "00";
     var minString = "00";
     var hourString = "00";
     var dayString = "00";
+    //Our interval timer for the app
     var timer;
-    var isTimerActive = 0;
-    function startTimer(){
+    var isTimerActive = 0; //Essentially a bool for timer activity
+    function startTimer(){ //Starts the set interval function if timer is not already started
         isTimerActive = 1;
         //DD:HH:MM:SS
         timer = setInterval(function(){
             sec +=1;
             console.log('Second: ' + sec);
             
-            if (sec >= 60)
+            if (sec >= 60) //Convert Seconds to minutes
             {
                 min += 1;
                 sec -= 60;
             }
             secString = sec;
-            if (sec < 10)
+            if (sec < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
             {
                 secString = "0" +sec;
             }
@@ -83,7 +86,7 @@
             timerDisplayInstance.textContent = dayString + ":" + hourString + ':' + minString + ':' + secString;
         }, 1000);
     }
-    function StopTimer()
+    function StopTimer() //Stops the interval func
     {
         isTimerActive = 0;
         clearInterval(timer);
@@ -111,7 +114,7 @@
         timerDisplayInstance.textContent = "00:00:00:00";
         StopTimer();
     });
-    function AppendAdditions()
+    function AppendAdditions() //Append new elements to the destination for the extension
     {
         if (destinationDiv != null)
         {
