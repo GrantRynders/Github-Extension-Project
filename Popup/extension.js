@@ -6,7 +6,7 @@
     startButton.textContent = "<";
     startButton.id = "startButton";
     var pauseButton = document.createElement('button');
-    pauseButton.textContent = "||"
+    pauseButton.textContent = "| |"
     pauseButton.id = "pauseButton";
     var stopButton = document.createElement('button');
     stopButton.textContent = "X";

@@ -1,24 +1,37 @@
 #startButton{
     color: var(--button-primary-fgColor-rest);
+    font-size: bold;
     fill: var(--button-primary-iconColor-rest);
     background-color: var(--button-primary-bgColor-rest);
     border-color: var(--button-primary-borderColor-rest);
     box-shadow: var(--shadow-resting-small, var(--color-btn-primary-shadow));
     border-radius: 4px;
+    width: 33%;
 }
 #pauseButton{
     color: var(--button-primary-fgColor-rest);
+    font-size: bold;
     fill: var(--button-primary-iconColor-rest);
-    background-color: gray;
+    background-color: #30363d;
     border-color: var(--button-primary-borderColor-rest);
     box-shadow: var(--shadow-resting-small, var(--color-btn-primary-shadow));
-    border-radius: 4px;
+    width:33%;
 }
 #stopButton{
-    color: white;
+    color: red;
+    font-size: bold;
     fill: var(--button-primary-iconColor-rest);
-    background-color:red;
+    background-color:#30363d;
     border-color: var(--button-primary-borderColor-rest);
     box-shadow: var(--shadow-resting-small, var(--color-btn-primary-shadow));
     border-radius: 4px;
+    width:33%;
+}
+#timerDisplay{
+    padding: 0.5em;
+    border-radius: 4px;
+    border-color: white;
+    border-width: 2px;
+    width: 100%;
+    text-align: center;
 }
