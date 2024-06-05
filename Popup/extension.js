@@ -1,12 +1,15 @@
+    
+    //SCRIPT TO BE INJECTED INTO https://github.com/*/*/issues/*
+    
     console.log("Script Injected");
     //CREATE BUTTONS and set their attributes
     var startButton = document.createElement('button');
-    startButton.textContent = "\u25B6";
+    startButton.textContent = "\u25B6"; //Unicode play button
     startButton.id = "startButton";
     //var startIcon = document.createElement("img");
     //startIcon.src = "Images/play-button.png";
     var pauseButton = document.createElement('button');
-    pauseButton.textContent = "| |"
+    pauseButton.textContent = "| |";
     pauseButton.id = "pauseButton";
     var stopButton = document.createElement('button');
     stopButton.textContent = "X";
@@ -121,9 +124,9 @@
     stopButtonInstance.addEventListener('click',function ()
     {
         console.log("STOP Button Clicked");
-        LogEndOfTimer();
+        LogEndOfTimer(); //Create a comment detailing end timer stats
         StopTimer();
-        ResetTimerValues();
+        ResetTimerValues();//Reset the timer
     });
     if (closeIssueButton != null)
     {
