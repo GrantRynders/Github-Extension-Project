@@ -1,6 +1,4 @@
-// window.onload = () => {
     console.log("Script Injected");
-    
     //CREATE BUTTONS and set their attributes
     var startButton = document.createElement('button');
     startButton.textContent = "\u25B6";
@@ -208,9 +206,3 @@
         dayString = "00";
         timerDisplayInstance.textContent = "00:00:00:00";
     }
-    // "web_accessible_resources": [
-    //     {
-    //       "resources": ["Popup/Images/*"],
-    //       "matches": ["https://github.com/*/*/issues/*"]
-    //     }
-    //   ]
