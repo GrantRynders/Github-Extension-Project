@@ -1,0 +1,21 @@
+Timers:
+int TimerId PK
+int IssueId FK
+int UserId FK
+
+Users:
+int UserId PK
+Varchar(50) UserName
+
+Issues:
+int IssueId PK
+int UserId FK
+Varchar(200) IssueName
+
+
+much simpler design
+
+Timersint
+int TimerId PK
+Varchar(50) IssueName 
+Varchar(50) UserName

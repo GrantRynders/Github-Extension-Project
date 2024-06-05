@@ -21,6 +21,7 @@
     var textArea = document.getElementById("new_comment_field");
     var commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
     var commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
+    var closeIssueButton = commentParent.getElementsByClassName("js-comment-and-button js-quick-submit-alternative btn BtnGroup-item flex-1")[0]; //same song and dance as the comment button, but this time for the close issue button
     //append instances of our new buttons to the page
     AppendAdditions();
     //find those instances we just created
@@ -59,7 +60,7 @@
             {
                 secString = "0" +sec;
             }
-            if (min >= 60)
+            if (min >= 60) //and so on and so forth
             {
                 hour += 1;
                 min -= 60;
@@ -119,9 +120,17 @@
     stopButtonInstance.addEventListener('click',function ()
     {
         console.log("STOP Button Clicked");
-        ResetTimerValues();
-        StopTimer();
         LogEndOfTimer();
+        StopTimer();
+        ResetTimerValues();
+    });
+    closeIssueButton.addEventListener('click',function () //Potentially overrides original functionality, needs testing
+    {
+        console.log("CLOSE ISSUE button Clicked");
+        LogEndOfTimer();
+        StopTimer();
+        ResetTimerValues();
+        
     });
     function AppendAdditions() //Append new elements to the destination for the extension
     {
@@ -151,6 +160,7 @@
             console.log("Disabled");
             commentButton.click(); //Click the button programmatically
             console.log("Clicked");
+            window.location.reload();
         }
         else 
         {
