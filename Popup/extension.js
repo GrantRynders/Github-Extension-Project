@@ -40,6 +40,7 @@
     var hourString = "00";
     var dayString = "00";
     var totalTimeString = "00:00:00:00";
+    
     //Our interval timer for the app
     var timer;
     var isTimerActive = 0; //Essentially a bool for if the timer is running
