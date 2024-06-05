@@ -10,13 +10,17 @@
   "action": {
     "default_popup": "Popup/index.html"
   },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
   "background": {
-    "service_worker": "Popup/serviceWorker.js",
-    "type": "module"
+    "service_worker": "Popup/service_worker.js",
+    "persistent": true
   },
   "content_scripts": [{
         "js": ["Popup/extension.js"],
-        "run_at": "document_start",
-        "matches": ["https://github.com/*/issues/*"]
+        "run_at": "document_end",
+        "matches": ["https://github.com/*/*/issues/*"]
     }]
 }

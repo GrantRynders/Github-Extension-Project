@@ -1,7 +1,7 @@
 // window.onload = () => {
     console.log("Script Injected");
-    var destinationDiv = document.getElementById("js-repo-pjax-container");
-    //var timerDiv = document.createElement(div);
+    
+    //CREATE BUTTONS and set their attributes
     var startButton = document.createElement('button');
     startButton.textContent = "<";
     startButton.id = "startButton";
@@ -14,12 +14,15 @@
     var timerDisplay = document.createElement('h1');
     timerDisplay.textContent = "DD:HH:MM:SS";
     timerDisplay.id = "timerDisplay";
+    //Find the destination for our new content
+    var destinationDiv = document.getElementById("js-repo-pjax-container");
+    //append instances of our new buttons to the page
     AppendAdditions();
+    //find those instances we just created
     var startButtonInstance = document.getElementById("startButton");
     var pauseButtonInstance = document.getElementById("pauseButton");
     var stopButtonInstance = document.getElementById("stopButton");
     var timerDisplayInstance = document.getElementById("timerDisplay");
-    console.log(timerDisplayInstance.textContent);
     var sec = 0;
     var min = 0;
     var hour = 0;
@@ -110,8 +113,16 @@
     });
     function AppendAdditions()
     {
-        destinationDiv.appendChild(timerDisplay);
-        destinationDiv.appendChild(startButton);
-        destinationDiv.appendChild(pauseButton);
-        destinationDiv.appendChild(stopButton);
+        if (destinationDiv != null)
+        {
+            destinationDiv.appendChild(timerDisplay);
+            destinationDiv.appendChild(startButton);
+            destinationDiv.appendChild(pauseButton);
+            destinationDiv.appendChild(stopButton);
+        }
+        else
+        {
+            console.log("Destination div is null");
+        }
+        
     }
