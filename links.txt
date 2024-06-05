@@ -12,3 +12,5 @@ chrome.* used by Chrome, Opera, and Edge.
 Manifest for chrome: https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts#static-declarative
 
 Chrome refresh background scripts: https://github.com/orgs/community/discussions/61228
+
+Web storage example: https://github.com/mdn/dom-examples/tree/main/web-storage

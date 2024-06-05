@@ -42,7 +42,8 @@
     var totalTimeString = "00:00:00:00";
     //Our interval timer for the app
     var timer;
-    var isTimerActive = 0; //Essentially a bool for timer activity
+    var isTimerActive = 0; //Essentially a bool for if the timer is running
+    var isTimerPaused = 0;//a bool for if the timer is paused (different than it not being active)
     function startTimer(){ //Starts the set interval function if timer is not already started
         isTimerActive = 1;
         //DD:HH:MM:SS
@@ -90,6 +91,7 @@
             {
                 dayString = "0" + day;
             }
+            //totalTimeString stores the formatted time for use all over the app
             totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
             timerDisplayInstance.textContent = totalTimeString;
         }, 1000);
@@ -102,7 +104,7 @@
     startButtonInstance.addEventListener('click',function ()
     {
         console.log("Start Button Clicked");
-        if (isTimerActive == 0)
+        if (isTimerActive == 0) //Can't start a timer that is already started
         {
             startTimer();
         }
@@ -111,7 +113,7 @@
     pauseButtonInstance.addEventListener('click',function ()
     {
         console.log("PAUSE Button Clicked");
-        if (isTimerActive == 1) //You should not be able to pause when it is already paused
+        if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
         {
             StopTimer();
             LogEndOfTimer();
@@ -154,7 +156,7 @@
         console.log(commentParent.querySelectorAll(".btn-primary btn").tagName); //logs the button class (probably undefined)
         if (commentButton != null) //Make sure comment button is not null
         {
-            textArea.textContent = "Timer Start: " + totalTimeString; //Set the comment's text value
+            textArea.textContent = "Start Date: " + new Date() + "\nTimer Start Value: " + totalTimeString; //Set the comment's text value
             console.log(totalTimeString);
             commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
             console.log("Disabled");
@@ -175,14 +177,14 @@
         console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
         if (commentButton != null)
         {
-            textArea.textContent = "Timer Stopped at: " + totalTimeString;
+            textArea.textContent = "End Date: " + new Date() + "\nTimer End Value: " + totalTimeString;
             console.log(totalTimeString);
             commentButton.disabled = false;
             console.log("Disabled");
             commentButton.click();
             console.log("Clicked");
         }
-        else 
+        else
         {
             console.log("Comment Button is null when attempting to end timer");
         }
