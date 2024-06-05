@@ -20,6 +20,7 @@
   },
   "content_scripts": [{
         "js": ["Popup/extension.js"],
+        "css": ["Popup/extension.css"],
         "run_at": "document_end",
         "matches": ["https://github.com/*/*/issues/*"]
     }]

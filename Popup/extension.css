@@ -1,0 +1,24 @@
+#startButton{
+    color: var(--button-primary-fgColor-rest);
+    fill: var(--button-primary-iconColor-rest);
+    background-color: var(--button-primary-bgColor-rest);
+    border-color: var(--button-primary-borderColor-rest);
+    box-shadow: var(--shadow-resting-small, var(--color-btn-primary-shadow));
+    border-radius: 4px;
+}
+#pauseButton{
+    color: var(--button-primary-fgColor-rest);
+    fill: var(--button-primary-iconColor-rest);
+    background-color: gray;
+    border-color: var(--button-primary-borderColor-rest);
+    box-shadow: var(--shadow-resting-small, var(--color-btn-primary-shadow));
+    border-radius: 4px;
+}
+#stopButton{
+    color: white;
+    fill: var(--button-primary-iconColor-rest);
+    background-color:red;
+    border-color: var(--button-primary-borderColor-rest);
+    box-shadow: var(--shadow-resting-small, var(--color-btn-primary-shadow));
+    border-radius: 4px;
+}
