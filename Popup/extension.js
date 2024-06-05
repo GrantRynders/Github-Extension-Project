@@ -110,7 +110,7 @@
     pauseButtonInstance.addEventListener('click',function ()
     {
         console.log("PAUSE Button Clicked");
-        if (isTimerActive == 1)
+        if (isTimerActive == 1) //You should not be able to pause when it is already paused
         {
             StopTimer();
             LogEndOfTimer();
@@ -119,12 +119,9 @@
     stopButtonInstance.addEventListener('click',function ()
     {
         console.log("STOP Button Clicked");
-        if (isTimerActive == 1)
-        {
-            ResetTimerValues();
-            StopTimer();
-            LogEndOfTimer();
-        }
+        ResetTimerValues();
+        StopTimer();
+        LogEndOfTimer();
     });
     function AppendAdditions() //Append new elements to the destination for the extension
     {
@@ -150,19 +147,20 @@
         {
             textArea.textContent = "Timer Start: " + totalTimeString; //Set the comment's text value
             console.log(totalTimeString);
-            commentButton.disabled = false;
+            commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
             console.log("Disabled");
-            commentButton.click();
+            commentButton.click(); //Click the button programmatically
             console.log("Clicked");
         }
         else 
         {
-            console.log("Comment Button is null");
+            console.log("Comment Button is null");//uh oh where'd our button go
         }
         //
     }
     function LogEndOfTimer()
     {
+        //see LogTimer()
         console.log(commentParent.tagName);
         console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
         if (commentButton != null)
@@ -182,6 +180,7 @@
     }
     function ResetTimerValues()
     {
+        //Resets everything to nothing
         sec = 0;
         min = 0;
         hour = 0;
