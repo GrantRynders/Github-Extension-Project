@@ -1,4 +1,16 @@
-// This javascript will affect the index page
+// 
+
+
+
+
+//THIS CODE IS FOR THE POPUP
+
+
+//IF YOU ARE TRYING TO MODIFY THE INJECTION, SEE EXTENSION.JS
+
+
+
+//
 var startButton = document.getElementById("startButton");
 var pauseButton = document.getElementById("pauseButton");
 var stopButton = document.getElementById("stopButton");
