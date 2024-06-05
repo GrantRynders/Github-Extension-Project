@@ -21,3 +21,12 @@ function connect() {
   chrome.runtime.connect({name: 'keepAlive'})
     .onDisconnect.addListener(connect);
 }
+// // To save data
+// chrome.storage.sync.set({ key: value }, function() {
+//   console.log('Data saved');
+// });
+
+// // To retrieve data
+// chrome.storage.sync.get(['key'], function(result) {
+//   console.log('Data retrieved:', result.key);
+// });

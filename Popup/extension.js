@@ -3,8 +3,10 @@
     
     //CREATE BUTTONS and set their attributes
     var startButton = document.createElement('button');
-    startButton.textContent = "<";
+    startButton.textContent = "\u25B6";
     startButton.id = "startButton";
+    //var startIcon = document.createElement("img");
+    //startIcon.src = "Images/play-button.png";
     var pauseButton = document.createElement('button');
     pauseButton.textContent = "| |"
     pauseButton.id = "pauseButton";
@@ -16,6 +18,9 @@
     timerDisplay.id = "timerDisplay";
     //Find the destination for our new content
     var destinationDiv = document.getElementById("js-repo-pjax-container");
+    var textArea = document.getElementById("new_comment_field");
+    var commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
+    var commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
     //append instances of our new buttons to the page
     AppendAdditions();
     //find those instances we just created
@@ -33,6 +38,7 @@
     var minString = "00";
     var hourString = "00";
     var dayString = "00";
+    var totalTimeString = "00:00:00:00";
     //Our interval timer for the app
     var timer;
     var isTimerActive = 0; //Essentially a bool for timer activity
@@ -83,7 +89,8 @@
             {
                 dayString = "0" + day;
             }
-            timerDisplayInstance.textContent = dayString + ":" + hourString + ':' + minString + ':' + secString;
+            totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
+            timerDisplayInstance.textContent = totalTimeString;
         }, 1000);
     }
     function StopTimer() //Stops the interval func
@@ -98,21 +105,26 @@
         {
             startTimer();
         }
-        
+        LogTime();
     }); 
     pauseButtonInstance.addEventListener('click',function ()
     {
         console.log("PAUSE Button Clicked");
-        StopTimer();
+        if (isTimerActive == 1)
+        {
+            StopTimer();
+            LogEndOfTimer();
+        }
     }); 
     stopButtonInstance.addEventListener('click',function ()
     {
         console.log("STOP Button Clicked");
-        sec = 0;
-        min = 0;
-        hour = 0;
-        timerDisplayInstance.textContent = "00:00:00:00";
-        StopTimer();
+        if (isTimerActive == 1)
+        {
+            ResetTimerValues();
+            StopTimer();
+            LogEndOfTimer();
+        }
     });
     function AppendAdditions() //Append new elements to the destination for the extension
     {
@@ -120,6 +132,7 @@
         {
             destinationDiv.appendChild(timerDisplay);
             destinationDiv.appendChild(startButton);
+            //startButton.appendChild(startIcon);
             destinationDiv.appendChild(pauseButton);
             destinationDiv.appendChild(stopButton);
         }
@@ -129,3 +142,58 @@
         }
         
     }
+    function LogTime()
+    {
+        console.log(commentParent.tagName); //Logs the container element for the button
+        console.log(commentParent.querySelectorAll(".btn-primary btn").tagName); //logs the button class (probably undefined)
+        if (commentButton != null) //Make sure comment button is not null
+        {
+            textArea.textContent = "Timer Start: " + totalTimeString; //Set the comment's text value
+            console.log(totalTimeString);
+            commentButton.disabled = false;
+            console.log("Disabled");
+            commentButton.click();
+            console.log("Clicked");
+        }
+        else 
+        {
+            console.log("Comment Button is null");
+        }
+        //
+    }
+    function LogEndOfTimer()
+    {
+        console.log(commentParent.tagName);
+        console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
+        if (commentButton != null)
+        {
+            textArea.textContent = "Timer Stopped at: " + totalTimeString;
+            console.log(totalTimeString);
+            commentButton.disabled = false;
+            console.log("Disabled");
+            commentButton.click();
+            console.log("Clicked");
+        }
+        else 
+        {
+            console.log("Comment Button is null when attempting to end timer");
+        }
+        //
+    }
+    function ResetTimerValues()
+    {
+        sec = 0;
+        min = 0;
+        hour = 0;
+        secString = "00";
+        minString = "00";
+        hourString = "00";
+        dayString = "00";
+        timerDisplayInstance.textContent = "00:00:00:00";
+    }
+    // "web_accessible_resources": [
+    //     {
+    //       "resources": ["Popup/Images/*"],
+    //       "matches": ["https://github.com/*/*/issues/*"]
+    //     }
+    //   ]
