@@ -17,6 +17,9 @@ stopButton.id = "stopButton";
 var timerDisplay = document.createElement('h1');
 timerDisplay.textContent = "DD:HH:MM:SS";
 timerDisplay.id = "timerDisplay";
+var credits = document.createElement('p');
+credits.textContent = "Timer Extension for Github issues as part of ITSC Summer Internship 2024";
+credits.id = "credits";
 //Find the destination for our new content
 var destinationDiv = document.getElementById("js-repo-pjax-container");
 var textArea = document.getElementById("new_comment_field");
@@ -243,6 +246,7 @@ function AppendAdditions() //Append new elements to the destination for the exte
         destinationDiv.appendChild(startButton);
         destinationDiv.appendChild(pauseButton);
         destinationDiv.appendChild(stopButton);
+        destinationDiv.appendChild(credits);
     }
     else
     {
