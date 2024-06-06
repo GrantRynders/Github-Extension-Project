@@ -31,11 +31,11 @@ var pauseButtonInstance = document.getElementById("pauseButton");
 var stopButtonInstance = document.getElementById("stopButton");
 var timerDisplayInstance = document.getElementById("timerDisplay");
 //Numbers for our time variables
-var sec = 0;//Is always gonna be reset after 60
+var sec = 0;
 var min = 0;
 var hour = 0;
 var day = 0;
-var totalSeconds = 0;//The total second count of the entire timer which we can store to convert and do equations with later
+var totalSeconds = 0;//deprecated
 //The formatted strings for our numbers
 var secString = "00";
 var minString = "00";

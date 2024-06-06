@@ -4,6 +4,8 @@ Application flow of the extension:
 -User loads extension
 -User goes to correct page
 -User reloads page to activate extension
+-Extension creates buttons and display
+-Extension injects instances of these into the page at a destination div
 -User hits start button on timer
 -Extension enters data into the textarea for the comment
 -Extension enables the comment button
