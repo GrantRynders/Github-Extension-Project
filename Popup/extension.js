@@ -31,34 +31,50 @@
     var stopButtonInstance = document.getElementById("stopButton");
     var timerDisplayInstance = document.getElementById("timerDisplay");
     //Numbers for our time variables
-    var sec = 0;
+    var sec = 0;//Is always gonna be reset after 60
     var min = 0;
     var hour = 0;
     var day = 0;
+    var totalSeconds = 0;//The total second count of the entire timer which we can store to convert and do equations with later
     //The formatted strings for our numbers
     var secString = "00";
     var minString = "00";
     var hourString = "00";
     var dayString = "00";
     var totalTimeString = "00:00:00:00";
-    
     //Our interval timer for the app
     var timer;
     var isTimerActive = 0; //Essentially a bool for if the timer is running
     var isTimerPaused = 0;//a bool for if the timer is paused (different than it not being active)
-
+    InitializeTimer();
     //On initialize
-    sec = localStorage.getItem("CurrentTime"); //Set the seconds to the total seconds elapsed before the stop
-    if (sec == null)
+    function InitializeTimer()
     {
-        sec = 0;
-        console.log("Current time equals null, uh oh");
+        SetLocalStorage() //Get our local storage values if there are any, making sure nothing is null
+        if (sec == null)
+        {
+            sec = 0;//Make sure seconds is valid
+        }
+        ConvertTimeToFormat(); //converts the seconds to a formatted string
+        timerDisplayInstance.textContent = totalTimeString; //sets the timer display
+        if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
+        {
+            if (localStorage.getItem("StartDate") != null)
+            {
+                var currentDate = Date();//gets current date
+                sec += (currentDate.getTime() - localStorage.getItem("StartDate").getTime()); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                if (sec < 0 || sec == null) //make sure the seconds variable is good
+                {
+                    sec = 0;
+                }
+            }
+            else
+            {
+                console.log("Start Date for continuing timer is null")
+            }
+            startTimer()
+        }
     }
-    ConvertTimeToFormat(); //converts the seconds to a formatted string
-    timerDisplayInstance.textContent = totalTimeString; //sets the timer display
-    
-
-
 
     function startTimer(){ //Starts the set interval function if timer is not already started
         isTimerActive = 1;
@@ -69,10 +85,8 @@
             totalSeconds +=1;
             localStorage.setItem("CurrentTime", totalSeconds)
             console.log('Second: ' + sec);
-            ConvertTimeToFormat();
-            //totalTimeString stores the formatted time for use all over the app
-            totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
-            timerDisplayInstance.textContent = totalTimeString;
+            ConvertTimeToFormat();//Converts our time variables into a formatted string
+            timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
         }, 1000);
     }
     function ConvertTimeToFormat()
@@ -117,6 +131,7 @@
             {
                 dayString = "0" + day;
             }
+            //totalTimeString stores the formatted time for use all over the app
             totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
     }
     function StopTimer() //Stops the interval func
@@ -229,6 +244,44 @@
         hourString = "00";
         dayString = "00";
         timerDisplayInstance.textContent = "00:00:00:00";
-        localStorage.removeItem("CurrentTime");
+        ResetLocalStorage();
     }
-    sessionStorage.setItem("Time", "");
+    function SetLocalStorage()
+    {
+        if (localStorage.getItem("CurrentTime") != null)//Checks the record
+        {
+            sec = localStorage.getItem("CurrentTime"); //Set the seconds to the total seconds elapsed before the stop
+        }
+        else
+        {
+            localStorage.setItem("CurrentTime", 0); //Should always be a nonnullvalue
+            sec = 0;
+            console.log("Current time equals null, uh oh, reseting");
+        }
+        if (localStorage.getItem("isTimerPaused") != null)
+        {
+            isTimerPaused = localStorage.getItem("isTimerPaused");
+        }
+        else
+        {
+            isTimerPaused = localStorage.setItem("isTimerPaused", 0);
+            isTimerPaused = 0;
+        }
+        if (localStorage.getItem("isTimerActive") != null)
+        {
+            isTimerActive = localStorage.getItem("isTimerActive");
+        }
+        else
+        {
+            isTimerActive = localStorage.setItem("isTimerActive", 0);
+            isTimerActive = 0;
+        }
+
+    }
+    function ResetLocalStorage()
+    {
+        localStorage.setItem("CurrentTime", 0);//seconds
+        localStorage.setItem("isTimerPaused", 0);
+        localStorage.setItem("isTimerActive", 0);
+    }
+    //beforeunload
