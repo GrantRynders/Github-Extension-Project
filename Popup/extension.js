@@ -102,7 +102,7 @@
     }
     function ConvertTimeToFormat()
     {
-            while (sec >= 60) //Convert Seconds to minutes
+            if (sec >= 60) //Convert Seconds to minutes
             {
                 min += 1;
                 sec -= 60;
@@ -112,7 +112,7 @@
             {
                 secString = "0" +sec;
             }
-            while (min >= 60) //and so on and so forth
+            if (min >= 60) //and so on and so forth
             {
                 hour += 1;
                 min -= 60;
@@ -122,7 +122,7 @@
             {
                 minString = "0" + min;
             }
-            while (hour >= 24)
+            if (hour >= 24)
             {
                 day += 1;
                 hour -= 24;
@@ -219,7 +219,7 @@
             console.log("Disabled");
             commentButton.click(); //Click the button programmatically
             console.log("Clicked");
-            window.location.reload();
+            //window.location.reload();
         }
         else 
         {
