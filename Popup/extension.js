@@ -46,6 +46,20 @@
     var timer;
     var isTimerActive = 0; //Essentially a bool for if the timer is running
     var isTimerPaused = 0;//a bool for if the timer is paused (different than it not being active)
+
+    //On initialize
+    sec = localStorage.getItem("CurrentTime"); //Set the seconds to the total seconds elapsed before the stop
+    if (sec == null)
+    {
+        sec = 0;
+        console.log("Current time equals null, uh oh");
+    }
+    ConvertTimeToFormat(); //converts the seconds to a formatted string
+    timerDisplayInstance.textContent = totalTimeString; //sets the timer display
+    
+
+
+
     function startTimer(){ //Starts the set interval function if timer is not already started
         isTimerActive = 1;
         localStorage.setItem("StartTime", Date());
@@ -103,6 +117,7 @@
             {
                 dayString = "0" + day;
             }
+            totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
     }
     function StopTimer() //Stops the interval func
     {
@@ -214,6 +229,6 @@
         hourString = "00";
         dayString = "00";
         timerDisplayInstance.textContent = "00:00:00:00";
-        localStorage.removeItem("EndTime");
+        localStorage.removeItem("CurrentTime");
     }
     sessionStorage.setItem("Time", "");
