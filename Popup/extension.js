@@ -48,12 +48,22 @@
     var isTimerPaused = 0;//a bool for if the timer is paused (different than it not being active)
     function startTimer(){ //Starts the set interval function if timer is not already started
         isTimerActive = 1;
+        localStorage.setItem("StartTime", Date());
         //DD:HH:MM:SS
         timer = setInterval(function(){
             sec +=1;
+            totalSeconds +=1;
+            localStorage.setItem("CurrentTime", totalSeconds)
             console.log('Second: ' + sec);
-            
-            if (sec >= 60) //Convert Seconds to minutes
+            ConvertTimeToFormat();
+            //totalTimeString stores the formatted time for use all over the app
+            totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
+            timerDisplayInstance.textContent = totalTimeString;
+        }, 1000);
+    }
+    function ConvertTimeToFormat()
+    {
+        if (sec >= 60) //Convert Seconds to minutes
             {
                 min += 1;
                 sec -= 60;
@@ -93,10 +103,6 @@
             {
                 dayString = "0" + day;
             }
-            //totalTimeString stores the formatted time for use all over the app
-            totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
-            timerDisplayInstance.textContent = totalTimeString;
-        }, 1000);
     }
     function StopTimer() //Stops the interval func
     {
@@ -111,7 +117,7 @@
             startTimer();
         }
         LogTime();
-    }); 
+    });
     pauseButtonInstance.addEventListener('click',function ()
     {
         console.log("PAUSE Button Clicked");
@@ -120,7 +126,7 @@
             StopTimer();
             LogEndOfTimer();
         }
-    }); 
+    });
     stopButtonInstance.addEventListener('click',function ()
     {
         console.log("STOP Button Clicked");
@@ -195,11 +201,11 @@
         {
             console.log("Comment Button is null when attempting to end timer");
         }
-        //
     }
     function ResetTimerValues()
     {
         //Resets everything to nothing
+        totalSeconds +=1;
         sec = 0;
         min = 0;
         hour = 0;
@@ -208,4 +214,6 @@
         hourString = "00";
         dayString = "00";
         timerDisplayInstance.textContent = "00:00:00:00";
+        localStorage.removeItem("EndTime");
     }
+    sessionStorage.setItem("Time", "");
