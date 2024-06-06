@@ -267,7 +267,7 @@ function LogTime()
         commentButton.click(); //Click the button programmatically
         console.log("Clicked");
         window.location.reload();//reload the page to submit the comment
-        startButtonInstance.scrollIntoView({behavior: 'smooth'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
+        startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else 
     {
@@ -289,7 +289,7 @@ function LogEndOfTimer()
         commentButton.click();
         console.log("Clicked");
         window.location.reload();
-        startButtonInstance.scrollIntoView({behavior: 'smooth'});
+        startButtonInstance.scrollIntoView({behavior: 'instant'});
     }
     else
     {
