@@ -60,11 +60,13 @@
         timerDisplayInstance.textContent = totalTimeString; //sets the timer display
         if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
         {
-            if (localStorage.getItem("LastDate") != null)
+            var lastDate = localStorage.getItem("LastDate");
+            if (lastDate != null)
             {
-
                 var currentDate = Date();//gets current date
-                sec += (currentDate.getTime() - localStorage.getItem("LastDate").getTime()); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                console.log("Seconds before date difference: " + sec);
+                sec += (currentDate.getTime() - lastDate.getTime()); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                console.log("New seconds after date difference: " + sec)
                 if (sec < 0 || sec == null) //make sure the seconds variable is good
                 {
                     sec = 0;
@@ -255,6 +257,7 @@
         if (localStorage.getItem("CurrentTime") != null)//Checks the record
         {
             sec = localStorage.getItem("CurrentTime"); //Set the seconds to the total seconds elapsed before the stop
+            console.log("Local CurrentTime: " + sec);
         }
         else
         {
@@ -265,6 +268,7 @@
         if (localStorage.getItem("isTimerPaused") != null)
         {
             isTimerPaused = localStorage.getItem("isTimerPaused");
+            console.log("Local IsTimerPaused: " + isTimerPaused);
         }
         else
         {
@@ -274,6 +278,7 @@
         if (localStorage.getItem("isTimerActive") != null)
         {
             isTimerActive = localStorage.getItem("isTimerActive");
+            console.log("Local IsTimerActive: " + isTimerActive);
         }
         else
         {
