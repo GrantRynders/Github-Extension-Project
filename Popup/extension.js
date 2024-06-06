@@ -89,6 +89,8 @@ function InitializeTimer()
 
 function startTimer(){ //Starts the set interval function if timer is not already started
     isTimerActive = 1;
+    isTimerPaused = 0;
+    localStorage.setItem("isTimerPaused", isTimerPaused);
     //DD:HH:MM:SS
     timer = setInterval(function(){
         sec = Number(sec) + 1;
@@ -103,13 +105,13 @@ function startTimer(){ //Starts the set interval function if timer is not alread
 }
 function ConvertTimeToFormat(seconds)
 {       
-    seconds = Number(seconds);
+    seconds = Number(seconds); //Input number of seconds to be converted
     console.log("seconds: " + seconds);
-    day = Math.floor(Number(seconds) / (3600*24));
+    day = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
     console.log("Days: " + day)
-    hour = Math.floor(Number(seconds) % (3600*24) / 3600);
-    console.log("Hours" + hour);
-    minute = Math.floor(Number(seconds) % 3600 / 60);
+    hour = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
+    console.log("Hours: " + hour);
+    minute = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
     console.log("minutes: " + minute)
     //sec = Math.floor(seconds % 60);
 
@@ -336,7 +338,7 @@ function GetLocalStorage() //checks records if they are null, sets their respect
     }
     else
     {
-        lastDate = Date();
+        lastDate = Date();//just set the last date as right now
         console.log("Last date does not exist");
     }
 
