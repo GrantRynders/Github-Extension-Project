@@ -246,7 +246,7 @@
         timerDisplayInstance.textContent = "00:00:00:00";
         ResetLocalStorage();
     }
-    function SetLocalStorage()
+    function SetLocalStorage() //checks records if they are null, sets their respective values in the code
     {
         if (localStorage.getItem("CurrentTime") != null)//Checks the record
         {
@@ -281,7 +281,7 @@
     function ResetLocalStorage()
     {
         localStorage.setItem("CurrentTime", 0);//seconds
-        localStorage.setItem("isTimerPaused", 0);
-        localStorage.setItem("isTimerActive", 0);
+        localStorage.setItem("isTimerPaused", 0);//unpaused
+        localStorage.setItem("isTimerActive", 0);//not active
     }
     //beforeunload
