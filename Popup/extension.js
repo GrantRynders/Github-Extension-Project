@@ -111,9 +111,9 @@ function ConvertTimeToFormat(seconds)
     console.log("Days: " + day)
     hour = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
     console.log("Hours: " + hour);
-    minute = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
-    console.log("minutes: " + minute)
-    //sec = Math.floor(seconds % 60);
+    min = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
+    console.log("minutes: " + min)
+    seconds = Math.floor(Number(seconds) % 60);
 
     secString = seconds;
     if (Number(seconds) < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
@@ -140,6 +140,11 @@ function ConvertTimeToFormat(seconds)
     {
         dayString = "0" + day;
     }
+
+
+        //OLD TIMER
+
+
         // if (sec >= 60) //Convert Seconds to minutes
         // {
         //     min += 1;
@@ -257,7 +262,8 @@ function LogTime()
         console.log("Disabled");
         commentButton.click(); //Click the button programmatically
         console.log("Clicked");
-        //window.location.reload();
+        window.location.reload();//reload the page to submit the comment
+        startButtonInstance.scrollIntoView({behavior: 'smooth'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else 
     {
@@ -278,6 +284,8 @@ function LogEndOfTimer()
         console.log("Disabled");
         commentButton.click();
         console.log("Clicked");
+        window.location.reload();
+        startButtonInstance.scrollIntoView({behavior: 'smooth'});
     }
     else
     {
