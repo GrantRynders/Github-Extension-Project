@@ -32,8 +32,15 @@
     var timerDisplayInstance = document.getElementById("timerDisplay");
     //Numbers for our time variables
     var sec = 0;//Is always gonna be reset after 60
+    var min = 0;
+    var hour = 0;
+    var day = 0;
     var totalSeconds = 0;//The total second count of the entire timer which we can store to convert and do equations with later
     //The formatted strings for our numbers
+    var secString = "00";
+    var minString = "00";
+    var hourString = "00";
+    var dayString = "00";
     var totalTimeString = "00:00:00:00";
     //Our interval timer for the app
     var timer;
@@ -63,8 +70,7 @@
                 console.log("Seconds before date difference: " + sec);
                 console.log("Current Date: " + currentDate);
                 console.log("Last date: " + lastDate);
-                var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
-                sec += Number((difference) /1000); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                sec += Math.round((new Date(currentDate).getTime() - new Date(lastDate).getTime()) /1000); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
                 console.log("New seconds after date difference: " + sec)
                 if (sec < 0 || sec == null) //make sure the seconds variable is good
                 {
@@ -81,99 +87,62 @@
 
     function startTimer(){ //Starts the set interval function if timer is not already started
         isTimerActive = 1;
-        isTimerPaused = 0;
         //DD:HH:MM:SS
         timer = setInterval(function(){
-            sec += Number(1);
-            totalSeconds += 1;
+            sec +=1;
+            totalSeconds +=1;
             localStorage.setItem("LastDate", Date());
-            localStorage.setItem("CurrentTime", sec);
+            localStorage.setItem("CurrentTime", totalSeconds);
             localStorage.setItem("isTimerActive", 1);
-            console.log('Second: ' + sec);
-            totalTimeString = ConvertTimeToFormat(sec);//Converts our time variables into a formatted string
+            console.log('Second: ' + totalSeconds);
+            ConvertTimeToFormat();//Converts our time variables into a formatted string
             timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
         }, 1000);
     }
-    function ConvertTimeToFormat(seconds)
+    function ConvertTimeToFormat()
     {
-        seconds = Number(seconds);
-        var d = Math.floor(seconds / 86400);
-        console.log("Format Days: " + d);
-        var h = Math.floor(seconds / 3600);
-        console.log("Format Hours: " + h);
-        var m = Math.floor(seconds % 3600 / 60);
-        console.log("Format Minutes: " + m);
-        var s = Math.floor(seconds % 3600 % 60);
-        console.log("Format Seconds: " + s);
-
-        return (("0" + d).slice(-2) + ":" + ("0" + h).slice(-2) + ":" + ("0" + m).slice(-2) + ":" + ("0" + s).slice(-2));
-
-
-
-
-
-        // var min = 0;
-        // var hour = 0;
-        // var day = 0;
-        // var secString = "00";
-        // var minString = "00";
-        // var hourString = "00";
-        // var dayString = "00";
-        // if (seconds >= 60)
-        // {
-        //     do//Convert Seconds to minutes
-        //     {
-        //         min += 1;
-        //         seconds -= 60;
-        //         console.log("Second while loop");
-        //     } while (seconds >= 60) 
-        // }
-
-        
-        // secString = seconds;
-        // console.log("SecString: " + secString);
-        // if (seconds < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
-        // {
-        //     secString = "0" + seconds;
-        // }
-        // if (min >= 60)
-        // {
-        //     do //and so on and so forth
-        //     {
-        //         hour += 1;
-        //         min -= 60;
-        //     }while (min >= 60)
-        // }
-        // minString = min
-        // if (min < 10)
-        // {
-        //     minString = "0" + min;
-        // }
-        // if (hour >= 24)
-        // {
-        //     do
-        //     {
-        //         day += 1;
-        //         hour -= 24;
-        //     } while (hour >= 24)
-        // }
-        // hourString = hour;
-        // if (hour < 10)
-        // {
-        //     hourString = "0" + hour;
-        // }
-        // if (day >= 99)
-        // {
-        //     StopTimer()
-        //     timerDisplayInstance.textContent("Max Value Reached");
-        // }
-        // dayString = day;
-        // if (day < 10)
-        // {
-        //     dayString = "0" + day;
-        // }
-        //totalTimeString stores the formatted time for use all over the app
-        //totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
+            while (sec >= 60) //Convert Seconds to minutes
+            {
+                min += 1;
+                sec -= 60;
+            }
+            secString = sec;
+            if (sec < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
+            {
+                secString = "0" +sec;
+            }
+            while (min >= 60) //and so on and so forth
+            {
+                hour += 1;
+                min -= 60;
+            }
+            minString = min
+            if (min < 10)
+            {
+                minString = "0" + min;
+            }
+            while (hour >= 24)
+            {
+                day += 1;
+                hour -= 24;
+            }
+            hourString = hour;
+            if (hour < 10)
+            {
+                hourString = "0" + hour;
+            }
+            if (day >= 99)
+            {
+                StopTimer()
+                timerDisplayInstance.textContent("Max Value Reached");
+            }
+            dayString = day;
+            if (day < 10)
+            {
+                dayString = "0" + day;
+            }
+            //totalTimeString stores the formatted time for use all over the app
+            totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
     }
     function StopTimer() //Stops the interval func
     {
@@ -249,7 +218,7 @@
             console.log("Disabled");
             commentButton.click(); //Click the button programmatically
             console.log("Clicked");
-            //window.location.reload();
+            window.location.reload();
         }
         else 
         {
@@ -279,7 +248,7 @@
     function ResetTimerValues()
     {
         //Resets everything to nothing
-        totalSeconds = 0;
+        totalSeconds +=1;
         sec = 0;
         min = 0;
         hour = 0;
@@ -327,7 +296,6 @@
         if (localStorage.getItem("LastDate") != null)
         {
             lastDate = localStorage.getItem("LastDate");
-            console.log("Last Date: " + lastDate);
         }
         else
         {
@@ -342,6 +310,5 @@
         localStorage.setItem("isTimerPaused", 0);//unpaused
         localStorage.setItem("isTimerActive", 0);//not active
         localStorage.setItem("lastDate", null);//Timer did not previously exist
-         
-    }   
+    }
     //beforeunload
