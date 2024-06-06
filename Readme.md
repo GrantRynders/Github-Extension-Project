@@ -1,3 +1,6 @@
+
+# ITSC SUMMER 2024 - Extension Project
+
 An extension for Github issues that allows users to manage the amount of timer spent on a given issue through a built in timer. Timer data will be written to the description of the issue, for easy tracking.
 </img>
 
@@ -31,8 +34,8 @@ class Timers{
 
 
 
-#Helpful links:
 
+# Helpful links:
 Github issues API: https://docs.github.com/en/rest/issues?apiVersion=2022-11-28
 
 Mozilla extensions documentation: https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/
