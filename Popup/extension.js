@@ -50,6 +50,7 @@
     //On initialize
     function InitializeTimer()
     {
+        console.log("Initialize timer called")
         SetLocalStorage() //Get our local storage values if there are any, making sure nothing is null
         if (sec == null)
         {
@@ -59,10 +60,11 @@
         timerDisplayInstance.textContent = totalTimeString; //sets the timer display
         if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
         {
-            if (localStorage.getItem("StartDate") != null)
+            if (localStorage.getItem("LastDate") != null)
             {
+
                 var currentDate = Date();//gets current date
-                sec += (currentDate.getTime() - localStorage.getItem("StartDate").getTime()); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                sec += (currentDate.getTime() - localStorage.getItem("LastDate").getTime()); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
                 if (sec < 0 || sec == null) //make sure the seconds variable is good
                 {
                     sec = 0;
@@ -78,13 +80,14 @@
 
     function startTimer(){ //Starts the set interval function if timer is not already started
         isTimerActive = 1;
-        localStorage.setItem("StartTime", Date());
+        
         //DD:HH:MM:SS
         timer = setInterval(function(){
             sec +=1;
             totalSeconds +=1;
+            localStorage.setItem("LastDate", Date());
             localStorage.setItem("CurrentTime", totalSeconds)
-            console.log('Second: ' + sec);
+            console.log('Second: ' + totalSeconds);
             ConvertTimeToFormat();//Converts our time variables into a formatted string
             timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
         }, 1000);
@@ -205,7 +208,7 @@
             console.log("Disabled");
             commentButton.click(); //Click the button programmatically
             console.log("Clicked");
-            window.location.reload();
+            //window.location.reload();
         }
         else 
         {
@@ -248,6 +251,7 @@
     }
     function SetLocalStorage() //checks records if they are null, sets their respective values in the code
     {
+        console.log("Set Local Storage");
         if (localStorage.getItem("CurrentTime") != null)//Checks the record
         {
             sec = localStorage.getItem("CurrentTime"); //Set the seconds to the total seconds elapsed before the stop
