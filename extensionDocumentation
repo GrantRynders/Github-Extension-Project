@@ -1,0 +1,14 @@
+Application flow of the extension:
+
+-User loads browser
+-User loads extension
+-User goes to correct page
+-User reloads page to activate extension
+-User hits start button on timer
+-Extension enters data into the textarea for the comment
+-Extension enables the comment button
+-Extension refreshes the browser to submit the comment
+-Extension saves the data from the timer to localStorage 
+-After refresh, timer loads saved data to bring back the timer as it was
+-User closes issue or stops timer
+-Extension does the same song and dance to submit a new comment
