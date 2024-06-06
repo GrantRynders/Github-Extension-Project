@@ -46,12 +46,15 @@
     var timer;
     var isTimerActive = 0; //Essentially a bool for if the timer is running
     var isTimerPaused = 0;//a bool for if the timer is paused (different than it not being active)
+    //Dates to save
+    var lastDate;
+    var currentDate;
     InitializeTimer();
     //On initialize
     function InitializeTimer()
     {
         console.log("Initialize timer called")
-        SetLocalStorage() //Get our local storage values if there are any, making sure nothing is null
+        GetLocalStorage() //Get our local storage values if there are any, making sure nothing is null
         if (sec == null)
         {
             sec = 0;//Make sure seconds is valid
@@ -60,12 +63,14 @@
         timerDisplayInstance.textContent = totalTimeString; //sets the timer display
         if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
         {
-            var lastDate = localStorage.getItem("LastDate");
+            console.log("Timer was active before reset");
             if (lastDate != null)
             {
-                var currentDate = Date();//gets current date
+                currentDate = Date();//gets current date
                 console.log("Seconds before date difference: " + sec);
-                sec += (currentDate.getTime() - lastDate.getTime()); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                console.log("Current Date: " + currentDate);
+                console.log("Last date: " + lastDate);
+                sec += Math.round((new Date(currentDate).getTime() - new Date(lastDate).getTime()) /1000); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
                 console.log("New seconds after date difference: " + sec)
                 if (sec < 0 || sec == null) //make sure the seconds variable is good
                 {
@@ -82,13 +87,13 @@
 
     function startTimer(){ //Starts the set interval function if timer is not already started
         isTimerActive = 1;
-        
         //DD:HH:MM:SS
         timer = setInterval(function(){
             sec +=1;
             totalSeconds +=1;
             localStorage.setItem("LastDate", Date());
-            localStorage.setItem("CurrentTime", totalSeconds)
+            localStorage.setItem("CurrentTime", totalSeconds);
+            localStorage.setItem("isTimerActive", 1);
             console.log('Second: ' + totalSeconds);
             ConvertTimeToFormat();//Converts our time variables into a formatted string
             timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
@@ -96,7 +101,7 @@
     }
     function ConvertTimeToFormat()
     {
-        if (sec >= 60) //Convert Seconds to minutes
+            while (sec >= 60) //Convert Seconds to minutes
             {
                 min += 1;
                 sec -= 60;
@@ -106,7 +111,7 @@
             {
                 secString = "0" +sec;
             }
-            if (min >= 60) //and so on and so forth
+            while (min >= 60) //and so on and so forth
             {
                 hour += 1;
                 min -= 60;
@@ -116,7 +121,7 @@
             {
                 minString = "0" + min;
             }
-            if (hour >= 24)
+            while (hour >= 24)
             {
                 day += 1;
                 hour -= 24;
@@ -142,6 +147,7 @@
     function StopTimer() //Stops the interval func
     {
         isTimerActive = 0;
+        localStorage.setItem("isTimerActive", 0);
         clearInterval(timer);
     }
     startButtonInstance.addEventListener('click',function ()
@@ -158,6 +164,8 @@
         console.log("PAUSE Button Clicked");
         if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
         {
+            isTimerPaused = 1;
+            localStorage.setItem("isTimerPaused", 1);
             StopTimer();
             LogEndOfTimer();
         }
@@ -210,7 +218,7 @@
             console.log("Disabled");
             commentButton.click(); //Click the button programmatically
             console.log("Clicked");
-            //window.location.reload();
+            window.location.reload();
         }
         else 
         {
@@ -251,7 +259,7 @@
         timerDisplayInstance.textContent = "00:00:00:00";
         ResetLocalStorage();
     }
-    function SetLocalStorage() //checks records if they are null, sets their respective values in the code
+    function GetLocalStorage() //checks records if they are null, sets their respective values in the code
     {
         console.log("Set Local Storage");
         if (localStorage.getItem("CurrentTime") != null)//Checks the record
@@ -285,6 +293,15 @@
             isTimerActive = localStorage.setItem("isTimerActive", 0);
             isTimerActive = 0;
         }
+        if (localStorage.getItem("LastDate") != null)
+        {
+            lastDate = localStorage.getItem("LastDate");
+        }
+        else
+        {
+            lastDate = Date();
+            console.log("Last date does not exist");
+        }
 
     }
     function ResetLocalStorage()
@@ -292,5 +309,6 @@
         localStorage.setItem("CurrentTime", 0);//seconds
         localStorage.setItem("isTimerPaused", 0);//unpaused
         localStorage.setItem("isTimerActive", 0);//not active
+        localStorage.setItem("lastDate", null);//Timer did not previously exist
     }
     //beforeunload
