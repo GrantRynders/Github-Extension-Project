@@ -70,7 +70,8 @@
                 console.log("Seconds before date difference: " + sec);
                 console.log("Current Date: " + currentDate);
                 console.log("Last date: " + lastDate);
-                sec += Math.round((new Date(currentDate).getTime() - new Date(lastDate).getTime()) /1000); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
+                sec += Math.round(difference /1000); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
                 console.log("New seconds after date difference: " + sec)
                 if (sec < 0 || sec == null) //make sure the seconds variable is good
                 {
