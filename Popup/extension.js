@@ -250,6 +250,10 @@ function LogTime()
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
     console.log(optionsPanel.tagName)
+    for (const child of document.getElementsByClassName("timeline-comment-actions flex-shrink-0 d-flex flex-items-center")[0].childNodes)
+    {
+        console.log(child.textContent);
+    }
     var editBtn = optionsPanel.getElementsByClassName("dropdown-item btn-link js-comment-edit-button")[0];//the button that literally says "edit"
     editBtn.click();
     var commentBlockId = localStorage.getItem("TimerLogDestId");
