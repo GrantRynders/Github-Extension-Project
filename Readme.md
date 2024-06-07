@@ -27,30 +27,29 @@ class Timers{
 
 ```
 
-Non-Relational Database Model
+Non-Relational Database Model:
 
-"timer_id": "12345",
+```json
+{
+    "timer_id": "12345",
+    "user_name": "John Smith",
+    "dates" [
 
-"user_name": "John Smith",
+        {
+            "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
+            "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
 
-"dates" [
+        },
 
-    {
+        {
+            "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
+            "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
 
-        "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
-        "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
+        }
 
-    },
-
-    {
-
-        "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
-        "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
-
-    }
-
-]
-
+    ]
+}
+```
 
 
 
