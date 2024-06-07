@@ -245,11 +245,21 @@ function AppendAdditions() //Append new elements to the destination for the exte
 }
 function LogTime()
 {
+    var commentNum = localStorage.getItem("CommentNum"); //Which comment are we editing
+    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
+    optionBtn.click();
+    var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
+    console.log(optionsPanel.tagName)
+    var editBtn = optionsPanel.getElementsByClassName("dropdown-item btn-link js-comment-edit-button")[0];//the button that literally says "edit"
+    editBtn.click();
     var commentBlockId = localStorage.getItem("TimerLogDestId");
     var commentBlock = document.getElementById(commentBlockId);
-    var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
+    var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
     var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
+    console.log(commentBlock.id);
+    
     commentTextArea.textContent += "\nStart Date: " + new Date() + "\nTimer Start Value: " + totalTimeString;
+    console.log(commentTextArea.textContent);
     submitEditButton.click();
     window.location.reload();//reload the page to submit the comment
     startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
@@ -386,6 +396,7 @@ function FindUserTimerLog(user)
                 isLogFound = 1;
                 commentId = document.getElementsByClassName("js-comment-update")[commentNum].id;
                 console.log(commentId);
+                localStorage.setItem("CommentNum", commentNum);
                 localStorage.setItem("TimerLogDestId", commentId);
             }
         }
