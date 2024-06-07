@@ -56,6 +56,7 @@ InitializeTimer();
 //On initialize
 function InitializeTimer()
 {
+    startButtonInstance.scrollIntoView({behavior: 'instant'});
     console.log("Initialize timer called")
     GetLocalStorage() //Get our local storage values if there are any, making sure nothing is null
     if (sec == null)
@@ -107,8 +108,13 @@ function startTimer(){ //Starts the set interval function if timer is not alread
     }, 1000);
 }
 function ConvertTimeToFormat(seconds)
-{       
-    seconds = Number(seconds); //Input number of seconds to be converted
+{
+    if (seconds == null)
+    {
+        console.log("Seconds is null, resetting");
+        seconds = 0;
+    }
+    Number(seconds); //Input number of seconds to be converted
     console.log("seconds: " + seconds);
     day = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
     console.log("Days: " + day)
@@ -121,7 +127,7 @@ function ConvertTimeToFormat(seconds)
     secString = seconds;
     if (Number(seconds) < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
     {
-        secString = "0" +seconds;
+        secString = "0" + String(seconds);
     }
     minString = min
     if (Number(min) < 10)
