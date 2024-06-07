@@ -9,8 +9,9 @@ An extension for Github issues that allows users to manage the amount of timer s
 title: Relational Database Diagram
 ---
 classDiagram
-Issues --|> Timers
-Users --|> Timers 
+Issues --|> Timers : One-To-Many
+Users --|> Timers : One-To-Many
+Timers --|> TimerPeriods : One-To-Many
 class Issues{
     +int IssueId PK
     +VarChar(50) IssueName
@@ -24,27 +25,33 @@ class Timers{
     +int IssueId FK
     +int UserId FK
 }
+class TimerPeriods{
+    +int TimerPeriodId PK
+    +int TimerId FK
+    +Varchar(50) StartDate
+    +Varchar(50) EndDate
+}
 
 ```
 
-Non-Relational Database Model:
+<br><br>
+## Non-Relational Database Model:
 
 ```json
 {
     "timer_id": "12345",
     "user_name": "John Smith",
+    "issue": "https://github.com/GrantRynders/Github-Extension-Project/issues/32",
     "dates" [
 
         {
             "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
             "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
-
         },
 
         {
             "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
             "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
-
         }
 
     ]
