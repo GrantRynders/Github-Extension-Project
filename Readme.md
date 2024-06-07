@@ -6,7 +6,7 @@ An extension for Github issues that allows users to manage the amount of timer s
 
 ```mermaid
 ---
-title: Database Diagram
+title: Relational Database Diagram
 ---
 classDiagram
 Issues --|> Timers
@@ -27,6 +27,19 @@ class Timers{
 
 ```
 
+Non-Relational Database Model
+"timer_id": "12345",
+"user_name": "John Smith",
+"dates" [
+    {
+        "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
+        "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
+    },
+    {
+        "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
+        "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
+    }
+]
 
 
 

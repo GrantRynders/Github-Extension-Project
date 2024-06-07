@@ -76,7 +76,7 @@ function InitializeTimer()
             console.log("Last date: " + lastDate);
             var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
             sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
-            console.log("New seconds after date difference: " + Number(sec).toString())
+            console.log("New seconds after date difference: " + Number(sec).toString());
             if (sec < 0 || sec == null) //make sure the seconds variable is good
             {
                 sec = 0;
@@ -143,53 +143,8 @@ function ConvertTimeToFormat(seconds)
     {
         dayString = "0" + day;
     }
-
-
-        //OLD TIMER
-
-
-        // if (sec >= 60) //Convert Seconds to minutes
-        // {
-        //     min += 1;
-        //     sec -= 60;
-        // }
-        // secString = sec;
-        // if (sec < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
-        // {
-        //     secString = "0" +sec;
-        // }
-        // if (min >= 60) //and so on and so forth
-        // {
-        //     hour += 1;
-        //     min -= 60;
-        // }
-        // minString = min
-        // if (min < 10)
-        // {
-        //     minString = "0" + min;
-        // }
-        // if (hour >= 24)
-        // {
-        //     day += 1;
-        //     hour -= 24;
-        // }
-        // hourString = hour;
-        // if (hour < 10)
-        // {
-        //     hourString = "0" + hour;
-        // }
-        // if (day >= 99)
-        // {
-        //     StopTimer()
-        //     timerDisplayInstance.textContent("Max Value Reached");
-        // }
-        // dayString = day;
-        // if (day < 10)
-        // {
-        //     dayString = "0" + day;
-        // }
-        //totalTimeString stores the formatted time for use all over the app
-        totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
+    //totalTimeString stores the formatted time for use all over the app
+    totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
 }
 function StopTimer() //Stops the interval func
 {
