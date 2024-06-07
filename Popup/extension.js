@@ -84,7 +84,7 @@ function InitializeTimer()
         }
         else
         {
-            console.log("Start Date for continuing timer is null")
+            console.log("Last logged timer for continuing timer is null")
         }
         startTimer()
     }
@@ -117,7 +117,7 @@ function ConvertTimeToFormat(seconds)
     min = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
     console.log("minutes: " + min)
     seconds = Math.floor(Number(seconds) % 60);
-
+    console.log("Last date: " + lastDate);
     secString = seconds;
     if (Number(seconds) < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
     {
@@ -202,6 +202,7 @@ startButtonInstance.addEventListener('click',function ()
     console.log("Start Button Clicked");
     if (isTimerActive == 0) //Can't start a timer that is already started
     {
+        localStorage.setItem("isTimerActive", 1);
         startTimer();
     }
     LogTime();
@@ -360,6 +361,6 @@ function ResetLocalStorage()
     localStorage.setItem("CurrentTime", 0);//seconds
     localStorage.setItem("isTimerPaused", 0);//unpaused
     localStorage.setItem("isTimerActive", 0);//not active
-    localStorage.setItem("lastDate", null);//Timer did not previously exist
+    localStorage.setItem("LastDate", null);//Timer did not previously exist
 }
 //beforeunload
