@@ -62,8 +62,14 @@ InitializeTimer();
 function InitializeTimer()
 {
     userName = document.getElementsByClassName("AppHeader-context-compact-parentItem")[0].textContent; //ADD CHECK FOR NULL
-    LoadData() //Get our local storage values if there are any, making sure nothing is null
+    if (localStorage.getItem(userName + window.location.href) == null)
+    {
+        SaveData();
+    }
+    LoadData(); //Get our local storage values if there are any, making sure nothing is null
     results = FindUserTimerLog(userName);
+    console.log("Local IsTimerActive: " + isTimerActive);
+    console.log("Local IsTimerPaused: " + isTimerPaused);
     if (results == 0)
     {
         console.log("crippling failure");
@@ -74,6 +80,8 @@ function InitializeTimer()
         console.log("SUCCESS");
     }
     startButtonInstance.scrollIntoView({behavior: 'instant'});
+    console.log("Comment Number: " + commentNum);
+    console.log("Comment Id: " + commentId);
     console.log("Initialize timer called")
     if (sec == null)
     {
@@ -202,6 +210,7 @@ pauseButtonInstance.addEventListener('click',function ()
 stopButtonInstance.addEventListener('click',function ()
 {
     console.log("STOP Button Clicked");
+    SaveData();
     LogEndOfTimer(); //Create a comment detailing end timer stats
     StopTimer();
     ResetTimerValues();//Reset the timer
@@ -237,8 +246,8 @@ function AppendAdditions() //Append new elements to the destination for the exte
 }
 function LogTime()
 {
-    var commentNum = localStorage.getItem("CommentNum"); //Which comment are we editing
-    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
+    FindUserTimerLog(userName);
+    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
     console.log(optionsPanel.tagName)
@@ -280,8 +289,9 @@ function EditComment(value)
     if (editBtn != null)
     {
         editBtn.click();
-        var commentBlockId = localStorage.getItem("TimerLogDestId");
-        var commentBlock = document.getElementById(commentBlockId);
+        console.log("Comment Number: " + commentNum);
+        console.log("Comment Id: " + commentId);
+        var commentBlock = document.getElementById(commentId);
         //var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
         var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
         var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
@@ -298,8 +308,8 @@ function EditComment(value)
 }
 function LogEndOfTimer()
 {
-    LoadData();
-    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
+    FindUserTimerLog(userName);
+    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
     console.log(optionsPanel.tagName)
@@ -402,38 +412,36 @@ function ResetLocalStorage()
 function FindUserTimerLog(user)
 {
     var isLogFound = 0;
-    commentNum = -1;
+    commentNum = 0;
     var comments = document.getElementsByClassName("TimelineItem js-comment-container");
-    var done = 0;
-    while (done == 0)
+    for (const comment of comments)
     {
-        for (const comment of comments)
+        var commentHeaderElement = comment.getElementsByClassName("author Link--primary text-bold css-overflow-wrap-anywhere ")[0]
+        var commentHeader = commentHeaderElement.textContent;
+        if (commentHeader == user)
         {
-            var commentHeaderElement = comment.getElementsByClassName("author Link--primary text-bold css-overflow-wrap-anywhere ")[0]
-            var commentHeader = commentHeaderElement.textContent;
-            if (commentHeader == user)
+            commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
+            if (commentText.textContent.includes("###" + user + "TimeLog###"))
             {
-                commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
-                if (commentText.textContent.includes("###" + user + "TimeLog###"))
-                {
-                    console.log("Commentnum: " + commentNum);
-                    console.log("WE GOT EEEEEM");
-                    isLogFound = 1;
-                    console.log(commentText);
-                    var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
-                    commentId = commentIdInstance;
-                    console.log(commentIdInstance);
-                    SaveData();
-                }
-                else
-                {
-                    console.log("Comment does not include string");
-                }
+                console.log("Commentnum: " + commentNum);
+                console.log("WE GOT EEEEEM");
+                isLogFound = 1;
+                console.log(commentText);
+                var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
+                commentId = commentIdInstance;
+                console.log(commentIdInstance);
             }
-            commentNum = Number(commentNum) + 1;
-            console.log("CommentNum: " + commentNum);
+            else
+            {
+                console.log("Comment does not include string");
+            }
         }
+        commentNum = Number(commentNum) + 1;
+        
+        console.log("CommentNum: " + commentNum);
     }
+    SaveData();
+    console.log("Test id: " + commentId);
     return isLogFound;
 }
 function CreateUserTimerLog(user)
@@ -475,24 +483,24 @@ function LoadData()
 {
     console.log("Loading data from: '" + userName + window.location.href + "'.");
     const state = JSON.parse(localStorage.getItem(userName + window.location.href));
-    sec = state[0];
+    sec = state.sec;
     if (sec == null)
     {
         sec = 0;
     }
-    isTimerActive = state[1];
+    isTimerActive = state.isTimerActive;
     if (isTimerActive == null)
     {
         isTimerActive = 0;
     }
-    isTimerPaused = state[2]
+    isTimerPaused = state.isTimerPaused;
     if (isTimerPaused == null)
     {
         isTimerPaused = 0;
     }
-    lastDate = state[3];
-    commentNum = state[4];
-    commentId = state[5];
+    lastDate = state.lastDate;
+    commentNum = state.commentNum;
+    commentId = state.commentId;
     console.log("Comment Number: " + commentNum);
     console.log("Comment Id: " + commentId);
 }
