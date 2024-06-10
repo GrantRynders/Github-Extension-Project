@@ -15,7 +15,7 @@ var timerDisplay = document.createElement('h1');
 timerDisplay.textContent = "DD:HH:MM:SS";
 timerDisplay.id = "timerDisplay";
 var credits = document.createElement('p');
-credits.textContent = "Timer Extension for Github issues as part of ITSC Summer Internship 2024";
+credits.textContent = "Timer Extension for Github issues as part of ITSC Summer Internship 2024\n https://github.com/GrantRynders/Github-Extension-Project";
 credits.id = "credits";
 //Find the destination for our new content
 var destinationDiv = document.getElementById("js-repo-pjax-container");
