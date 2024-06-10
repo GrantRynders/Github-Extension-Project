@@ -61,7 +61,8 @@ InitializeTimer();
 //On initialize
 function InitializeTimer()
 {
-    userName = document.getElementsByClassName("AppHeader-context-compact-parentItem")[0].textContent; //ADD CHECK FOR NULL
+    userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
+    console.log(userName);
     if (localStorage.getItem(userName + window.location.href) == null)
     {
         SaveData();
