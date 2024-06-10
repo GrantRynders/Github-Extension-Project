@@ -56,11 +56,13 @@ var lastDate;
 var currentDate;
 var commentNum = 0;
 var commentId = "";
+var userName;
 InitializeTimer();
 //On initialize
 function InitializeTimer()
 {
-    var userName = document.getElementsByClassName("AppHeader-context-compact-parentItem")[0].textContent; //ADD CHECK FOR NULL
+    userName = document.getElementsByClassName("AppHeader-context-compact-parentItem")[0].textContent; //ADD CHECK FOR NULL
+    LoadData() //Get our local storage values if there are any, making sure nothing is null
     results = FindUserTimerLog(userName);
     if (results == 0)
     {
@@ -73,7 +75,6 @@ function InitializeTimer()
     }
     startButtonInstance.scrollIntoView({behavior: 'instant'});
     console.log("Initialize timer called")
-    LoadData() //Get our local storage values if there are any, making sure nothing is null
     if (sec == null)
     {
         sec = 0;//Make sure seconds is valid
@@ -192,7 +193,7 @@ pauseButtonInstance.addEventListener('click',function ()
     if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
     {
         isTimerPaused = 1;
-        localStorage.setItem("isTimerPaused", 1);
+        SaveData();
         StopTimer();
         LogEndOfTimer();
         localStorage.setItem("LastDate", null);//Timer did not previously exist
@@ -205,20 +206,20 @@ stopButtonInstance.addEventListener('click',function ()
     StopTimer();
     ResetTimerValues();//Reset the timer
 });
-if (closeIssueButton != null)
-{
-    closeIssueButton.addEventListener('click',function () //Potentially overrides original functionality, needs testing
-    {
-        console.log("CLOSE ISSUE button Clicked");
-        LogEndOfTimer();
-        StopTimer();
-        ResetTimerValues();
-    });
-}
-else
-{
-    console.log("CloseIssue button is null"); //error handling
-}
+// if (closeIssueButton != null)
+// {
+//     closeIssueButton.addEventListener('click',function () //Potentially overrides original functionality, needs testing
+//     {
+//         console.log("CLOSE ISSUE button Clicked");
+//         LogEndOfTimer();
+//         StopTimer();
+//         ResetTimerValues();
+//     });
+// }
+// else
+// {
+//     console.log("CloseIssue button is null"); //error handling
+// }
 function AppendAdditions() //Append new elements to the destination for the extension
 {
     if (destinationDiv != null)
@@ -297,7 +298,7 @@ function EditComment(value)
 }
 function LogEndOfTimer()
 {
-    var commentNum = localStorage.getItem("CommentNum"); //Which comment are we editing
+    LoadData();
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
@@ -392,16 +393,16 @@ function GetLocalStorage() //checks records if they are null, sets their respect
 }
 function ResetLocalStorage()
 {
-    localStorage.setItem("CurrentTime", 0);//seconds
-    localStorage.setItem("isTimerPaused", 0);//unpaused
-    localStorage.setItem("isTimerActive", 0);//not active
-    localStorage.setItem("LastDate", null);//Timer did not previously exist
-    localStorage.setItem("CommentNum", null);
+    sec = 0;
+    isTimerActive = 0;
+    isTimerPaused = 0;
+    lastDate = null;
+    SaveData();
 }
 function FindUserTimerLog(user)
 {
     var isLogFound = 0;
-    commentNum = 0;
+    commentNum = -1;
     var comments = document.getElementsByClassName("TimelineItem js-comment-container");
     var done = 0;
     while (done == 0)
@@ -418,10 +419,11 @@ function FindUserTimerLog(user)
                     console.log("Commentnum: " + commentNum);
                     console.log("WE GOT EEEEEM");
                     isLogFound = 1;
-                    commentId = document.getElementsByClassName("js-comment-update")[commentNum].id;
-                    console.log(commentId);
-                    localStorage.setItem("CommentNum", commentNum);
-                    localStorage.setItem("TimerLogDestId", commentId);
+                    console.log(commentText);
+                    var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
+                    commentId = commentIdInstance;
+                    console.log(commentIdInstance);
+                    SaveData();
                 }
                 else
                 {
@@ -429,6 +431,7 @@ function FindUserTimerLog(user)
                 }
             }
             commentNum = Number(commentNum) + 1;
+            console.log("CommentNum: " + commentNum);
         }
     }
     return isLogFound;
@@ -470,6 +473,7 @@ function SaveData() {
   // Function to load the timer state from local storage
 function LoadData()
 {
+    console.log("Loading data from: '" + userName + window.location.href + "'.");
     const state = JSON.parse(localStorage.getItem(userName + window.location.href));
     sec = state[0];
     if (sec == null)
@@ -489,6 +493,8 @@ function LoadData()
     lastDate = state[3];
     commentNum = state[4];
     commentId = state[5];
+    console.log("Comment Number: " + commentNum);
+    console.log("Comment Id: " + commentId);
 }
 
 
