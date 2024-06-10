@@ -26,6 +26,13 @@ var textArea = document.getElementById("new_comment_field");
 var commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
 var commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
 var closeIssueButton = commentParent.getElementsByClassName("js-comment-and-button js-quick-submit-alternative btn BtnGroup-item flex-1")[0]; //same song and dance as the comment button, but this time for the close issue button
+
+
+
+//var descriptionDropdown = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default");
+//var descriptionEditBtn = descriptionDocument.getElementsByClassName("dropdown-item btn-link js-comment-edit-button");
+var titleBar = "js-issue-title markdown-title"
+
 //append instances of our new buttons to the page
 AppendAdditions();
 //find those instances we just created
@@ -35,10 +42,8 @@ var stopButtonInstance = document.getElementById("stopButton");
 var timerDisplayInstance = document.getElementById("timerDisplay");
 //Numbers for our time variables
 var sec = 0;
-var min = 0;
-var hour = 0;
-var day = 0;
 var totalSeconds = 0;//deprecated
+var start;
 //The formatted strings for our numbers
 var secString = "00";
 var minString = "00";
@@ -56,6 +61,22 @@ InitializeTimer();
 //On initialize
 function InitializeTimer()
 {
+    var userName = document.getElementsByClassName("AppHeader-context-compact-parentItem")[0].textContent; //ADD CHECK FOR NULL
+    results = FindUserTimerLog(userName);
+    if (results == 0)
+    {
+        console.log("crippling failure");
+        CreateUserTimerLog(userName);
+    }
+    if (results == 1)
+    {
+        console.log("SUCCESS");
+    }
+
+
+
+
+
     startButtonInstance.scrollIntoView({behavior: 'instant'});
     console.log("Initialize timer called")
     GetLocalStorage() //Get our local storage values if there are any, making sure nothing is null
@@ -63,7 +84,7 @@ function InitializeTimer()
     {
         sec = 0;//Make sure seconds is valid
     }
-    ConvertTimeToFormat(sec); //converts the seconds to a formatted string
+    ConvertTimeToFormat(Number(sec)); //converts the seconds to a formatted string
     timerDisplayInstance.textContent = totalTimeString; //sets the timer display
     if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
     {
@@ -71,14 +92,14 @@ function InitializeTimer()
         if (lastDate != null)
         {
             currentDate = Date();//gets current date
-            console.log("Seconds before date difference: " + sec.toString());
+            console.log("Seconds before date difference: " + Number(sec).toString());
             console.log(typeof sec);
             console.log("Current Date: " + currentDate);
             console.log("Last date: " + lastDate);
             var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
             sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
             console.log("New seconds after date difference: " + Number(sec).toString());
-            if (sec < 0 || sec == null) //make sure the seconds variable is good
+            if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
             {
                 sec = 0;
             }
@@ -95,27 +116,32 @@ function startTimer(){ //Starts the set interval function if timer is not alread
     isTimerActive = 1;
     isTimerPaused = 0;
     localStorage.setItem("isTimerPaused", isTimerPaused);
+    start = Date();
     //DD:HH:MM:SS
     timer = setInterval(function(){
         sec = Number(sec) + 1;
+        console.log('Second: ' + sec);
+        //start.setSeconds(start.getSeconds() + 1)
         totalSeconds += parseInt(1);
         localStorage.setItem("LastDate", Date());
         localStorage.setItem("CurrentTime", sec);
         localStorage.setItem("isTimerActive", 1);
-        console.log('Second: ' + totalSeconds);
         ConvertTimeToFormat(Number(sec));//Converts our time variables into a formatted string
         timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
     }, 1000);
 }
 function ConvertTimeToFormat(seconds)
 {
-    if (seconds == null)
+    var min = 0;
+    var hour = 0;   
+    var day = 0;
+    if (seconds == NaN)
     {
         console.log("Seconds is null, resetting");
         seconds = 0;
     }
     Number(seconds); //Input number of seconds to be converted
-    console.log("seconds: " + seconds);
+    console.log("seconds: " + Number(seconds));
     day = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
     console.log("Days: " + day)
     hour = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
@@ -141,7 +167,7 @@ function ConvertTimeToFormat(seconds)
     }
     if (Number(day) >= 99)
     {
-        StopTimer()
+        StopTimer();
         timerDisplayInstance.textContent("Max Value Reached");
     }
     dayString = day;
@@ -177,6 +203,7 @@ pauseButtonInstance.addEventListener('click',function ()
         localStorage.setItem("isTimerPaused", 1);
         StopTimer();
         LogEndOfTimer();
+        localStorage.setItem("LastDate", null);//Timer did not previously exist
     }
 });
 stopButtonInstance.addEventListener('click',function ()
@@ -214,12 +241,25 @@ function AppendAdditions() //Append new elements to the destination for the exte
     {
         console.log("Destination div is null");
     }
-    
 }
 function LogTime()
 {
-    console.log(commentParent.tagName); //Logs the container element for the button
-    console.log(commentParent.querySelectorAll(".btn-primary btn").tagName); //logs the button class (probably undefined)
+    var commentNum = localStorage.getItem("CommentNum"); //Which comment are we editing
+    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
+    optionBtn.click();
+    var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
+    console.log(optionsPanel.tagName)
+    for (const child of optionsPanel.childNodes)
+    {
+        console.log(child.textContent);
+    }
+    setTimeout(() => {
+        EditComment("start");
+    }, "1000");
+}
+function LogTimeToNewComment()
+{
+    //DEPRICATED
     if (commentButton != null) //Make sure comment button is not null
     {
         textArea.textContent = "Start Date: " + new Date() + "\nTimer Start Value: " + totalTimeString; //Set the comment's text value
@@ -228,18 +268,59 @@ function LogTime()
         console.log("Disabled");
         commentButton.click(); //Click the button programmatically
         console.log("Clicked");
-        window.location.reload();//reload the page to submit the comment
+        //window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else 
     {
         console.log("Comment Button is null");//uh oh where'd our button go
     }
-    //
+}
+function EditComment(value)
+{
+    console.log("Edit Comment Func");
+    for (const child of document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0].childNodes)
+    {
+        console.log(child.textContent);
+    }
+    var editBtn = document.getElementsByClassName("dropdown-item btn-link js-comment-edit-button")[0];//the button that literally says "edit"
+    if (editBtn != null)
+    {
+        editBtn.click();
+        var commentBlockId = localStorage.getItem("TimerLogDestId");
+        var commentBlock = document.getElementById(commentBlockId);
+        //var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
+        var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
+        var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
+        commentTextArea.textContent += "\n" + value + " date: " + new Date() + "\ntimer " + value + " value: " + totalTimeString;
+        console.log(commentTextArea.textContent);
+        submitEditButton.click();
+        window.location.reload();//reload the page to submit the comment
+        startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
+    }
+    else
+    {
+        console.log("Edit button is null, whoops");
+    }
 }
 function LogEndOfTimer()
 {
-    //see LogTimer()
+    var commentNum = localStorage.getItem("CommentNum"); //Which comment are we editing
+    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
+    optionBtn.click();
+    var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
+    console.log(optionsPanel.tagName)
+    for (const child of optionsPanel.childNodes)
+    {
+        console.log(child.textContent);
+    }
+    setTimeout(() => {
+        EditComment("stop");
+    }, "1000");
+}
+function LogEndOfTimerToNewComment()
+{
+    //DEPRICATED
     console.log(commentParent.tagName);
     console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
     if (commentButton != null)
@@ -323,5 +404,57 @@ function ResetLocalStorage()
     localStorage.setItem("isTimerPaused", 0);//unpaused
     localStorage.setItem("isTimerActive", 0);//not active
     localStorage.setItem("LastDate", null);//Timer did not previously exist
+    localStorage.setItem("CommentNum", null);
+}
+function FindUserTimerLog(user)
+{
+    var isLogFound = 0;
+    var commentNum = 0;
+    var comments = document.getElementsByClassName("TimelineItem js-comment-container");
+    for (const comment of comments)
+    {
+        var commentHeaderElement = comment.getElementsByClassName("author Link--primary text-bold css-overflow-wrap-anywhere ")[0]
+        var commentHeader = commentHeaderElement.textContent;
+        if (commentHeader == user)
+        {
+            commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
+            if (commentText.textContent.includes("###" + user + "TimeLog###"))
+            {
+                console.log("Commentnum: " + commentNum);
+                console.log("WE GOT EEEEEM");
+                isLogFound = 1;
+                commentId = document.getElementsByClassName("js-comment-update")[commentNum].id;
+                console.log(commentId);
+                localStorage.setItem("CommentNum", commentNum);
+                localStorage.setItem("TimerLogDestId", commentId);
+            }
+            else
+            {
+                console.log("Comment does not include string");
+            }
+        }
+        commentNum = Number(commentNum) + 1;
+    }
+    return isLogFound;
+}
+function CreateUserTimerLog(user)
+{
+    if (commentButton != null) //Make sure comment button is not null
+    {
+        console.log("CREATEUSERTIMERLOG");
+        textArea.textContent = "###" + user + "TimeLog###";
+        console.log("Creating new time log for user: " + user);
+        commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
+        console.log("Disabled");
+        commentButton.click(); //Click the button programmatically
+        console.log("Clicked");
+        window.location.reload();//reload the page to submit the comment
+        startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
+        FindUserTimerLog(user);
+    }
+    else
+    {
+        console.log("Comment button does not exist. Logging failed");
+    }
 }
 //beforeunload
