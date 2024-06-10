@@ -424,11 +424,11 @@ function FindUserTimerLog(user)
             commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
             if (commentText.textContent.includes("###" + user + "TimeLog###"))
             {
-                console.log("WE GOT EEEEEM");
                 isLogFound = 1;
                 var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
                 commentId = commentIdInstance;
                 console.log(commentIdInstance);
+                console.log("LOG FOUND AT COMMENT NUM: " + commentNum + "WITH ID: " + commentId);
             }
             else
             {
