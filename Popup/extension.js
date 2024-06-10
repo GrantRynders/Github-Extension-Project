@@ -1,4 +1,3 @@
-
 //SCRIPT TO BE INJECTED INTO https://github.com/*/*/issues/*
 
 console.log("Script Injected");
@@ -405,29 +404,33 @@ function FindUserTimerLog(user)
     var isLogFound = 0;
     var commentNum = 0;
     var comments = document.getElementsByClassName("TimelineItem js-comment-container");
-    for (const comment of comments)
+    var done = 0;
+    while (done == 0)
     {
-        var commentHeaderElement = comment.getElementsByClassName("author Link--primary text-bold css-overflow-wrap-anywhere ")[0]
-        var commentHeader = commentHeaderElement.textContent;
-        if (commentHeader == user)
+        for (const comment of comments)
         {
-            commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
-            if (commentText.textContent.includes("###" + user + "TimeLog###"))
+            var commentHeaderElement = comment.getElementsByClassName("author Link--primary text-bold css-overflow-wrap-anywhere ")[0]
+            var commentHeader = commentHeaderElement.textContent;
+            if (commentHeader == user)
             {
-                console.log("Commentnum: " + commentNum);
-                console.log("WE GOT EEEEEM");
-                isLogFound = 1;
-                commentId = document.getElementsByClassName("js-comment-update")[commentNum].id;
-                console.log(commentId);
-                localStorage.setItem("CommentNum", commentNum);
-                localStorage.setItem("TimerLogDestId", commentId);
+                commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
+                if (commentText.textContent.includes("###" + user + "TimeLog###"))
+                {
+                    console.log("Commentnum: " + commentNum);
+                    console.log("WE GOT EEEEEM");
+                    isLogFound = 1;
+                    commentId = document.getElementsByClassName("js-comment-update")[commentNum].id;
+                    console.log(commentId);
+                    localStorage.setItem("CommentNum", commentNum);
+                    localStorage.setItem("TimerLogDestId", commentId);
+                }
+                else
+                {
+                    console.log("Comment does not include string");
+                }
             }
-            else
-            {
-                console.log("Comment does not include string");
-            }
+            commentNum = Number(commentNum) + 1;
         }
-        commentNum = Number(commentNum) + 1;
     }
     return isLogFound;
 }
