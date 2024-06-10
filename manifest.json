@@ -5,8 +5,8 @@
   "description": "An extension for github issues that adds a timer that logs to issue comments",
   "author": "ITSC Interns",
   "icons": {
-    "48": "Icons/icon.png",
-    "128": "Icons/icon.png"
+    "48": "Icons/betterIcon.png",
+    "128": "Icons/betterIcon.png"
   },
   "action": {
     "default_popup": "Popup/index.html"
