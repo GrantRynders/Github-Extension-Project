@@ -61,7 +61,7 @@ InitializeTimer();
 //On initialize
 function InitializeTimer()
 {
-    var userName = document.getElementsByClassName("AppHeader-context-compact-parentItem")[0].textContent;
+    var userName = document.getElementsByClassName("AppHeader-context-compact-parentItem")[0].textContent; //ADD CHECK FOR NULL
     results = FindUserTimerLog(userName);
     if (results == 0)
     {
@@ -167,7 +167,7 @@ function ConvertTimeToFormat(seconds)
     }
     if (Number(day) >= 99)
     {
-        StopTimer()
+        StopTimer();
         timerDisplayInstance.textContent("Max Value Reached");
     }
     dayString = day;
@@ -241,7 +241,6 @@ function AppendAdditions() //Append new elements to the destination for the exte
     {
         console.log("Destination div is null");
     }
-    
 }
 function LogTime()
 {
@@ -250,33 +249,17 @@ function LogTime()
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
     console.log(optionsPanel.tagName)
-    for (const child of document.getElementsByClassName("timeline-comment-actions flex-shrink-0 d-flex flex-items-center")[0].childNodes)
+    for (const child of optionsPanel.childNodes)
     {
         console.log(child.textContent);
     }
-    var editBtn = optionsPanel.getElementsByClassName("dropdown-item btn-link js-comment-edit-button")[0];//the button that literally says "edit"
-    editBtn.click();
-    var commentBlockId = localStorage.getItem("TimerLogDestId");
-    var commentBlock = document.getElementById(commentBlockId);
-    var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
-    var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
-    console.log(commentBlock.id);
-    
-    commentTextArea.textContent += "\nStart Date: " + new Date() + "\nTimer Start Value: " + totalTimeString;
-    console.log(commentTextArea.textContent);
-    submitEditButton.click();
-    window.location.reload();//reload the page to submit the comment
-    startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
-
-
-
-
-
-
-
-
-
-    
+    setTimeout(() => {
+        EditComment("start");
+    }, "1000");
+}
+function LogTimeToNewComment()
+{
+    //DEPRICATED
     if (commentButton != null) //Make sure comment button is not null
     {
         textArea.textContent = "Start Date: " + new Date() + "\nTimer Start Value: " + totalTimeString; //Set the comment's text value
@@ -285,18 +268,59 @@ function LogTime()
         console.log("Disabled");
         commentButton.click(); //Click the button programmatically
         console.log("Clicked");
-        window.location.reload();//reload the page to submit the comment
+        //window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else 
     {
         console.log("Comment Button is null");//uh oh where'd our button go
     }
-    //
+}
+function EditComment(value)
+{
+    console.log("Edit Comment Func");
+    for (const child of document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0].childNodes)
+    {
+        console.log(child.textContent);
+    }
+    var editBtn = document.getElementsByClassName("dropdown-item btn-link js-comment-edit-button")[0];//the button that literally says "edit"
+    if (editBtn != null)
+    {
+        editBtn.click();
+        var commentBlockId = localStorage.getItem("TimerLogDestId");
+        var commentBlock = document.getElementById(commentBlockId);
+        //var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
+        var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
+        var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
+        commentTextArea.textContent += "\n" + value + " date: " + new Date() + "\ntimer " + value + " value: " + totalTimeString;
+        console.log(commentTextArea.textContent);
+        submitEditButton.click();
+        window.location.reload();//reload the page to submit the comment
+        startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
+    }
+    else
+    {
+        console.log("Edit button is null, whoops");
+    }
 }
 function LogEndOfTimer()
 {
-    //see LogTimer()
+    var commentNum = localStorage.getItem("CommentNum"); //Which comment are we editing
+    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
+    optionBtn.click();
+    var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
+    console.log(optionsPanel.tagName)
+    for (const child of optionsPanel.childNodes)
+    {
+        console.log(child.textContent);
+    }
+    setTimeout(() => {
+        EditComment("stop");
+    }, "1000");
+}
+function LogEndOfTimerToNewComment()
+{
+    //DEPRICATED
     console.log(commentParent.tagName);
     console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
     if (commentButton != null)
@@ -380,6 +404,7 @@ function ResetLocalStorage()
     localStorage.setItem("isTimerPaused", 0);//unpaused
     localStorage.setItem("isTimerActive", 0);//not active
     localStorage.setItem("LastDate", null);//Timer did not previously exist
+    localStorage.setItem("CommentNum", null);
 }
 function FindUserTimerLog(user)
 {
@@ -393,7 +418,7 @@ function FindUserTimerLog(user)
         if (commentHeader == user)
         {
             commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
-            if (commentText.textContent.includes("Ralph"))
+            if (commentText.textContent.includes("###" + user + "TimeLog###"))
             {
                 console.log("Commentnum: " + commentNum);
                 console.log("WE GOT EEEEEM");
@@ -402,6 +427,10 @@ function FindUserTimerLog(user)
                 console.log(commentId);
                 localStorage.setItem("CommentNum", commentNum);
                 localStorage.setItem("TimerLogDestId", commentId);
+            }
+            else
+            {
+                console.log("Comment does not include string");
             }
         }
         commentNum = Number(commentNum) + 1;
@@ -413,7 +442,7 @@ function CreateUserTimerLog(user)
     if (commentButton != null) //Make sure comment button is not null
     {
         console.log("CREATEUSERTIMERLOG");
-        textArea.textContent = "Ralph";
+        textArea.textContent = "###" + user + "TimeLog###";
         console.log("Creating new time log for user: " + user);
         commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
         console.log("Disabled");
