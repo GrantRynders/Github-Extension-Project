@@ -54,12 +54,23 @@ var isTimerPaused = 0;//a bool for if the timer is paused (different than it not
 //Dates to save
 var lastDate;
 var currentDate;
+var commentNum = 0;
+var commentId = "";
+var userName;
 InitializeTimer();
 //On initialize
 function InitializeTimer()
 {
-    var userName = document.getElementsByClassName("AppHeader-context-compact-parentItem")[0].textContent; //ADD CHECK FOR NULL
+    userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
+    console.log(userName);
+    if (localStorage.getItem(userName + window.location.href) == null)
+    {
+        SaveData();
+    }
+    LoadData(); //Get our local storage values if there are any, making sure nothing is null
     results = FindUserTimerLog(userName);
+    console.log("Local IsTimerActive: " + isTimerActive);
+    console.log("Local IsTimerPaused: " + isTimerPaused);
     if (results == 0)
     {
         console.log("crippling failure");
@@ -70,8 +81,9 @@ function InitializeTimer()
         console.log("SUCCESS");
     }
     startButtonInstance.scrollIntoView({behavior: 'instant'});
+    console.log("Comment Number: " + commentNum);
+    console.log("Comment Id: " + commentId);
     console.log("Initialize timer called")
-    GetLocalStorage() //Get our local storage values if there are any, making sure nothing is null
     if (sec == null)
     {
         sec = 0;//Make sure seconds is valid
@@ -84,13 +96,8 @@ function InitializeTimer()
         if (lastDate != null)
         {
             currentDate = Date();//gets current date
-            console.log("Seconds before date difference: " + Number(sec).toString());
-            console.log(typeof sec);
-            console.log("Current Date: " + currentDate);
-            console.log("Last date: " + lastDate);
             var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
             sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
-            console.log("New seconds after date difference: " + Number(sec).toString());
             if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
             {
                 sec = 0;
@@ -115,9 +122,10 @@ function startTimer(){ //Starts the set interval function if timer is not alread
         console.log('Second: ' + sec);
         //start.setSeconds(start.getSeconds() + 1)
         totalSeconds += parseInt(1);
-        localStorage.setItem("LastDate", Date());
-        localStorage.setItem("CurrentTime", sec);
-        localStorage.setItem("isTimerActive", 1);
+        SaveData();
+        // localStorage.setItem("LastDate", Date());
+        // localStorage.setItem("CurrentTime", sec);
+        // localStorage.setItem("isTimerActive", 1);
         ConvertTimeToFormat(Number(sec));//Converts our time variables into a formatted string
         timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
     }, 1000);
@@ -173,7 +181,7 @@ function ConvertTimeToFormat(seconds)
 function StopTimer() //Stops the interval func
 {
     isTimerActive = 0;
-    localStorage.setItem("isTimerActive", 0);
+    SaveData();
     clearInterval(timer);
 }
 startButtonInstance.addEventListener('click',function ()
@@ -181,7 +189,8 @@ startButtonInstance.addEventListener('click',function ()
     console.log("Start Button Clicked");
     if (isTimerActive == 0) //Can't start a timer that is already started
     {
-        localStorage.setItem("isTimerActive", 1);
+        isTimerActive = 1;
+        SaveData();
         startTimer();
         LogTime();
     }
@@ -193,7 +202,7 @@ pauseButtonInstance.addEventListener('click',function ()
     if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
     {
         isTimerPaused = 1;
-        localStorage.setItem("isTimerPaused", 1);
+        SaveData();
         StopTimer();
         LogEndOfTimer();
         localStorage.setItem("LastDate", null);//Timer did not previously exist
@@ -202,24 +211,25 @@ pauseButtonInstance.addEventListener('click',function ()
 stopButtonInstance.addEventListener('click',function ()
 {
     console.log("STOP Button Clicked");
+    SaveData();
     LogEndOfTimer(); //Create a comment detailing end timer stats
     StopTimer();
     ResetTimerValues();//Reset the timer
 });
-if (closeIssueButton != null)
-{
-    closeIssueButton.addEventListener('click',function () //Potentially overrides original functionality, needs testing
-    {
-        console.log("CLOSE ISSUE button Clicked");
-        LogEndOfTimer();
-        StopTimer();
-        ResetTimerValues();
-    });
-}
-else
-{
-    console.log("CloseIssue button is null"); //error handling
-}
+// if (closeIssueButton != null)
+// {
+//     closeIssueButton.addEventListener('click',function () //Potentially overrides original functionality, needs testing
+//     {
+//         console.log("CLOSE ISSUE button Clicked");
+//         LogEndOfTimer();
+//         StopTimer();
+//         ResetTimerValues();
+//     });
+// }
+// else
+// {
+//     console.log("CloseIssue button is null"); //error handling
+// }
 function AppendAdditions() //Append new elements to the destination for the extension
 {
     if (destinationDiv != null)
@@ -237,8 +247,8 @@ function AppendAdditions() //Append new elements to the destination for the exte
 }
 function LogTime()
 {
-    var commentNum = localStorage.getItem("CommentNum"); //Which comment are we editing
-    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
+    FindUserTimerLog(userName);
+    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
     console.log(optionsPanel.tagName)
@@ -280,8 +290,9 @@ function EditComment(value)
     if (editBtn != null)
     {
         editBtn.click();
-        var commentBlockId = localStorage.getItem("TimerLogDestId");
-        var commentBlock = document.getElementById(commentBlockId);
+        console.log("Comment Number: " + commentNum);
+        console.log("Comment Id: " + commentId);
+        var commentBlock = document.getElementById(commentId);
         //var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
         var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
         var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
@@ -298,8 +309,8 @@ function EditComment(value)
 }
 function LogEndOfTimer()
 {
-    var commentNum = localStorage.getItem("CommentNum"); //Which comment are we editing
-    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum]; //the three dots
+    FindUserTimerLog(userName);
+    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
     console.log(optionsPanel.tagName)
@@ -393,45 +404,45 @@ function GetLocalStorage() //checks records if they are null, sets their respect
 }
 function ResetLocalStorage()
 {
-    localStorage.setItem("CurrentTime", 0);//seconds
-    localStorage.setItem("isTimerPaused", 0);//unpaused
-    localStorage.setItem("isTimerActive", 0);//not active
-    localStorage.setItem("LastDate", null);//Timer did not previously exist
-    localStorage.setItem("CommentNum", null);
+    sec = 0;
+    isTimerActive = 0;
+    isTimerPaused = 0;
+    lastDate = null;
+    SaveData();
 }
 function FindUserTimerLog(user)
 {
     var isLogFound = 0;
-    var commentNum = 0;
+    commentNum = 0;
     var comments = document.getElementsByClassName("TimelineItem js-comment-container");
-    var done = 0;
-    while (done == 0)
+    for (const comment of comments)
     {
-        for (const comment of comments)
+        var commentHeaderElement = comment.getElementsByClassName("author Link--primary text-bold css-overflow-wrap-anywhere ")[0]
+        var commentHeader = commentHeaderElement.textContent;
+        if (commentHeader == user)
         {
-            var commentHeaderElement = comment.getElementsByClassName("author Link--primary text-bold css-overflow-wrap-anywhere ")[0]
-            var commentHeader = commentHeaderElement.textContent;
-            if (commentHeader == user)
+            commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
+            if (commentText.textContent.includes("###" + user + "TimeLog###"))
             {
-                commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
-                if (commentText.textContent.includes("###" + user + "TimeLog###"))
-                {
-                    console.log("Commentnum: " + commentNum);
-                    console.log("WE GOT EEEEEM");
-                    isLogFound = 1;
-                    commentId = document.getElementsByClassName("js-comment-update")[commentNum].id;
-                    console.log(commentId);
-                    localStorage.setItem("CommentNum", commentNum);
-                    localStorage.setItem("TimerLogDestId", commentId);
-                }
-                else
-                {
-                    console.log("Comment does not include string");
-                }
+                console.log("Commentnum: " + commentNum);
+                console.log("WE GOT EEEEEM");
+                isLogFound = 1;
+                console.log(commentText);
+                var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
+                commentId = commentIdInstance;
+                console.log(commentIdInstance);
             }
-            commentNum = Number(commentNum) + 1;
+            else
+            {
+                console.log("Comment does not include string");
+            }
         }
+        commentNum = Number(commentNum) + 1;
+        
+        console.log("CommentNum: " + commentNum);
     }
+    SaveData();
+    console.log("Test id: " + commentId);
     return isLogFound;
 }
 function CreateUserTimerLog(user)
@@ -455,21 +466,45 @@ function CreateUserTimerLog(user)
     }
 }
 //beforeunload
-function saveState() {
+function SaveData() {
     const state = {
       sec,
       isTimerActive,
       isTimerPaused,
       lastDate,
+      commentNum,
+      commentId
     };
     localStorage.setItem(userName + window.location.href, JSON.stringify(state));
   }
   
   // Function to load the timer state from local storage
   // Function to load the timer state from local storage
-  window.addEventListener('load', () => {
-    const savedState = JSON.parse(localStorage.getItem(userName + window.location.href));
-  });  
+function LoadData()
+{
+    console.log("Loading data from: '" + userName + window.location.href + "'.");
+    const state = JSON.parse(localStorage.getItem(userName + window.location.href));
+    sec = state.sec;
+    if (sec == null)
+    {
+        sec = 0;
+    }
+    isTimerActive = state.isTimerActive;
+    if (isTimerActive == null)
+    {
+        isTimerActive = 0;
+    }
+    isTimerPaused = state.isTimerPaused;
+    if (isTimerPaused == null)
+    {
+        isTimerPaused = 0;
+    }
+    lastDate = state.lastDate;
+    commentNum = state.commentNum;
+    commentId = state.commentId;
+    console.log("Comment Number: " + commentNum);
+    console.log("Comment Id: " + commentId);
+}
 
 
 
