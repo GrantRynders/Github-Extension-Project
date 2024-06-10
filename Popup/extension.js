@@ -455,3 +455,21 @@ function CreateUserTimerLog(user)
     }
 }
 //beforeunload
+function saveState() {
+    const state = {
+      sec,
+      isTimerActive,
+      isTimerPaused,
+      lastDate,
+    };
+    localStorage.setItem(userName + window.location.href, JSON.stringify(state));
+  }
+  
+  // Function to load the timer state from local storage
+  // Function to load the timer state from local storage
+  window.addEventListener('load', () => {
+    const savedState = JSON.parse(localStorage.getItem(userName + window.location.href));
+  });  
+
+
+
