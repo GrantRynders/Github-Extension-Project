@@ -5,8 +5,6 @@ console.log("Script Injected");
 var startButton = document.createElement('button');
 startButton.textContent = "\u25B6"; //Unicode play button
 startButton.id = "startButton";
-//var startIcon = document.createElement("img");
-//startIcon.src = "Images/play-button.png";
 var pauseButton = document.createElement('button');
 pauseButton.textContent = "| |";
 pauseButton.id = "pauseButton";
@@ -24,10 +22,6 @@ var destinationDiv = document.getElementById("js-repo-pjax-container");
 var textArea = document.getElementById("new_comment_field");
 var commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
 var commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
-var closeIssueButton = commentParent.getElementsByClassName("js-comment-and-button js-quick-submit-alternative btn BtnGroup-item flex-1")[0]; //same song and dance as the comment button, but this time for the close issue button
-
-
-
 var titleBar = "js-issue-title markdown-title"
 
 //append instances of our new buttons to the page
@@ -216,20 +210,6 @@ stopButtonInstance.addEventListener('click',function ()
     StopTimer();
     ResetTimerValues();//Reset the timer
 });
-// if (closeIssueButton != null)
-// {
-//     closeIssueButton.addEventListener('click',function () //Potentially overrides original functionality, needs testing
-//     {
-//         console.log("CLOSE ISSUE button Clicked");
-//         LogEndOfTimer();
-//         StopTimer();
-//         ResetTimerValues();
-//     });
-// }
-// else
-// {
-//     console.log("CloseIssue button is null"); //error handling
-// }
 function AppendAdditions() //Append new elements to the destination for the extension
 {
     if (destinationDiv != null)
