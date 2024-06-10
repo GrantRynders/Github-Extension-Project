@@ -57,7 +57,7 @@ var currentDate;
 var commentNum = 0;
 var commentId = "";
 var userName;
-InitializeTimer();
+window.addEventListener('popstate', InitializeTimer());
 //On initialize
 function InitializeTimer()
 {
@@ -424,10 +424,8 @@ function FindUserTimerLog(user)
             commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
             if (commentText.textContent.includes("###" + user + "TimeLog###"))
             {
-                console.log("Commentnum: " + commentNum);
                 console.log("WE GOT EEEEEM");
                 isLogFound = 1;
-                console.log(commentText);
                 var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
                 commentId = commentIdInstance;
                 console.log(commentIdInstance);
@@ -438,11 +436,8 @@ function FindUserTimerLog(user)
             }
         }
         commentNum = Number(commentNum) + 1;
-        
-        console.log("CommentNum: " + commentNum);
     }
     SaveData();
-    console.log("Test id: " + commentId);
     return isLogFound;
 }
 function CreateUserTimerLog(user)
