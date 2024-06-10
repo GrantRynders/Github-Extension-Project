@@ -29,8 +29,6 @@ var closeIssueButton = commentParent.getElementsByClassName("js-comment-and-butt
 
 
 
-//var descriptionDropdown = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default");
-//var descriptionEditBtn = descriptionDocument.getElementsByClassName("dropdown-item btn-link js-comment-edit-button");
 var titleBar = "js-issue-title markdown-title"
 
 //append instances of our new buttons to the page
@@ -136,7 +134,7 @@ function ConvertTimeToFormat(seconds)
         seconds = 0;
     }
     Number(seconds); //Input number of seconds to be converted
-    console.log("seconds: " + Number(seconds));
+    //console.log("seconds: " + Number(seconds));
     day = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
     console.log("Days: " + day)
     hour = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
@@ -255,7 +253,7 @@ function LogTime()
 }
 function LogTimeToNewComment()
 {
-    //DEPRICATED
+    //DEPRECATED
     if (commentButton != null) //Make sure comment button is not null
     {
         textArea.textContent = "Start Date: " + new Date() + "\nTimer Start Value: " + totalTimeString; //Set the comment's text value
@@ -316,7 +314,7 @@ function LogEndOfTimer()
 }
 function LogEndOfTimerToNewComment()
 {
-    //DEPRICATED
+    //DEPRECATED
     console.log(commentParent.tagName);
     console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
     if (commentButton != null)
