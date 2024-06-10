@@ -477,7 +477,7 @@ function SaveData() {
   // Function to load the timer state from local storage
 function LoadData()
 {
-    console.log("Loading data from: '" + userName + window.location.href + "'.");
+    console.log("Loading data from: " + userName + window.location.href);
     const state = JSON.parse(localStorage.getItem(userName + window.location.href));
     sec = state.sec;
     if (sec == null)
