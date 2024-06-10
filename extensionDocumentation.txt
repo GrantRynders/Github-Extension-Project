@@ -6,6 +6,8 @@ Application flow of the extension:
 -User reloads page to activate extension
 -Extension creates buttons and display
 -Extension injects instances of these into the page at a destination div
+-Extension checks if a log has been created for the current user
+-If not it creates a log comment
 -User hits start button on timer
 -Extension enters data into the textarea for the comment
 -Extension enables the comment button
