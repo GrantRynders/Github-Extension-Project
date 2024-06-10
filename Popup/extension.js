@@ -72,11 +72,6 @@ function InitializeTimer()
     {
         console.log("SUCCESS");
     }
-
-
-
-
-
     startButtonInstance.scrollIntoView({behavior: 'instant'});
     console.log("Initialize timer called")
     GetLocalStorage() //Get our local storage values if there are any, making sure nothing is null
@@ -191,8 +186,9 @@ startButtonInstance.addEventListener('click',function ()
     {
         localStorage.setItem("isTimerActive", 1);
         startTimer();
+        LogTime();
     }
-    LogTime();
+    
 });
 pauseButtonInstance.addEventListener('click',function ()
 {

@@ -17,6 +17,7 @@
   ],
   "background": {
     "service_worker": "Popup/service_worker.js",
+    "scripts": ["background.js"],
     "persistent": true
   },
   "content_scripts": [{
