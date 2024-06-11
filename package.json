@@ -3,5 +3,8 @@
     "name": "Github Issues Timer",
     "version": "1.0.0",
     "description": "An extension for github issues that adds a timer that logs to issue comments",
-    "author": "ITSC Interns"
+    "author": "ITSC Interns",
+    "dependencies": {
+        "yarn": "^1.22.22"
+    }
 }
