@@ -55,10 +55,6 @@ var timerCount = 0;
 
 InitializeTimer();
 timerCount++;
-// window.navigation.addEventListener("navigate", (event) => {
-//     console.log('location changed!');
-//     InitializeTimer();
-// });
 navigation.addEventListener("navigate", function ()
 {
     console.log("Location change");
@@ -78,8 +74,6 @@ function InitializeTimer()
         }
         LoadData(); //Get our local storage values if there are any, making sure nothing is null
         results = FindUserTimerLog(userName);
-        console.log("Local IsTimerActive: " + isTimerActive);
-        console.log("Local IsTimerPaused: " + isTimerPaused);
         if (results == 0)
         {
             console.log("crippling failure");
@@ -90,8 +84,6 @@ function InitializeTimer()
             console.log("SUCCESS");
         }
         startButtonInstance.scrollIntoView({behavior: 'instant'});
-        console.log("Comment Number: " + commentNum);
-        console.log("Comment Id: " + commentId);
         console.log("Initialize timer called");
         if (sec == null)
         {
@@ -154,13 +146,13 @@ function ConvertTimeToFormat(seconds)
     Number(seconds); //Input number of seconds to be converted
     //console.log("seconds: " + Number(seconds));
     day = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
-    console.log("Days: " + day)
+    //console.log("Days: " + day)
     hour = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
-    console.log("Hours: " + hour);
+    //console.log("Hours: " + hour);
     min = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
-    console.log("minutes: " + min)
+    //console.log("minutes: " + min)
     seconds = Math.floor(Number(seconds) % 60);
-    console.log("Last date: " + lastDate);
+    //console.log("Last date: " + lastDate);
     secString = seconds;
     if (Number(seconds) < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
     {
@@ -252,7 +244,6 @@ function LogTime()
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
-    console.log(optionsPanel.tagName)
     for (const child of optionsPanel.childNodes)
     {
         console.log(child.textContent);
@@ -267,11 +258,8 @@ function LogTimeToNewComment()
     if (commentButton != null) //Make sure comment button is not null
     {
         textArea.textContent = "Start Date: " + new Date() + "\nTimer Start Value: " + totalTimeString; //Set the comment's text value
-        console.log(totalTimeString);
         commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
-        console.log("Disabled");
         commentButton.click(); //Click the button programmatically
-        console.log("Clicked");
         //window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
@@ -291,8 +279,6 @@ function EditComment(value1, value2, value3)
     if (editBtn != null)
     {
         editBtn.click();
-        console.log("Comment Number: " + commentNum);
-        console.log("Comment Id: " + commentId);
         var commentBlock = document.getElementById(commentId);
         var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
         //var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
@@ -480,21 +466,14 @@ function CalculateTimeSpent(log)
         }
     }
     var startRecords = startRecord.split("start date: ");
-    console.log("Start records: ");
-    for (var record of startRecords)
-    {
-        console.log(record);
-    }
     var stopRecords = stopRecord.split("stop date: ");
     var length = stopRecords.length;
     var totalTimeSpent = Number(0);
     for (let i = 1; i < length; i++)
     {
         var stopDate = new Date(stopRecords[i].replace("stop date: ", ""));
-        console.log("Stop Date: " + stopDate);
         var stopTime = stopDate.getTime();
         var startDate = new Date(startRecords[i].replace("start date: ", ""));
-        console.log("Start Date: " + startDate);
         var startTime = startDate.getTime();
         var difference = ((Number(stopTime) - Number(startTime)) / 1000);
         totalTimeSpent = Number(totalTimeSpent) + Number(difference);
