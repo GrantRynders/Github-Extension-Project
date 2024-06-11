@@ -108,7 +108,7 @@ function InitializeTimer()
                 {
                     currentDate = Date();//gets current date
                     var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
-                    console.log("Difference: " + Number(difference));
+                    console.log("Difference: " + (Number(difference) / 1000));
                     sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
                     console.log("New seconds after difference: " + sec)
                     if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
@@ -135,6 +135,7 @@ function startTimer(){ //Starts the set interval function if timer is not alread
         sec = Number(sec) + 1;
         console.log('Second: ' + sec);
         totalSeconds += parseInt(1);
+        lastDate = Date();
         SaveData();
         ConvertTimeToFormat(Number(sec));//Converts our time variables into a formatted string
         timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
@@ -257,7 +258,7 @@ function LogTime()
         console.log(child.textContent);
     }
     setTimeout(() => {
-        EditComment("start");
+        EditComment( ". . . . \n", "start", "");
     }, "1000");
 }
 function LogTimeToNewComment()
@@ -279,7 +280,7 @@ function LogTimeToNewComment()
         console.log("Comment Button is null");//uh oh where'd our button go
     }
 }
-function EditComment(value)
+function EditComment(value1, value2, value3)
 {
     console.log("Edit Comment Func");
     for (const child of document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0].childNodes)
@@ -296,7 +297,7 @@ function EditComment(value)
         var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
         //var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
         var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
-        commentTextArea.textContent += "\n" + value + " date: " + new Date() + "\ntimer " + value + " value: " + totalTimeString;
+        commentTextArea.textContent += "\n" + value1 + value2 + " date: " + new Date() + "\ntimer " + value2 + " value: " + totalTimeString + value3;
         console.log(commentTextArea.textContent);
         submitEditButton.click();
         window.location.reload();//reload the page to submit the comment
@@ -319,7 +320,7 @@ function LogEndOfTimer()
         console.log(child.textContent);
     }
     setTimeout(() => {
-        EditComment("stop");
+        EditComment(". . . .\n", "stop", "");
     }, "1000");
 }
 function LogEndOfTimerToNewComment()
@@ -329,7 +330,7 @@ function LogEndOfTimerToNewComment()
     console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
     if (commentButton != null)
     {
-        textArea.textContent = "End Date: " + new Date() + "\nTimer End Value: " + totalTimeString;
+        textArea.textContent = "End Date: " + new Date() + "\nTimer End Value: " + totalTimeString + "\n----";
         console.log(totalTimeString);
         commentButton.disabled = false;
         console.log("Disabled");
@@ -381,12 +382,7 @@ function FindUserTimerLog(user)
                 isLogFound = 1;
                 var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
                 commentId = commentIdInstance;
-                console.log(commentIdInstance);
                 console.log("LOG FOUND AT COMMENT NUM: " + commentNum + "WITH ID: " + commentId);
-            }
-            else
-            {
-                console.log("Comment does not include string");
             }
         }
         commentNum = Number(commentNum) + 1;
@@ -416,7 +412,6 @@ function CreateUserTimerLog(user)
 }
 //beforeunload
 function SaveData() {
-    lastDate = Date();
     const state = {
       sec,
       isTimerActive,
@@ -459,6 +454,37 @@ function LoadData()
     console.log("Comment Number: " + commentNum);
     console.log("Comment Id: " + commentId);
 }
+
+
+
+function CalculateTimeSpent(log)
+{
+    var records = log.split("\n");
+    var startRecord;
+    var stopRecord;
+    for (const record of records)
+    {
+        if (record.includes("start"))
+        {
+            startRecord += record;
+        }
+        if (record.includes("stop"))
+        {
+            stopRecord += record;
+        }
+    }
+    var startRecords = startRecord.split("start date: ");
+    for (const record of startRecords)
+    {
+        record = Date.parse(record);
+    }
+    var stopRecords = stopRecord.split("stop date: ");
+    for (const record of stopRecords)
+    {
+        record = Date.parse(record);
+    }
+}
+
 
 
 
