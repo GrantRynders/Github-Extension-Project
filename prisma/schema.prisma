@@ -1,0 +1,29 @@
+model User {
+  id    Int     @id @default(autoincrement())
+  UserName String  @unique
+  timers Timer[]
+}
+model Issue {
+  id    Int     @id @default(autoincrement())
+  issueName String  @unique
+  timers Timer[]
+}
+model TimerPeriod {
+    id    Int     @id @default(autoincrement())
+    startDate String
+    endDate String
+}
+model Timer {
+  id    Int     @id @default(autoincrement())
+  issueId Int
+  userId Int
+  timerPeriods TimerPeriod[]
+}
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
