@@ -97,7 +97,7 @@ function InitializeTimer()
         {
             sec = 0;//Make sure seconds is valid
         }
-        ConvertTimeToFormat(Number(sec)); //converts the seconds to a formatted string
+        totalTimeString = ConvertTimeToFormat(Number(sec)); //converts the seconds to a formatted string
         timerDisplayInstance.textContent = totalTimeString; //sets the timer display
         if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
         {
@@ -137,7 +137,7 @@ function startTimer(){ //Starts the set interval function if timer is not alread
         totalSeconds += parseInt(1);
         lastDate = Date();
         SaveData();
-        ConvertTimeToFormat(Number(sec));//Converts our time variables into a formatted string
+        totalTimeString = ConvertTimeToFormat(Number(sec));//Converts our time variables into a formatted string
         timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
     }, 1000);
 }
@@ -187,7 +187,7 @@ function ConvertTimeToFormat(seconds)
         dayString = "0" + day;
     }
     //totalTimeString stores the formatted time for use all over the app
-    totalTimeString = dayString + ":" + hourString + ':' + minString + ':' + secString;
+    return dayString + ":" + hourString + ':' + minString + ':' + secString;
 }
 function StopTimer() //Stops the interval func
 {
@@ -300,10 +300,12 @@ function EditComment(value1, value2, value3)
         commentTextArea.textContent += "\n" + value1 + value2 + " date: " + new Date() + "\ntimer " + value2 + " value: " + totalTimeString + value3;
         if (value2 == "stop")
         {
-            commentTextArea.textContent += "\nTotal Time Spent So Far: " + CalculateTimeSpent(commentTextArea.textContent);
+            var secondsElapsed = CalculateTimeSpent(commentTextArea.textContent);
+            var formattedTimeElapsed = ConvertTimeToFormat(secondsElapsed);
+            commentTextArea.textContent += "\n. . . .\nTotal Time Spent So Far: " + formattedTimeElapsed;
         }
         submitEditButton.click();
-        window.location.reload();//reload the page to submit the comment
+        //window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
         
     }
@@ -466,33 +468,36 @@ function CalculateTimeSpent(log)
     var records = log.split("\n");
     var startRecord;
     var stopRecord;
-    for (const record of records)
+    for (var record of records)
     {
-        if (record.includes("start"))
+        if (record.includes("start date:"))
         {
             startRecord += record;
         }
-        if (record.includes("stop"))
+        if (record.includes("stop date:"))
         {
             stopRecord += record;
         }
     }
     var startRecords = startRecord.split("start date: ");
-    for (const record of startRecords)
+    console.log("Start records: ");
+    for (var record of startRecords)
     {
-        record = Date.parse(record);
+        console.log(record);
     }
     var stopRecords = stopRecord.split("stop date: ");
-    for (const record of stopRecords)
+    var length = stopRecords.length;
+    var totalTimeSpent = Number(0);
+    for (let i = 1; i < length; i++)
     {
-        record = Date.parse(record);
-    }
-    var length = 5;
-    var totalTimeSpent = 0;
-    for (let i = 0; i < length; i++)
-    {
-        var difference = ((stopRecords[i].getTime() - startRecords[i].getTime()) / 1000);
-        totalTimeSpent += difference;
+        var stopDate = new Date(stopRecords[i].replace("stop date: ", ""));
+        console.log("Stop Date: " + stopDate);
+        var stopTime = stopDate.getTime();
+        var startDate = new Date(startRecords[i].replace("start date: ", ""));
+        console.log("Start Date: " + startDate);
+        var startTime = startDate.getTime();
+        var difference = ((Number(stopTime) - Number(startTime)) / 1000);
+        totalTimeSpent = Number(totalTimeSpent) + Number(difference);
     }
     return Number(totalTimeSpent);
 }
