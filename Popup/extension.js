@@ -51,7 +51,20 @@ var currentDate;
 var commentNum = 0;
 var commentId = "";
 var userName;
-window.addEventListener('popstate', InitializeTimer());
+var timerCount = 0;
+
+InitializeTimer();
+timerCount++;
+// window.navigation.addEventListener("navigate", (event) => {
+//     console.log('location changed!');
+//     InitializeTimer();
+// });
+navigation.addEventListener("navigate", function ()
+{
+    console.log("Location change");
+    InitializeTimer(); 
+    timerCount++;
+});
 //On initialize
 function InitializeTimer()
 {
@@ -77,7 +90,7 @@ function InitializeTimer()
     startButtonInstance.scrollIntoView({behavior: 'instant'});
     console.log("Comment Number: " + commentNum);
     console.log("Comment Id: " + commentId);
-    console.log("Initialize timer called")
+    console.log("Initialize timer called");
     if (sec == null)
     {
         sec = 0;//Make sure seconds is valid
@@ -86,40 +99,40 @@ function InitializeTimer()
     timerDisplayInstance.textContent = totalTimeString; //sets the timer display
     if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
     {
-        console.log("Timer was active before reset");
-        if (lastDate != null)
+        if (timerCount == 0)
         {
-            currentDate = Date();//gets current date
-            var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
-            sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
-            if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
+            console.log("Timer was active before reset");
+            if (lastDate != null)
             {
-                sec = 0;
+                currentDate = Date();//gets current date
+                var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
+                console.log("Difference: " + Number(difference));
+                sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                console.log("New seconds after difference: " + sec)
+                if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
+                {
+                    sec = 0;
+                }
             }
+            else
+            {
+                console.log("Last logged time for continuing timer is null")
+            }
+            startTimer();
         }
-        else
-        {
-            console.log("Last logged timer for continuing timer is null")
-        }
-        startTimer()
     }
 }
 
 function startTimer(){ //Starts the set interval function if timer is not already started
     isTimerActive = 1;
     isTimerPaused = 0;
-    localStorage.setItem("isTimerPaused", isTimerPaused);
     start = Date();
     //DD:HH:MM:SS
     timer = setInterval(function(){
         sec = Number(sec) + 1;
         console.log('Second: ' + sec);
-        //start.setSeconds(start.getSeconds() + 1)
         totalSeconds += parseInt(1);
         SaveData();
-        // localStorage.setItem("LastDate", Date());
-        // localStorage.setItem("CurrentTime", sec);
-        // localStorage.setItem("isTimerActive", 1);
         ConvertTimeToFormat(Number(sec));//Converts our time variables into a formatted string
         timerDisplayInstance.textContent = totalTimeString; //Set the timer's display to our formatted time string
     }, 1000);
@@ -175,8 +188,9 @@ function ConvertTimeToFormat(seconds)
 function StopTimer() //Stops the interval func
 {
     isTimerActive = 0;
-    SaveData();
     clearInterval(timer);
+    SaveData();
+    timerCount = 0;
 }
 startButtonInstance.addEventListener('click',function ()
 {
@@ -195,17 +209,17 @@ pauseButtonInstance.addEventListener('click',function ()
     console.log("PAUSE Button Clicked");
     if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
     {
+        
         isTimerPaused = 1;
-        SaveData();
         StopTimer();
+        SaveData();
         LogEndOfTimer();
-        localStorage.setItem("LastDate", null);//Timer did not previously exist
     }
 });
 stopButtonInstance.addEventListener('click',function ()
 {
     console.log("STOP Button Clicked");
-    SaveData();
+    //SaveData();
     LogEndOfTimer(); //Create a comment detailing end timer stats
     StopTimer();
     ResetTimerValues();//Reset the timer
@@ -273,8 +287,8 @@ function EditComment(value)
         console.log("Comment Number: " + commentNum);
         console.log("Comment Id: " + commentId);
         var commentBlock = document.getElementById(commentId);
-        //var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
-        var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
+        var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
+        //var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
         var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
         commentTextArea.textContent += "\n" + value + " date: " + new Date() + "\ntimer " + value + " value: " + totalTimeString;
         console.log(commentTextArea.textContent);
@@ -326,7 +340,6 @@ function LogEndOfTimerToNewComment()
 function ResetTimerValues()
 {
     //Resets everything to nothing
-    totalSeconds +=1;
     sec = 0;
     min = 0;
     hour = 0;
@@ -336,51 +349,6 @@ function ResetTimerValues()
     dayString = "00";
     timerDisplayInstance.textContent = "00:00:00:00";
     ResetLocalStorage();
-}
-function GetLocalStorage() //checks records if they are null, sets their respective values in the code
-{
-    console.log("Set Local Storage");
-    if (localStorage.getItem("CurrentTime") != null)//Checks the record
-    {
-        sec = localStorage.getItem("CurrentTime"); //Set the seconds to the total seconds elapsed before the stop
-        console.log("Local CurrentTime: " + sec);
-    }
-    else
-    {
-        localStorage.setItem("CurrentTime", 0); //Should always be a nonnullvalue
-        sec = 0;
-        console.log("Current time equals null, uh oh, reseting");
-    }
-    if (localStorage.getItem("isTimerPaused") != null)
-    {
-        isTimerPaused = localStorage.getItem("isTimerPaused");
-        console.log("Local IsTimerPaused: " + isTimerPaused);
-    }
-    else
-    {
-        isTimerPaused = localStorage.setItem("isTimerPaused", 0);
-        isTimerPaused = 0;
-    }
-    if (localStorage.getItem("isTimerActive") != null)
-    {
-        isTimerActive = localStorage.getItem("isTimerActive");
-        console.log("Local IsTimerActive: " + isTimerActive);
-    }
-    else
-    {
-        isTimerActive = localStorage.setItem("isTimerActive", 0);
-        isTimerActive = 0;
-    }
-    if (localStorage.getItem("LastDate") != null)
-    {
-        lastDate = localStorage.getItem("LastDate");
-    }
-    else
-    {
-        lastDate = Date();//just set the last date as right now
-        console.log("Last date does not exist");
-    }
-
 }
 function ResetLocalStorage()
 {
@@ -442,6 +410,7 @@ function CreateUserTimerLog(user)
 }
 //beforeunload
 function SaveData() {
+    lastDate = Date();
     const state = {
       sec,
       isTimerActive,
@@ -464,17 +433,21 @@ function LoadData()
     {
         sec = 0;
     }
+    console.log("Starting Seconds" + sec);
     isTimerActive = state.isTimerActive;
     if (isTimerActive == null)
     {
         isTimerActive = 0;
     }
+    console.log("isTimerActive: " + isTimerActive);
     isTimerPaused = state.isTimerPaused;
     if (isTimerPaused == null)
     {
         isTimerPaused = 0;
     }
+    console.log("isTimerPaused: " + isTimerPaused);
     lastDate = state.lastDate;
+    console.log("Last saved Date: " + lastDate);
     commentNum = state.commentNum;
     commentId = state.commentId;
     console.log("Comment Number: " + commentNum);
