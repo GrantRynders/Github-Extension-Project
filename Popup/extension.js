@@ -483,6 +483,14 @@ function CalculateTimeSpent(log)
     {
         record = Date.parse(record);
     }
+    var length = 5;
+    var totalTimeSpent = 0;
+    for (let i = 0; i < length; i++)
+    {
+        var difference = ((stopRecords[i].getTime() - startRecords[i].getTime()) / 1000);
+        totalTimeSpent += difference;
+    }
+    return Number(totalTimeSpent);
 }
 
 
