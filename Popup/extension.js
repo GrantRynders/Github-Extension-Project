@@ -298,10 +298,14 @@ function EditComment(value1, value2, value3)
         //var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
         var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
         commentTextArea.textContent += "\n" + value1 + value2 + " date: " + new Date() + "\ntimer " + value2 + " value: " + totalTimeString + value3;
-        console.log(commentTextArea.textContent);
+        if (value2 == "stop")
+        {
+            commentTextArea.textContent += "\nTotal Time Spent So Far: " + CalculateTimeSpent(commentTextArea.textContent);
+        }
         submitEditButton.click();
         window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
+        
     }
     else
     {
