@@ -68,59 +68,62 @@ navigation.addEventListener("navigate", function ()
 //On initialize
 function InitializeTimer()
 {
-    userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
-    console.log(userName);
-    if (localStorage.getItem(userName + window.location.href) == null)
-    {
-        SaveData();
-    }
-    LoadData(); //Get our local storage values if there are any, making sure nothing is null
-    results = FindUserTimerLog(userName);
-    console.log("Local IsTimerActive: " + isTimerActive);
-    console.log("Local IsTimerPaused: " + isTimerPaused);
-    if (results == 0)
-    {
-        console.log("crippling failure");
-        CreateUserTimerLog(userName);
-    }
-    if (results == 1)
-    {
-        console.log("SUCCESS");
-    }
-    startButtonInstance.scrollIntoView({behavior: 'instant'});
-    console.log("Comment Number: " + commentNum);
-    console.log("Comment Id: " + commentId);
-    console.log("Initialize timer called");
-    if (sec == null)
-    {
-        sec = 0;//Make sure seconds is valid
-    }
-    ConvertTimeToFormat(Number(sec)); //converts the seconds to a formatted string
-    timerDisplayInstance.textContent = totalTimeString; //sets the timer display
-    if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
-    {
-        if (timerCount == 0)
+    // if (window.location.href.includes("\\issues\\"))
+    // {
+        userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
+        console.log(userName);
+        if (localStorage.getItem(userName + window.location.href) == null)
         {
-            console.log("Timer was active before reset");
-            if (lastDate != null)
-            {
-                currentDate = Date();//gets current date
-                var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
-                console.log("Difference: " + Number(difference));
-                sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
-                console.log("New seconds after difference: " + sec)
-                if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
-                {
-                    sec = 0;
-                }
-            }
-            else
-            {
-                console.log("Last logged time for continuing timer is null")
-            }
-            startTimer();
+            SaveData();
         }
-    }
+        LoadData(); //Get our local storage values if there are any, making sure nothing is null
+        results = FindUserTimerLog(userName);
+        console.log("Local IsTimerActive: " + isTimerActive);
+        console.log("Local IsTimerPaused: " + isTimerPaused);
+        if (results == 0)
+        {
+            console.log("crippling failure");
+            CreateUserTimerLog(userName);
+        }
+        if (results == 1)
+        {
+            console.log("SUCCESS");
+        }
+        startButtonInstance.scrollIntoView({behavior: 'instant'});
+        console.log("Comment Number: " + commentNum);
+        console.log("Comment Id: " + commentId);
+        console.log("Initialize timer called");
+        if (sec == null)
+        {
+            sec = 0;//Make sure seconds is valid
+        }
+        ConvertTimeToFormat(Number(sec)); //converts the seconds to a formatted string
+        timerDisplayInstance.textContent = totalTimeString; //sets the timer display
+        if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
+        {
+            if (timerCount == 0)
+            {
+                console.log("Timer was active before reset");
+                if (lastDate != null)
+                {
+                    currentDate = Date();//gets current date
+                    var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
+                    console.log("Difference: " + Number(difference));
+                    sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                    console.log("New seconds after difference: " + sec)
+                    if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
+                    {
+                        sec = 0;
+                    }
+                }
+                else
+                {
+                    console.log("Last logged time for continuing timer is null")
+                }
+                startTimer();
+            }
+        }
+    //}
 }
 
 function startTimer(){ //Starts the set interval function if timer is not already started
@@ -228,11 +231,14 @@ function AppendAdditions() //Append new elements to the destination for the exte
 {
     if (destinationDiv != null)
     {
-        destinationDiv.appendChild(timerDisplay);
-        destinationDiv.appendChild(startButton);
-        destinationDiv.appendChild(pauseButton);
-        destinationDiv.appendChild(stopButton);
-        destinationDiv.appendChild(credits);
+        // if (window.location.href.includes("\\issues\\"))
+        // {
+            destinationDiv.appendChild(timerDisplay);
+            destinationDiv.appendChild(startButton);
+            destinationDiv.appendChild(pauseButton);
+            destinationDiv.appendChild(stopButton);
+            destinationDiv.appendChild(credits);
+        //}
     }
     else
     {
