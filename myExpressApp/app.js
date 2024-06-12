@@ -45,7 +45,7 @@ app.get("/user", async (req, res) => {
   const returnedUsers = await prisma.user.findMany();
   res.json(returnedUsers);
 });
-app.listen(5220, () => console.log('Server running on port ${5220}'));
+
 
 
 //CREATE USER EXAMPLE
@@ -54,17 +54,17 @@ const user = prisma.user.create({
     UserName: 'JohnSmith',
   },
 })
-
+app.listen(5220, () => console.log('Server running on port ${5220}'));
 //
-main()
-.then(async () => {
-  await prisma.$disconnect()
-})
-.catch(async (e) => {
-  console.error(e)
-  await prisma.$disconnect()
-  process.exit(1)
-})
+// main()
+// .then(async () => {
+//   await prisma.$disconnect()
+// })
+// .catch(async (e) => {
+//   console.error(e)
+//   await prisma.$disconnect()
+//   process.exit(1)
+// })
 
 
 
