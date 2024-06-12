@@ -136,12 +136,6 @@ app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 
 async function main() {
-  //CREATE USER EXAMPLE
-  // const user = await prisma.user.upsert({
-  //   create: {
-  //     UserName: 'JohnSmith',
-  //   },
-  // })
   const allUsers = await prisma.user.findMany()
   console.log(allUsers)
 }

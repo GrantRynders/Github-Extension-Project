@@ -488,6 +488,12 @@ function CreateNewUser(inputUserName)
         headers: {
         "Content-type": "application/json; charset=UTF-8"
         }
+    })
+    .then(function (){
+        console.log(Response.name);
+    })
+    .catch( function() {
+        console.log("User was unable to save");
     });
 }
 function CreateNewIssue(inputUrl, inputIssueName)
@@ -501,6 +507,12 @@ function CreateNewIssue(inputUrl, inputIssueName)
         headers: {
         "Content-type": "application/json; charset=UTF-8"
         }
+    })
+    .then(function (){
+        console.log(Response.name);
+    })
+    .catch( function() {
+        console.log("New issue was unable to save");
     });
 }
 function CreateNewTimer(inputUserId, inputIssueId)
@@ -514,6 +526,12 @@ function CreateNewTimer(inputUserId, inputIssueId)
         headers: {
         "Content-type": "application/json; charset=UTF-8"
         }
+    })
+    .then(function (){
+        console.log(Response.name);
+    })
+    .catch( function() {
+        console.log("New timer was unable to save");
     });
 }
 function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndDate)
@@ -529,6 +547,12 @@ function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndD
         headers: {
         "Content-type": "application/json; charset=UTF-8"
         }
+    })
+    .then(function (){
+        console.log(Response.name);
+    })
+    .catch( function() {
+        console.log("New Timer Period was unable to save");
     });
 }
 
