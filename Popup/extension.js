@@ -480,8 +480,9 @@ function CalculateTimeSpent(log)
 
 function CreateNewUser(inputUserName)
 {
+    var isUserFound = 0;
     fetch("http://localhost:5220/user/" + inputUserName, {
-        method: "POST",
+        method: "GET",
         body: JSON.stringify({
             UserName: inputUserName
         }),
@@ -490,15 +491,66 @@ function CreateNewUser(inputUserName)
         }
     })
     .then(function (){
-        console.log(Response.name);
+        if (Response.ok)
+        {
+            isUserFound = 1;
+            console.log("User already exists");
+        }
+        else
+        {
+            console.log("User does not exist yet");
+        }
     })
     .catch( function() {
         console.log("User was unable to save");
     });
+
+    if (isUserFound == 0)
+    {
+        fetch("http://localhost:5220/user/" + inputUserName, {
+        method: "POST",
+        body: JSON.stringify({
+            UserName: inputUserName
+        }),
+        headers: {
+        "Content-type": "application/json; charset=UTF-8"
+        }
+        })
+        .then(function (){
+            console.log(Response.name);
+        })
+        .catch( function() {
+            console.log("User was unable to save");
+        });
+    }
+    
 }
 function CreateNewIssue(inputUrl, inputIssueName)
 {
-    fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
+    var isIssueFound = 0;
+    fetch("http://localhost:5220/issue/" + inputUrl, {
+        method: "GET",
+        body: JSON.stringify({
+            url: inputUrl
+        }),
+        headers: {
+        "Content-type": "application/json; charset=UTF-8"
+        }
+    })
+    .then(function (){
+        if (Response.ok)
+        {
+            isIssueFound = 1;
+            console.log("Issue already exists");
+        }
+        else
+        {
+            console.log("Issue does not exist yet");
+        }
+    })
+    if (isIssueFound == 0)
+    {
+        fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
         method: "POST",
         body: JSON.stringify({
             url: inputUrl,
@@ -507,16 +559,19 @@ function CreateNewIssue(inputUrl, inputIssueName)
         headers: {
         "Content-type": "application/json; charset=UTF-8"
         }
-    })
-    .then(function (){
-        console.log(Response.name);
-    })
-    .catch( function() {
-        console.log("New issue was unable to save");
-    });
+        })
+        .then(function (){
+            console.log(Response.name);
+        })
+        .catch( function() {
+            console.log("New issue was unable to save");
+        });
+    }
+    
 }
 function CreateNewTimer(inputUserId, inputIssueId)
 {
+    
     fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl, {
         method: "POST",
         body: JSON.stringify({
