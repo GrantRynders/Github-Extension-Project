@@ -22,7 +22,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.post("/user/:username", async (req, res) => {
+  const user = await prisma.user.create({
+    create: 
+    {
+        UserName: req.params.username,
+    },
+    })
+});
 //GENERAL ENDPOINTS
 app.get("/user", async (req, res) => {
   //res.setHeader('content-type', 'application/json');
@@ -43,21 +50,21 @@ app.get("/timerPeriod", async (req, res) => {
   res.json(returnedTimerPeriods);
 });
 //SPECIFIC ENDPOINTS
-app.get("/user/{UserName}", async (req, res) => {
+app.get("/user/:username", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
-      UserName: 'JohnSmith',
+      UserName: req.params.username,
     },
   })
   res.json(user);
 });
-app.get("/timer/user/{UserName}", async (req, res) => {
+app.get("/timer/user/:username", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
-      UserName: 'JohnSmith',
+      UserName: req.params.username,
     },
     include: {
-      timer: true,
+      timers: true,
     },
   })
   res.json(user);
