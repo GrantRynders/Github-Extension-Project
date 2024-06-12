@@ -204,7 +204,6 @@ pauseButtonInstance.addEventListener('click',function ()
     console.log("PAUSE Button Clicked");
     if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
     {
-        
         isTimerPaused = 1;
         StopTimer();
         SaveData();
@@ -292,7 +291,6 @@ function EditComment(value1, value2, value3)
         submitEditButton.click();
         //window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
-        
     }
     else
     {
