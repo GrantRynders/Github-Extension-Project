@@ -26,7 +26,34 @@ app.post("/user/:username", async (req, res) => {
   const user = await prisma.user.create({
     data: 
     {
-        UserName: req.params.username,
+      UserName: req.params.username,
+    },
+    })
+});
+app.post("/issue/:url/:issuename", async (req, res) => {
+  const issue = await prisma.issue.create({
+    data: 
+    {
+      url: req.params.url,
+      issueName: req.params.issuename,
+    },
+    })
+});
+app.post("/timer/:userid/:issueid", async (req, res) => {
+  const timer = await prisma.timer.create({
+    data: 
+    {
+      userId: req.params.userid,
+      issueId: req.params.issueid,
+    },
+    })
+});
+app.post("/timerPeriod/:startdate/:enddate", async (req, res) => {
+  const timerPeriod = await prisma.timerPeriod.create({
+    data: 
+    {
+      startDate: req.params.stardate,
+      endDate: req.params.enddate,
     },
     })
 });
