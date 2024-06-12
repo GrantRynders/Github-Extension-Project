@@ -505,22 +505,24 @@ function CreateNewIssue(inputUrl, inputIssueName)
 }
 function CreateNewTimer(inputUserId, inputIssueId)
 {
-    fetch("http://localhost:5220/timer/" + inputUserId + "/" + inputIssueId, {
+    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl, {
         method: "POST",
         body: JSON.stringify({
-            userId: inputUserID,
-            issueId: inputIssueId,
+            UserName: inputUserName,
+            url: inputIssueUrl,
         }),
         headers: {
         "Content-type": "application/json; charset=UTF-8"
         }
     });
 }
-function CreateNewTimerPeriod(inputStartDate, inputEndDate)
+function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndDate)
 {
-    fetch("http://localhost:5220/timer/" + inputStartDate + "/" + inputEndDate, {
+    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputUrl + "/" + inputStartDate + "/" + inputEndDate, {
         method: "POST",
         body: JSON.stringify({
+            UserName: inputUserName,
+            url: inputUrl,
             startDate: inputStartDate,
             endDate: inputEndDate,
         }),
