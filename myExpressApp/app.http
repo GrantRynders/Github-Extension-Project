@@ -6,8 +6,28 @@
 
 ###
 //add a user
-POST {{WebApiHost}}/user/JohnSmith
+POST {{WebApiHost}}/user/SpongebobSP
 
 ###
 //get all users
 GET {{WebApiHost}}/user
+
+###
+//get all issues
+GET {{WebApiHost}}/issue
+
+###
+//get all timers
+GET {{WebApiHost}}/timer
+
+###
+//get all Timer Periods
+GET {{WebApiHost}}/timerperiod
+
+###
+//get user by username
+GET {{WebApiHost}}/user/JohnSmith
+
+###
+//get user by username and that user's timers
+GET {{WebApiHost}}/timer/user/JohnSmith

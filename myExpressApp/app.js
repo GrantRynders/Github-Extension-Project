@@ -58,19 +58,37 @@ app.get("/timerPeriod", async (req, res) => {
 });
 //SPECIFIC ENDPOINTS
 app.get("/user/{UserName}", async (req, res) => {
-  const returnedUsers = await prisma.user.findMany();
-  //should return user with username
-  res.json(returnedUsers);
-});
-app.listen(5220, () => console.log('Server running on port ${5220}'));
-async function main() {
-  //CREATE USER EXAMPLE
-  const user = await prisma.user.create({
-    data: {
+  const user = await prisma.user.findUnique({
+    where: {
       UserName: 'JohnSmith',
     },
   })
+  res.json(user);
+});
+app.get("/timer/user/{UserName}", async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      UserName: 'JohnSmith',
+    },
+    include: {
+      timer: true,
+    },
+  })
+  res.json(user);
+});
+app.listen(5220, () => console.log('Server running on port ${5220}'));
+
+
+
+async function main() {
+  //CREATE USER EXAMPLE
+  // const user = await prisma.user.upsert({
+  //   create: {
+  //     UserName: 'JohnSmith',
+  //   },
+  // })
 }
+
 
 main()
   .then(async () => {
