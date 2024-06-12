@@ -29,6 +29,7 @@ app.post("/user/:username", async (req, res) => {
       UserName: req.params.username,
     },
     })
+    //res = "User with username: " + req.params.username + " created";
 });
 app.post("/issue/:url/:issuename", async (req, res) => {
   const issue = await prisma.issue.create({
