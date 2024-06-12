@@ -24,7 +24,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.post("/user/:username", async (req, res) => {
   const user = await prisma.user.create({
-    create: 
+    data: 
     {
         UserName: req.params.username,
     },
