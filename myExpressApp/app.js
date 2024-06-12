@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-app.use(express.json());
+//app.use(express.json());
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -62,24 +62,25 @@ app.get("/user/{UserName}", async (req, res) => {
   //should return user with username
   res.json(returnedUsers);
 });
-
-//CREATE USER EXAMPLE
-const user = prisma.user.create({
-  data: {
-    UserName: 'JohnSmith',
-  },
-})
 app.listen(5220, () => console.log('Server running on port ${5220}'));
-//
-// main()
-// .then(async () => {
-//   await prisma.$disconnect()
-// })
-// .catch(async (e) => {
-//   console.error(e)
-//   await prisma.$disconnect()
-//   process.exit(1)
-// })
+async function main() {
+  //CREATE USER EXAMPLE
+  const user = await prisma.user.create({
+    data: {
+      UserName: 'JohnSmith',
+    },
+  })
+}
+
+main()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
 
 
 
