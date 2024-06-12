@@ -18,11 +18,11 @@ GET {{WebApiHost}}/issue
 
 ###
 //get all timers
-GET {{WebApiHost}}/timer
+GET {{WebApiHost}}/timer/GrantRynders/url
 
 ###
 //get all Timer Periods
-GET {{WebApiHost}}/timerperiod
+GET {{WebApiHost}}/timerperiod/GrantRynders/url/timeIstarted/timeIstopped
 
 ###
 //get user by username
