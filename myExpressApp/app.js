@@ -132,6 +132,31 @@ app.get("/timer/user/:username", async (req, res) => {
   })
   res.json(user);
 });
+app.get("/timer/:username/:url", async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      UserName: req.params.username,
+    },
+  })
+  const issue = await prisma.user.findUnique({
+    where: {
+      url: req.params.issueUrl,
+    },
+  })
+  const timer = await prisma.timer.findUnique({
+    where: {
+      userId: user.id,
+      issueId: issue.id,
+    },
+  })
+  res.json(timer);
+});
+
+
+
+
+
+
 app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 

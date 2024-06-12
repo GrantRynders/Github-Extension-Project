@@ -569,25 +569,49 @@ function CreateNewIssue(inputUrl, inputIssueName)
     }
     
 }
-function CreateNewTimer(inputUserId, inputIssueId)
+function CreateNewTimer(inputUserName, inputIssueUrl)
 {
-    
+    var isTimerFound = 0;
     fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl, {
-        method: "POST",
+        method: "GET",
         body: JSON.stringify({
-            UserName: inputUserName,
             url: inputIssueUrl,
+            UserName: inputUserName,
         }),
         headers: {
         "Content-type": "application/json; charset=UTF-8"
         }
     })
     .then(function (){
-        console.log(Response.name);
+        if (Response.ok)
+        {
+            isTimerFound = 1;
+            console.log("Timer already exists");
+        }
+        else
+        {
+            console.log("Timer does not exist yet");
+        }
     })
-    .catch( function() {
-        console.log("New timer was unable to save");
-    });
+    if (isTimerFound == 0)
+    {
+        fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl, {
+            method: "POST",
+            body: JSON.stringify({
+                UserName: inputUserName,
+                url: inputIssueUrl,
+            }),
+            headers: {
+            "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(function (){
+            console.log(Response.name);
+        })
+        .catch( function() {
+            console.log("New timer was unable to save");
+        });
+    }
 }
 function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndDate)
 {
