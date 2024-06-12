@@ -478,6 +478,59 @@ function CalculateTimeSpent(log)
     return Number(totalTimeSpent);
 }
 
+function CreateNewUser(inputUserName)
+{
+    fetch("http://localhost:5220/user/" + inputUserName, {
+        method: "POST",
+        body: JSON.stringify({
+            UserName: inputUserName
+        }),
+        headers: {
+        "Content-type": "application/json; charset=UTF-8"
+        }
+    });
+}
+function CreateNewIssue(inputUrl, inputIssueName)
+{
+    fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
+        method: "POST",
+        body: JSON.stringify({
+            url: inputUrl,
+            issueName: inputIssueName,
+        }),
+        headers: {
+        "Content-type": "application/json; charset=UTF-8"
+        }
+    });
+}
+function CreateNewTimer(inputUserId, inputIssueId)
+{
+    fetch("http://localhost:5220/timer/" + inputUserId + "/" + inputIssueId, {
+        method: "POST",
+        body: JSON.stringify({
+            userId: inputUserID,
+            issueId: inputIssueId,
+        }),
+        headers: {
+        "Content-type": "application/json; charset=UTF-8"
+        }
+    });
+}
+function CreateNewTimerPeriod(inputStartDate, inputEndDate)
+{
+    fetch("http://localhost:5220/timer/" + inputStartDate + "/" + inputEndDate, {
+        method: "POST",
+        body: JSON.stringify({
+            startDate: inputStartDate,
+            endDate: inputEndDate,
+        }),
+        headers: {
+        "Content-type": "application/json; charset=UTF-8"
+        }
+    });
+}
+
+
 
 
 
