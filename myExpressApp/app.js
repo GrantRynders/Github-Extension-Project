@@ -34,19 +34,34 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
 
-//ENDPOINT EXAMPLE
+//GENERAL ENDPOINTS
 app.get("/user", async (req, res) => {
   const returnedUsers = await prisma.user.findMany();
   res.json(returnedUsers);
 });
-
-
+app.get("/issue", async (req, res) => {
+  const returnedIssues = await prisma.issue.findMany();
+  res.json(returnedIssues);
+});
+app.get("/timer", async (req, res) => {
+  const returnedTimers = await prisma.timer.findMany();
+  res.json(returnedTimers);
+});
+app.get("/timerPeriod", async (req, res) => {
+  const returnedTimerPeriods = await prisma.timerPeriod.findMany();
+  res.json(returnedTimerPeriods);
+});
+//SPECIFIC ENDPOINTS
+app.get("/user/{UserName}", async (req, res) => {
+  const returnedUsers = await prisma.user.findMany();
+  //should return user with username
+  res.json(returnedUsers);
+});
 
 //CREATE USER EXAMPLE
 const user = prisma.user.create({
