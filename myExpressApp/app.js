@@ -42,6 +42,7 @@ app.use(function(err, req, res, next) {
 //GENERAL ENDPOINTS
 app.get("/user", async (req, res) => {
   const returnedUsers = await prisma.user.findMany();
+  console.log("it's happening");
   res.json(returnedUsers);
 });
 app.get("/issue", async (req, res) => {
@@ -87,18 +88,18 @@ async function main() {
   //     UserName: 'JohnSmith',
   //   },
   // })
+  const allUsers = await prisma.user.findMany()
+  console.log(allUsers)
 }
 
 
-main()
-  .then(async () => {
+main().then(async () => {
     await prisma.$disconnect()
-  })
-  .catch(async (e) => {
+  }).catch(async (e) => {
     console.error(e)
     await prisma.$disconnect()
     process.exit(1)
-  })
+  });
 
 
 
