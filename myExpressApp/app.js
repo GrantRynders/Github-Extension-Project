@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
+app.use(express.json());
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
