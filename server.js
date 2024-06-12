@@ -11,15 +11,15 @@ app.get("/user", async (req, res) => {
     const returnedUsers = await prisma.user.findMany();
     res.json(returnedUsers);
 });
-app.listen(3001, () => console.log('Server running on port ${3001}'));
+app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 
 //CREATE USER EXAMPLE
-const user = await prisma.user.create({
+const user = prisma.user.create({
     data: {
       UserName: 'JohnSmith',
     },
-  })
+})
 
 //
 main()

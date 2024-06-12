@@ -17,6 +17,7 @@ model User {
 model Issue {
   id    Int     @id @default(autoincrement())
   issueName String  @unique
+  url String
   timers Timer[]
 }
 model TimerPeriod {

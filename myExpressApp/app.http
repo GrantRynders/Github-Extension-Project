@@ -1,0 +1,13 @@
+//This file tests the API endpoints for our Express.js app, responses will be given in the form of JSON data with status headers
+
+
+@WebApiHost = http://localhost:5220
+
+
+###
+//add a user
+POST {{WebApiHost}}/user/ExampleUserName
+
+###
+//get all users
+GET {{WebApiHost}}/user
