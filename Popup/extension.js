@@ -386,7 +386,8 @@ function CreateUserTimerLog(user)
     if (commentButton != null) //Make sure comment button is not null
     {
         console.log("CREATEUSERTIMERLOG");
-        textArea.textContent = "###" + user + "TimeLog###";
+        textArea.textContent = "###" + user + "'sTimeLog###";
+        textArea.textContent = "Welcome " + user;
         console.log("Creating new time log for user: " + user);
         commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
         console.log("Disabled");
