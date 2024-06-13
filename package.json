@@ -5,6 +5,7 @@
     "description": "An extension for github issues that adds a timer that logs to issue comments",
     "author": "ITSC Interns",
     "dependencies": {
+        "@prisma/client": "^5.15.0",
         "yarn": "^1.22.22"
     }
 }
