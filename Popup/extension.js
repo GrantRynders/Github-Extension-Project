@@ -368,7 +368,7 @@ function FindUserTimerLog(user)
         if (commentHeader == user)
         {
             commentText = comment.getElementsByClassName("d-block comment-body markdown-body  js-comment-body")[0].getElementsByTagName("p")[0];
-            if (commentText.textContent.includes("###" + user + "TimeLog###"))
+            if (commentText.textContent.includes("###" + user + "'sTimeLog###"))
             {
                 isLogFound = 1;
                 var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
