@@ -67,15 +67,23 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
       issueName: req.params.issueName,
     },
   })
-  const timer = await prisma.timer.create({
-    data: 
-    {
+  if (await prisma.timer.findFirst({
+    where: {
       userId: user.id,
       issueId: issue.id,
-      totalTimeElapsed: 0,
     },
-    })
-    console.log(timer);
+  }) == null)
+  {
+    const timer = await prisma.timer.create({
+      data: 
+      {
+        userId: user.id,
+        issueId: issue.id,
+        totalTimeElapsed: 0,
+      },
+      })
+      console.log(timer);
+  }
 });
 app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate", async (req, res) => {
   const user = await prisma.user.findUnique({
@@ -98,8 +106,8 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate", asyn
   const newTimerPeriod = await prisma.timerPeriod.create({
     data: {
       timerId: timer.id,
-      startDate: startdate,
-      endDate: enddate,
+      startDate: req.params.startdate,
+      endDate: req.params.enddate,
     },
   })
   console.log(newTimerPeriod);
@@ -138,7 +146,6 @@ app.get("/issueGet/:issueUrl/:issueName", async (req, res) => {
       issueName: req.params.issueName,
     },
   })
-  console.log(issue);
   res.json(issue);
 });
 app.get("/timer/:userName/:issueUrl/:issueName", async (req, res) => {
@@ -240,3 +247,4 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 
+//npx prisma studio
