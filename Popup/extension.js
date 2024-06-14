@@ -22,7 +22,7 @@ var destinationDiv = document.getElementById("js-repo-pjax-container");
 var textArea = document.getElementById("new_comment_field");
 var commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
 var commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
-var titleBar = "js-issue-title markdown-title"
+var titleBar = "js-issue-title markdown-title";
 //append instances of our new buttons to the page
 AppendAdditions();
 //find those instances we just created
@@ -73,6 +73,7 @@ function InitializeTimer()
         }
         LoadData(); //Get our local storage values if there are any, making sure nothing is null
         results = FindUserTimerLog(userName);
+        console.log(results);
         if (results == 0)
         {
             console.log("crippling failure");
@@ -258,7 +259,7 @@ function LogTimeToNewComment()
         textArea.textContent = "Start Date: " + new Date() + "\nTimer Start Value: " + totalTimeString; //Set the comment's text value
         commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
         commentButton.click(); //Click the button programmatically
-        //window.location.reload();//reload the page to submit the comment
+        window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else 
@@ -371,7 +372,7 @@ function FindUserTimerLog(user)
                 isLogFound = 1;
                 var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
                 commentId = commentIdInstance;
-                console.log("LOG FOUND AT COMMENT NUM: " + commentNum + "WITH ID: " + commentId);
+                console.log("LOG FOUND AT COMMENT NUM: " + commentNum + " WITH ID: " + commentId);
             }
         }
         commentNum = Number(commentNum) + 1;
@@ -392,7 +393,7 @@ function CreateUserTimerLog(user)
         console.log("Clicked");
         window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
-        FindUserTimerLog(user);
+        results = FindUserTimerLog(user);
     }
     else
     {
