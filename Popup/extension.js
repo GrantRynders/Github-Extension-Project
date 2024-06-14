@@ -638,9 +638,9 @@ function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
         console.log("Timer was unable to be found due to error");
     });
 }
-function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate)
+function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate, time)
 {
-    fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate, {
+    fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate + "/" + time, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -662,10 +662,12 @@ function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStar
 
 function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
+    var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
+    var time = Number(Math.round(difference /1000));
     CreateNewUser(username);
     CreateNewIssue(encodeURIComponent(url), issuename);
     CreateNewTimer(username, encodeURIComponent(url), issuename);
-    CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate);
+    CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, time);
 }
 
 

@@ -79,13 +79,12 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
       {
         userId: user.id,
         issueId: issue.id,
-        totalTimeElapsed: 0,
       },
       })
       console.log(timer);
   }
 });
-app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate", async (req, res) => {
+app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
       UserName: req.params.username,
@@ -108,6 +107,7 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate", asyn
       timerId: timer.id,
       startDate: req.params.startdate,
       endDate: req.params.enddate,
+      totalTimeElapsed: req.params.time,
     },
   })
   console.log(newTimerPeriod);
