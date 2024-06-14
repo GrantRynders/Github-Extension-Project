@@ -497,15 +497,7 @@ function CalculateTimeSpent(log)
 function CreateNewUser(inputUserName)
 {
     var isUserFound = 0;
-    fetch("http://localhost:5220/user/" + inputUserName, {
-        method: "GET",
-        body: JSON.stringify({
-            UserName: inputUserName
-        }),
-        headers: {
-        "Content-type": "application/json; charset=UTF-8"
-        }
-    })
+    fetch("http://localhost:5220/user/" + inputUserName)
     .then(function (){
         if (Response.ok)
         {
@@ -544,15 +536,7 @@ function CreateNewUser(inputUserName)
 function CreateNewIssue(inputUrl, inputIssueName)
 {
     var isIssueFound = 0;
-    fetch("http://localhost:5220/issue/" + inputUrl, {
-        method: "GET",
-        body: JSON.stringify({
-            url: inputUrl
-        }),
-        headers: {
-        "Content-type": "application/json; charset=UTF-8"
-        }
-    })
+    fetch("http://localhost:5220/issue/" + inputUrl)
     .then(function (){
         if (Response.ok)
         {
@@ -588,16 +572,7 @@ function CreateNewIssue(inputUrl, inputIssueName)
 function CreateNewTimer(inputUserName, inputIssueUrl)
 {
     var isTimerFound = 0;
-    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl, {
-        method: "GET",
-        body: JSON.stringify({
-            url: inputIssueUrl,
-            UserName: inputUserName,
-        }),
-        headers: {
-        "Content-type": "application/json; charset=UTF-8"
-        }
-    })
+    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl)
     .then(function (){
         if (Response.ok)
         {
