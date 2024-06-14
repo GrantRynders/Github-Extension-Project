@@ -57,7 +57,10 @@ timerCount++;
 navigation.addEventListener("navigate", function ()
 {
     console.log("Location change");
-    InitializeTimer(); 
+    if(timerCount == 0)
+    {
+        InitializeTimer(); 
+    }
     timerCount++;
 });
 //On initialize
@@ -357,6 +360,7 @@ function ResetLocalStorage()
 }
 function FindUserTimerLog(user)
 {
+
     var isLogFound = 0;
     commentNum = 0;
     var comments = document.getElementsByClassName("TimelineItem js-comment-container");
@@ -393,7 +397,9 @@ function CreateUserTimerLog(user)
         console.log("Clicked");
         window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
-        results = FindUserTimerLog(user);
+        setTimeout(() => {
+            results = FindUserTimerLog(user);
+        });
     }
     else
     {
