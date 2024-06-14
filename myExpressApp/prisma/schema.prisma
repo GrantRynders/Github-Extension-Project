@@ -16,8 +16,8 @@ model User {
 }
 model Issue {
   id    Int     @id @default(autoincrement())
-  issueName String  @unique
-  url String
+  issueName String
+  url String  @unique
   timers Timer[]
 }
 model TimerPeriod {
@@ -36,3 +36,4 @@ model Timer {
   user User    @relation(fields: [userId], references: [id])
   timerPeriods TimerPeriod[]
 }
+//npx prisma migrate dev

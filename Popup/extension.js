@@ -198,6 +198,7 @@ startButtonInstance.addEventListener('click',function ()
     if (isTimerActive == 0) //Can't start a timer that is already started
     {
         isTimerActive = 1;
+        startDate = Date();
         SaveData();
         startTimer();
         LogTime();
@@ -247,7 +248,6 @@ function LogTime()
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
-    startDate = Date();
     setTimeout(() => {
         EditComment( ". . . . \n", "start", "");
     }, "1000");
@@ -343,6 +343,8 @@ function ResetTimerValues()
     hourString = "00";
     dayString = "00";
     timerDisplayInstance.textContent = "00:00:00:00";
+    startDate = null;
+    endDate = null;
     ResetLocalStorage();
 }
 function ResetLocalStorage()
@@ -351,6 +353,7 @@ function ResetLocalStorage()
     isTimerActive = 0;
     isTimerPaused = 0;
     lastDate = null;
+    startDate = null;
     SaveData();
 }
 function FindUserTimerLog(user)
@@ -409,7 +412,8 @@ function SaveData() {
       isTimerPaused,
       lastDate,
       commentNum,
-      commentId
+      commentId,
+      startDate
     };
     localStorage.setItem(userName + window.location.href, JSON.stringify(state));
   }
@@ -442,8 +446,10 @@ function LoadData()
     console.log("Last saved Date: " + lastDate);
     commentNum = state.commentNum;
     commentId = state.commentId;
+    startDate = state.startDate;
     console.log("Comment Number: " + commentNum);
     console.log("Comment Id: " + commentId);
+    console.log("Start Date");
 }
 
 
@@ -470,10 +476,10 @@ function CalculateTimeSpent(log)
     var totalTimeSpent = Number(0);
     for (let i = 1; i < length; i++)
     {
-        var stopDate = new Date(stopRecords[i].replace("stop date: ", ""));
-        var stopTime = stopDate.getTime();
-        var startDate = new Date(startRecords[i].replace("start date: ", ""));
-        var startTime = startDate.getTime();
+        var stop = new Date(stopRecords[i].replace("stop date: ", ""));
+        var stopTime = stop.getTime();
+        var start = new Date(startRecords[i].replace("start date: ", ""));
+        var startTime = start.getTime();
         var difference = ((Number(stopTime) - Number(startTime)) / 1000);
         totalTimeSpent = Number(totalTimeSpent) + Number(difference);
     }
@@ -505,37 +511,35 @@ function CreateNewUser(inputUserName)
         {
             console.log("User does not exist yet");
         }
+        if (isUserFound == 0)
+            {
+                fetch("http://localhost:5220/user/" + inputUserName, {
+                    method: "POST", // *GET, POST, PUT, DELETE, etc.
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                      "Content-Type": "application/json",
+                      // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    redirect: "follow", // manual, *follow, error
+                    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                }).then(function (){
+                        console.log(Response.name);
+                    })
+                    .catch( function() {
+                        console.log("User was unable to save due to error");
+                    });
+            }
     })
     .catch( function() {
         console.log("Unable to find user due to error");
     });
-
-    if (isUserFound == 0)
-    {
-        fetch("http://localhost:5220/user/" + inputUserName, {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-              "Content-Type": "application/json",
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        }).then(function (){
-                console.log(Response.name);
-            })
-            .catch( function() {
-                console.log("User was unable to save due to error");
-            });
-    }
-    
 }
 function CreateNewIssue(inputUrl, inputIssueName)
 {
     var isIssueFound = 0;
-    fetch("http://localhost:5220/issue/" + inputUrl)
+    fetch("http://localhost:5220/issueGet/" + inputUrl + "/" + inputIssueName)
     .then(function (){
         if (Response.ok)
         {
@@ -546,37 +550,36 @@ function CreateNewIssue(inputUrl, inputIssueName)
         {
             console.log("Issue does not exist yet");
         }
+        if (isIssueFound == 0)
+        {
+            fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            })
+            .then(function (){
+                console.log(Response);
+            })
+            .catch( function() {
+                console.log("New issue was unable to save");
+            });
+        }
     })
     .catch( function() {
         console.log("Issue was unable to save due to error");
     });
-    if (isIssueFound == 0)
-    {
-        fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-              "Content-Type": "application/json",
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        })
-        .then(function (){
-            console.log(Response.name);
-        })
-        .catch( function() {
-            console.log("New issue was unable to save");
-        });
-    }
-    
 }
-function CreateNewTimer(inputUserName, inputIssueUrl)
+function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
 {
     var isTimerFound = 0;
-    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl)
+    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName)
     .then(function (){
         if (Response.ok)
         {
@@ -587,35 +590,35 @@ function CreateNewTimer(inputUserName, inputIssueUrl)
         {
             console.log("Timer does not exist yet");
         }
+        if (isTimerFound == 0)
+            {
+                fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
+                    method: "POST", // *GET, POST, PUT, DELETE, etc.
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                      "Content-Type": "application/json",
+                      // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    redirect: "follow", // manual, *follow, error
+                    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                })
+                .then(function (){
+                    console.log(Response);
+                })
+                .catch( function() {
+                    console.log("New timer was unable to save");
+                });
+            }
     })
     .catch( function() {
         console.log("Timer was unable to be found due to error");
     });
-    if (isTimerFound == 0)
-    {
-        fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl, {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-              "Content-Type": "application/json",
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        })
-        .then(function (){
-            console.log(Response.name);
-        })
-        .catch( function() {
-            console.log("New timer was unable to save");
-        });
-    }
 }
-function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndDate)
+function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate)
 {
-    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputUrl + "/" + inputStartDate + "/" + inputEndDate, {
+    fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -628,7 +631,7 @@ function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndD
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     })
     .then(function (){
-        console.log(Response.name);
+        console.log(Response);
     })
     .catch( function() {
         console.log("New Timer Period was unable to save");
@@ -639,8 +642,8 @@ function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
     CreateNewUser(username);
     CreateNewIssue(encodeURIComponent(url), issuename);
-    CreateNewTimer(username, encodeURIComponent(url));
-    CreateNewTimerPeriod(username, encodeURIComponent(url), startdate, stopdate);
+    CreateNewTimer(username, encodeURIComponent(url), issuename);
+    CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate);
 }
 
 

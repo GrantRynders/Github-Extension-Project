@@ -9,6 +9,9 @@
 POST {{WebApiHost}}/user/SteveBrown
 
 ###
+
+POST {{WebApiHost}}/issue/https%3A%2F%2Fgithub.com%2FGrantRynders%2FGithub-Extension-Project%2Fissues%2F45/Calculate%20total%20time%20spent%20on%20an%20issue,%20and%20append%20it%20to%20the%20lgo
+###
 //get all users
 GET {{WebApiHost}}/user
 
