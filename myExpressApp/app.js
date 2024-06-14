@@ -24,13 +24,20 @@ app.use(cors({ origin: '*' }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.post("/user/:username", (req, res) => {
-  const user = prisma.user.create({
-    data: 
-    {
+  if (prisma.user.findUnique({
+    where: {
       UserName: req.params.username,
     },
-    })
-    //res = "User with username: " + req.params.username + " created";
+  }) == null)
+  {
+    const user = prisma.user.create({
+      data: 
+      {
+        UserName: req.params.username,
+      },
+      })
+  }
+  console.log(user);
 });
 app.post("/issue/:url/:issuename", (req, res) => {
   const issue = prisma.issue.create({
@@ -59,15 +66,7 @@ app.post("/timer/:username/:issueUrl", (req, res) => {
       issueId: issue.id,
     },
     })
-});
-app.post("/timerPeriod/:startdate/:enddate", async (req, res) => {
-  const timerPeriod = prisma.timerPeriod.create({
-    data: 
-    {
-      startDate: req.params.stardate,
-      endDate: req.params.enddate,
-    },
-    })
+    console.log(timer);
 });
 app.put("/timerPeriod/:username/:issueUrl/:startdate/:enddate", (req, res) => {
   const user = prisma.user.findUnique({
@@ -93,6 +92,7 @@ app.put("/timerPeriod/:username/:issueUrl/:startdate/:enddate", (req, res) => {
       endDate: enddate,
     },
   })
+  console.log(newTimerPeriod);
 });
 //GENERAL ENDPOINTS
 app.get("/user", (req, res) => {
@@ -121,6 +121,33 @@ app.get("/user/:username", (req, res) => {
     },
   })
   res.json(user);
+});
+app.get("/issue/:issueUrl", (req, res) => {
+  const issue = prisma.issue.findUnique({
+    where: {
+      url: req.params.issueUrl,
+    },
+  })
+  res.json(issue);
+});
+app.get("/timer/:userName/:issueUrl", (req, res) => {
+  const user = prisma.user.findUnique({
+    where: {
+      UserName: req.params.username,
+    },
+  })
+  const issue = prisma.issue.findUnique({
+    where: {
+      url: req.params.issueUrl,
+    },
+  })
+  const timer = prisma.timer.findUnique({
+    where: {
+      userId: user.id,
+      issueId: issue.id,
+    },
+  })
+  res.json(timer);
 });
 app.get("/timer/user/:username", (req, res) => {
   const user = prisma.user.findUnique({
@@ -163,8 +190,14 @@ app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 
 async function main() {
-  const allUsers = await prisma.user.findMany()
-  console.log(allUsers)
+  const allUsers = await prisma.user.findMany();
+  const allIssues = await prisma.issue.findMany();
+  const allTimers = await prisma.timer.findMany();
+  const allTimerPeriods = await prisma.timerPeriod.findMany();
+  console.log(allUsers);
+  console.log(allIssues);
+  console.log(allTimers);
+  console.log(allTimerPeriods);
 }
 
 

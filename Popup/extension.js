@@ -218,7 +218,6 @@ pauseButtonInstance.addEventListener('click',function ()
 stopButtonInstance.addEventListener('click',function ()
 {
     console.log("STOP Button Clicked");
-    //SaveData();
     LogEndOfTimer(); //Create a comment detailing end timer stats
     StopTimer();
     ResetTimerValues();//Reset the timer
@@ -248,10 +247,6 @@ function LogTime()
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
-    for (const child of optionsPanel.childNodes)
-    {
-        console.log(child.textContent);
-    }
     startDate = Date();
     setTimeout(() => {
         EditComment( ". . . . \n", "start", "");
@@ -283,7 +278,6 @@ function EditComment(value1, value2, value3)
         editBtn.click();
         var commentBlock = document.getElementById(commentId);
         var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
-        //var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
         var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
         commentTextArea.textContent += "\n" + value1 + value2 + " date: " + new Date() + "\ntimer " + value2 + " value: " + totalTimeString + value3;
         if (value2 == "stop")
@@ -293,7 +287,7 @@ function EditComment(value1, value2, value3)
             commentTextArea.textContent += "\n. . . .\nTotal Time Spent So Far: " + formattedTimeElapsed;
         }
         submitEditButton.click();
-        //window.location.reload();//reload the page to submit the comment
+        window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else
@@ -308,10 +302,6 @@ function LogEndOfTimer()
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
     console.log(optionsPanel.tagName)
-    for (const child of optionsPanel.childNodes)
-    {
-        console.log(child.textContent);
-    }
     endDate = Date();
     setTimeout(() => {
         EditComment(". . . .\n", "stop", "");
@@ -506,7 +496,6 @@ function CreateNewUser(inputUserName)
         referrerPolicy: "no-referrer",
     })
     .then(function (){
-        console.log(response.json);
         if (Response.ok)
         {
             isUserFound = 1;
@@ -518,7 +507,7 @@ function CreateNewUser(inputUserName)
         }
     })
     .catch( function() {
-        console.log("User was unable to save");
+        console.log("Unable to find user due to error");
     });
 
     if (isUserFound == 0)
@@ -538,7 +527,7 @@ function CreateNewUser(inputUserName)
                 console.log(Response.name);
             })
             .catch( function() {
-                console.log("User was unable to save");
+                console.log("User was unable to save due to error");
             });
     }
     
@@ -558,6 +547,9 @@ function CreateNewIssue(inputUrl, inputIssueName)
             console.log("Issue does not exist yet");
         }
     })
+    .catch( function() {
+        console.log("Issue was unable to save due to error");
+    });
     if (isIssueFound == 0)
     {
         fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
@@ -596,6 +588,9 @@ function CreateNewTimer(inputUserName, inputIssueUrl)
             console.log("Timer does not exist yet");
         }
     })
+    .catch( function() {
+        console.log("Timer was unable to be found due to error");
+    });
     if (isTimerFound == 0)
     {
         fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl, {
