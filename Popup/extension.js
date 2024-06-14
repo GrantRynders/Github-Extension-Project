@@ -51,7 +51,8 @@ var commentNum = 0;
 var commentId = "";
 var userName;
 var timerCount = 0;
-
+var startDate;
+var endDate;
 InitializeTimer();
 timerCount++;
 navigation.addEventListener("navigate", function ()
@@ -242,6 +243,7 @@ function AppendAdditions() //Append new elements to the destination for the exte
 }
 function LogTime()
 {
+    
     FindUserTimerLog(userName);
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
@@ -250,9 +252,11 @@ function LogTime()
     {
         console.log(child.textContent);
     }
+    startDate = Date();
     setTimeout(() => {
         EditComment( ". . . . \n", "start", "");
     }, "1000");
+
 }
 function LogTimeToNewComment()
 {
@@ -312,9 +316,14 @@ function LogEndOfTimer()
     {
         console.log(child.textContent);
     }
+    endDate = Date();
     setTimeout(() => {
         EditComment(". . . .\n", "stop", "");
     }, "1000");
+
+
+    var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
+    LogDataToSQLite(userName, window.location.href, issueHeader.textContent, startDate, endDate);
 }
 function LogEndOfTimerToNewComment()
 {
@@ -640,6 +649,14 @@ function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndD
     .catch( function() {
         console.log("New Timer Period was unable to save");
     });
+}
+
+function LogDataToSQLite(username, url, issuename, startdate, stopdate)
+{
+    CreateNewUser(username);
+    CreateNewIssue(url, issuename);
+    CreateNewTimer(username, url);
+    CreateNewTimerPeriod(username, url, startdate, stopdate);
 }
 
 
