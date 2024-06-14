@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const cors = require('cors');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -19,11 +20,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cors({ origin: '*' }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.post("/user/:username", async (req, res) => {
-  const user = await prisma.user.create({
+app.post("/user/:username", (req, res) => {
+  const user = prisma.user.create({
     data: 
     {
       UserName: req.params.username,
@@ -31,8 +32,8 @@ app.post("/user/:username", async (req, res) => {
     })
     //res = "User with username: " + req.params.username + " created";
 });
-app.post("/issue/:url/:issuename", async (req, res) => {
-  const issue = await prisma.issue.create({
+app.post("/issue/:url/:issuename", (req, res) => {
+  const issue = prisma.issue.create({
     data: 
     {
       url: req.params.url,
@@ -40,18 +41,18 @@ app.post("/issue/:url/:issuename", async (req, res) => {
     },
     })
 });
-app.post("/timer/:username/:issueUrl", async (req, res) => {
-  const user = await prisma.user.findUnique({
+app.post("/timer/:username/:issueUrl", (req, res) => {
+  const user = prisma.user.findUnique({
     where: {
       UserName: req.params.username,
     },
   })
-  const issue = await prisma.user.findUnique({
+  const issue = prisma.user.findUnique({
     where: {
       url: req.params.issueUrl,
     },
   })
-  const timer = await prisma.timer.create({
+  const timer = prisma.timer.create({
     data: 
     {
       userId: user.id,
@@ -60,7 +61,7 @@ app.post("/timer/:username/:issueUrl", async (req, res) => {
     })
 });
 app.post("/timerPeriod/:startdate/:enddate", async (req, res) => {
-  const timerPeriod = await prisma.timerPeriod.create({
+  const timerPeriod = prisma.timerPeriod.create({
     data: 
     {
       startDate: req.params.stardate,
@@ -68,24 +69,24 @@ app.post("/timerPeriod/:startdate/:enddate", async (req, res) => {
     },
     })
 });
-app.put("/timerPeriod/:username/:issueUrl/:startdate/:enddate", async (req, res) => {
-  const user = await prisma.user.findUnique({
+app.put("/timerPeriod/:username/:issueUrl/:startdate/:enddate", (req, res) => {
+  const user = prisma.user.findUnique({
     where: {
       UserName: req.params.username,
     },
   })
-  const issue = await prisma.user.findUnique({
+  const issue = prisma.user.findUnique({
     where: {
       url: req.params.issueUrl,
     },
   })
-  const timer = await prisma.timer.findUnique({
+  const timer = prisma.timer.findUnique({
     where: {
       userId: user.id,
       issueId: issue.id,
     },
   })
-  const newTimerPeriod = await prisma.timerPeriod.create({
+  const newTimerPeriod = prisma.timerPeriod.create({
     data: {
       timerId: timer.id,
       startDate: startdate,
@@ -94,35 +95,35 @@ app.put("/timerPeriod/:username/:issueUrl/:startdate/:enddate", async (req, res)
   })
 });
 //GENERAL ENDPOINTS
-app.get("/user", async (req, res) => {
+app.get("/user", (req, res) => {
   //res.setHeader('content-type', 'application/json');
-  const returnedUsers = await prisma.user.findMany();
+  const returnedUsers = prisma.user.findMany();
   console.log("it's happening");
   res.json(returnedUsers);
 });
-app.get("/issue", async (req, res) => {
-  const returnedIssues = await prisma.issue.findMany();
+app.get("/issue", (req, res) => {
+  const returnedIssues = prisma.issue.findMany();
   res.json(returnedIssues);
 });
-app.get("/timer", async (req, res) => {
-  const returnedTimers = await prisma.timer.findMany();
+app.get("/timer", (req, res) => {
+  const returnedTimers = prisma.timer.findMany();
   res.json(returnedTimers);
 });
-app.get("/timerPeriod", async (req, res) => {
-  const returnedTimerPeriods = await prisma.timerPeriod.findMany();
+app.get("/timerPeriod", (req, res) => {
+  const returnedTimerPeriods = prisma.timerPeriod.findMany();
   res.json(returnedTimerPeriods);
 });
 //SPECIFIC ENDPOINTS
-app.get("/user/:username", async (req, res) => {
-  const user = await prisma.user.findUnique({
+app.get("/user/:username", (req, res) => {
+  const user = prisma.user.findUnique({
     where: {
       UserName: req.params.username,
     },
   })
   res.json(user);
 });
-app.get("/timer/user/:username", async (req, res) => {
-  const user = await prisma.user.findUnique({
+app.get("/timer/user/:username", (req, res) => {
+  const user = prisma.user.findUnique({
     where: {
       UserName: req.params.username,
     },
@@ -132,18 +133,18 @@ app.get("/timer/user/:username", async (req, res) => {
   })
   res.json(user);
 });
-app.get("/timer/:username/:url", async (req, res) => {
-  const user = await prisma.user.findUnique({
+app.get("/timer/:username/:url", (req, res) => {
+  const user = prisma.user.findUnique({
     where: {
       UserName: req.params.username,
     },
   })
-  const issue = await prisma.user.findUnique({
+  const issue = prisma.user.findUnique({
     where: {
       url: req.params.issueUrl,
     },
   })
-  const timer = await prisma.timer.findUnique({
+  const timer = prisma.timer.findUnique({
     where: {
       userId: user.id,
       issueId: issue.id,

@@ -277,10 +277,6 @@ function LogTimeToNewComment()
 function EditComment(value1, value2, value3)
 {
     console.log("Edit Comment Func");
-    for (const child of document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0].childNodes)
-    {
-        console.log(child.textContent);
-    }
     var editBtn = document.getElementsByClassName("dropdown-item btn-link js-comment-edit-button")[0];//the button that literally says "edit"
     if (editBtn != null)
     {
@@ -497,8 +493,20 @@ function CalculateTimeSpent(log)
 function CreateNewUser(inputUserName)
 {
     var isUserFound = 0;
-    fetch("http://localhost:5220/user/" + inputUserName)
+    fetch("http://localhost:5220/user/" + inputUserName,{
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer",
+    })
     .then(function (){
+        console.log(response.json);
         if (Response.ok)
         {
             isUserFound = 1;
@@ -526,7 +534,6 @@ function CreateNewUser(inputUserName)
             },
             redirect: "follow", // manual, *follow, error
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(data), // body data type must match "Content-Type" header
         }).then(function (){
                 console.log(Response.name);
             })
@@ -564,7 +571,6 @@ function CreateNewIssue(inputUrl, inputIssueName)
             },
             redirect: "follow", // manual, *follow, error
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(data), // body data type must match "Content-Type" header
         })
         .then(function (){
             console.log(Response.name);
@@ -603,7 +609,6 @@ function CreateNewTimer(inputUserName, inputIssueUrl)
             },
             redirect: "follow", // manual, *follow, error
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(data), // body data type must match "Content-Type" header
         })
         .then(function (){
             console.log(Response.name);
@@ -626,7 +631,6 @@ function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndD
         },
         redirect: "follow", // manual, *follow, error
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
     .then(function (){
         console.log(Response.name);
@@ -639,9 +643,9 @@ function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndD
 function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
     CreateNewUser(username);
-    CreateNewIssue(url, issuename);
-    CreateNewTimer(username, url);
-    CreateNewTimerPeriod(username, url, startdate, stopdate);
+    CreateNewIssue(encodeURIComponent(url), issuename);
+    CreateNewTimer(username, encodeURIComponent(url));
+    CreateNewTimerPeriod(username, encodeURIComponent(url), startdate, stopdate);
 }
 
 
