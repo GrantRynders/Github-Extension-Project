@@ -37,7 +37,6 @@ app.post("/user/:username", (req, res) => {
       },
       })
   }
-  console.log(user);
 });
 app.post("/issue/:url/:issuename", async (req, res) => {
   if (await prisma.issue.findUnique({
@@ -62,9 +61,10 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
       UserName: req.params.username,
     },
   })
-  const issue = await prisma.user.findUnique({
+  const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
+      issueName: req.params.issueName,
     },
   })
   const timer = await prisma.timer.create({
@@ -72,23 +72,24 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
     {
       userId: user.id,
       issueId: issue.id,
+      totalTimeElapsed: 0,
     },
     })
     console.log(timer);
 });
-app.put("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate", async (req, res) => {
+app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
       UserName: req.params.username,
     },
   })
-  const issue = await prisma.user.findUnique({
+  const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
       issueName: req.params.issueName,
     },
   })
-  const timer = await prisma.timer.findUnique({
+  const timer = await prisma.timer.findFirst({
     where: {
       userId: user.id,
       issueId: issue.id,
@@ -177,7 +178,7 @@ app.get("/timer/:username/:url/:issuename", async (req, res) => {
       UserName: req.params.username,
     },
   })
-  const issue = await prisma.user.findUnique({
+  const issue = await prisma.issue.findUnique({
     where: {
       url: req.params.issueUrl,
       issueName: req.params.issueName,
