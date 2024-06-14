@@ -26,7 +26,7 @@ model TimerPeriod {
     timer Timer    @relation(fields: [timerId], references: [id])
     startDate String
     endDate String
-    totalTimeElapsed Int
+    totalTimeElapsed Int?
 }
 model Timer {
   id    Int     @id @default(autoincrement())

@@ -659,15 +659,28 @@ async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inp
         console.log("New Timer Period was unable to save");
     });
 }
-
+function CheckServer(url, timeout)
+{
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const options = { mode: 'no-cors', signal };
+    return fetch(url, options)
+      .then(setTimeout(() => { controller.abort() }, timeout))
+      .then(response => console.log('Check server response:', response.statusText))
+      .catch(error => console.error('Check server error:', error.message));
+}
 async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
-    var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
-    var time = Number(Math.round(difference /1000));
-    await CreateNewUser(username);
-    await CreateNewIssue(encodeURIComponent(url), issuename);
-    await CreateNewTimer(username, encodeURIComponent(url), issuename);
-    await CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, Number(time));
+    if (CheckServer("http://localhost:5220", 1000) != null)
+    {
+        var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
+        var time = Number(Math.round(difference /1000));
+        await CreateNewUser(username);
+        await CreateNewIssue(encodeURIComponent(url), issuename);
+        await CreateNewTimer(username, encodeURIComponent(url), issuename);
+        await CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, Number(time));
+    }
+    
 }
 
 
