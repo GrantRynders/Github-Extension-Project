@@ -486,10 +486,10 @@ function CalculateTimeSpent(log)
     return Number(totalTimeSpent);
 }
 
-function CreateNewUser(inputUserName)
+async function CreateNewUser(inputUserName)
 {
     var isUserFound = 0;
-    fetch("http://localhost:5220/user/" + inputUserName,{
+    await fetch("http://localhost:5220/user/" + inputUserName,{
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -536,10 +536,10 @@ function CreateNewUser(inputUserName)
         console.log("Unable to find user due to error");
     });
 }
-function CreateNewIssue(inputUrl, inputIssueName)
+async function CreateNewIssue(inputUrl, inputIssueName)
 {
     var isIssueFound = 0;
-    fetch("http://localhost:5220/issueGet/" + inputUrl + "/" + inputIssueName, {
+    await fetch("http://localhost:5220/issueGet/" + inputUrl + "/" + inputIssueName, {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -587,10 +587,10 @@ function CreateNewIssue(inputUrl, inputIssueName)
         console.log("Issue was unable to save due to error");
     });
 }
-function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
+async function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
 {
     var isTimerFound = 0;
-    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
+    await fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -638,9 +638,9 @@ function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
         console.log("Timer was unable to be found due to error");
     });
 }
-function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate, time)
+async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate, time)
 {
-    fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate + "/" + time, {
+    await fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate + "/" + time, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -660,14 +660,14 @@ function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStar
     });
 }
 
-function LogDataToSQLite(username, url, issuename, startdate, stopdate)
+async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
     var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
     var time = Number(Math.round(difference /1000));
-    CreateNewUser(username);
-    CreateNewIssue(encodeURIComponent(url), issuename);
-    CreateNewTimer(username, encodeURIComponent(url), issuename);
-    CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, time);
+    await CreateNewUser(username);
+    await CreateNewIssue(encodeURIComponent(url), issuename);
+    await CreateNewTimer(username, encodeURIComponent(url), issuename);
+    await CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, Number(time));
 }
 
 

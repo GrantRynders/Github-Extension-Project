@@ -23,14 +23,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.post("/user/:username", (req, res) => {
-  if (prisma.user.findUnique({
+app.post("/user/:username", async (req, res) => {
+  if (await prisma.user.findUnique({
     where: {
       UserName: req.params.username,
     },
   }) == null)
   {
-    const user = prisma.user.create({
+    const user = await prisma.user.create({
       data: 
       {
         UserName: req.params.username,
@@ -102,12 +102,13 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
       issueId: issue.id,
     },
   })
+  console.log(timer);
   const newTimerPeriod = await prisma.timerPeriod.create({
     data: {
       timerId: timer.id,
       startDate: req.params.startdate,
       endDate: req.params.enddate,
-      totalTimeElapsed: req.params.time,
+      totalTimeElapsed: Number(req.params.time),
     },
   })
   console.log(newTimerPeriod);
