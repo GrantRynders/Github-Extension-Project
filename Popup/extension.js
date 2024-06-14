@@ -516,20 +516,23 @@ function CreateNewUser(inputUserName)
     if (isUserFound == 0)
     {
         fetch("http://localhost:5220/user/" + inputUserName, {
-        method: "POST",
-        body: JSON.stringify({
-            UserName: inputUserName
-        }),
-        headers: {
-        "Content-type": "application/json; charset=UTF-8"
-        }
-        })
-        .then(function (){
-            console.log(Response.name);
-        })
-        .catch( function() {
-            console.log("User was unable to save");
-        });
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data), // body data type must match "Content-Type" header
+        }).then(function (){
+                console.log(Response.name);
+            })
+            .catch( function() {
+                console.log("User was unable to save");
+            });
     }
     
 }
@@ -551,14 +554,17 @@ function CreateNewIssue(inputUrl, inputIssueName)
     if (isIssueFound == 0)
     {
         fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
-        method: "POST",
-        body: JSON.stringify({
-            url: inputUrl,
-            issueName: inputIssueName,
-        }),
-        headers: {
-        "Content-type": "application/json; charset=UTF-8"
-        }
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data), // body data type must match "Content-Type" header
         })
         .then(function (){
             console.log(Response.name);
@@ -587,14 +593,17 @@ function CreateNewTimer(inputUserName, inputIssueUrl)
     if (isTimerFound == 0)
     {
         fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl, {
-            method: "POST",
-            body: JSON.stringify({
-                UserName: inputUserName,
-                url: inputIssueUrl,
-            }),
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
             headers: {
-            "Content-type": "application/json; charset=UTF-8"
-            }
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data), // body data type must match "Content-Type" header
         })
         .then(function (){
             console.log(Response.name);
@@ -607,16 +616,17 @@ function CreateNewTimer(inputUserName, inputIssueUrl)
 function CreateNewTimerPeriod(inputUserName, inputUrl, inputStartDate, inputEndDate)
 {
     fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputUrl + "/" + inputStartDate + "/" + inputEndDate, {
-        method: "POST",
-        body: JSON.stringify({
-            UserName: inputUserName,
-            url: inputUrl,
-            startDate: inputStartDate,
-            endDate: inputEndDate,
-        }),
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
         headers: {
-        "Content-type": "application/json; charset=UTF-8"
-        }
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
     .then(function (){
         console.log(Response.name);
