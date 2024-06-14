@@ -88,3 +88,4 @@ Prisma PostgreSQL guide: https://www.prisma.io/docs/getting-started/setup-prisma
 
 Prisma video: https://youtu.be/J8ObGtfy5n0?si=Lq463OEyFXGa6Lb0
 
+Bar chart: https://www.chartjs.org/docs/latest/charts/bar.html
