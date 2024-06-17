@@ -35,3 +35,37 @@ async function GetData()
     });
     return returnData;
 }
+
+(async function() {
+  const chartData = await fetch("http://localhost:5220/usermodel/id/timespent", {
+    method: "GET", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer",
+})
+.catch( function() {
+        console.log("Unable to fetch user graph data");
+});
+
+  new Chart(
+    document.getElementById('acquisitions'),
+    {
+      type: 'bar',
+      data: {
+        labels: data.map(row => row.year),
+        datasets: [
+          {
+            label: 'Time spent by user by period',
+            data: data.map(row => row.count)
+          }
+        ]
+      }
+    }
+  );
+})();
