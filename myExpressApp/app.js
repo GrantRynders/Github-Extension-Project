@@ -203,24 +203,14 @@ app.get("/timer/:username/:url/:issuename", async (req, res) => {
 app.get("/usermodel/:id/timespent", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
-      id: req.params.id,
+      id: Number(req.params.id),
     },
-  })
+  });
   const timers = await prisma.timer.findMany({
     where: {
-      userId: req.params.id,
+      userId: Number(req.params.id),
     },
-  })
-  var totalTimeSpent = 0;
-  for (const timer in timers)
-  {
-    const timerPeriod = await prisma.timer.findMany({
-      where: {
-        timerId: timer.id,
-      },
-    })
-    totalTimeSpent += timerPeriod.totalTimeElapsed;
-  }
+  });
   res.json(
     {
       "username" : user.UserName,
@@ -229,22 +219,15 @@ app.get("/usermodel/:id/timespent", async (req, res) => {
   );
 });
 app.get("/usermodel/:id/issues", async (req, res) => {
-  const timers = await prisma.timer.findMany({
+  const timersWithIssues = await prisma.timer.findMany({
     where: {
       userId: Number(req.params.id),
     },
-  })
-  var issues;
-  for (const timer in timers)
-  {
-    const issue = await prisma.issue.findUnique({
-      where: {
-        id: Number(timer.issueId),
-      },
-    });
-    issues += issue;
-  }
-  res.json(issues);
+    include: {
+      issue: true,
+    },
+  });
+  res.json(timersWithIssues);
 });
 
 
