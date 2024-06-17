@@ -201,33 +201,22 @@ app.get("/timer/:username/:url/:issuename", async (req, res) => {
   res.json(timer);
 });
 app.get("/usermodel/:id/timespent", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: Number(req.params.id),
-    },
-  });
-  const timers = await prisma.timer.findMany({
-    where: {
-      userId: Number(req.params.id),
-    },
-  });
-  res.json(
-    {
-      "username" : user.UserName,
-      "totalTimeSpent" : totalTimeSpent
-    }
-  );
+  
+  var userTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.timerId FROM ((Timer INNER JOIN User ON Timer.id = User.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) WHERE User.id = ${req.params.id};`;
+  var userTimeSpent = 0;
+  for (var j = 0; j < userTimeSpentArray.length; j++) 
+  {
+    console.log(userTimeSpentArray[j]);
+    userTimeSpent += Number(userTimeSpentArray[j].totalTimeElapsed);
+  }
+res.json({
+  'totaltimespent': userTimeSpent,
+});
 });
 app.get("/usermodel/:id/issues", async (req, res) => {
-  const timersWithIssues = await prisma.timer.findMany({
-    where: {
-      userId: Number(req.params.id),
-    },
-    include: {
-      issue: true,
-    },
-  });
-  res.json(timersWithIssues);
+  var userIssues = await prisma.$queryRaw`SELECT Issue.id, Issue.issueName, Issue.url FROM ((Timer INNER JOIN User ON Timer.id = User.id) INNER JOIN Issue ON Timer.id = User.id) WHERE User.id = ${req.params.id};`;
+  console.log(userIssues);
+  res.json(userIssues);
 });
 
 

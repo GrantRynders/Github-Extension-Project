@@ -36,8 +36,9 @@ async function GetData()
     return returnData;
 }
 
-(async function() {
-  const chartData = await fetch("http://localhost:5220/usermodel/id/timespent", {
+async function DrawUserTimeSpentGraph() 
+{
+  const chartData = await fetch("http://localhost:5220/usermodel/" + userId + "/timespent", {
     method: "GET", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, *cors, same-origin
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -49,9 +50,9 @@ async function GetData()
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer",
 })
-.catch( function() {
+  .catch( function() {
         console.log("Unable to fetch user graph data");
-});
+  });
 
   new Chart(
     document.getElementById('acquisitions'),
@@ -68,4 +69,4 @@ async function GetData()
       }
     }
   );
-})();
+}
