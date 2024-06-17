@@ -23,6 +23,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+
+app.use('/pages/users.html', require('./pages/users.html'));
+app.use('/pages/timers.html', require('./pages/timers.html'));
+app.use('/pages/timerperiods.html', require('./pages/timerperiods.html'));
+app.use('/pages/issues.html', require('./pages/issues.html'));
+
+app.use('/pages/user.html', require('./pages/objectmodels/user.html'));
+app.use('/pages/timer.html', require('./pages/objectmodels/timer.html'));
+app.use('/pages/timerperiod.html', require('./pages/objectmodels/timerperiod.html'));
+app.use('/pages/issue.html', require('./pages/objectmodels/issue.html'));
+
+
 app.post("/user/:username", async (req, res) => {
   if (await prisma.user.findUnique({
     where: {
@@ -209,9 +222,9 @@ app.get("/usermodel/:id/timespent", async (req, res) => {
     console.log(userTimeSpentArray[j]);
     userTimeSpent += Number(userTimeSpentArray[j].totalTimeElapsed);
   }
-res.json({
-  'totaltimespent': userTimeSpent,
-});
+  res.json({
+    'totaltimespent': userTimeSpent,
+  });
 });
 app.get("/usermodel/:id/issues", async (req, res) => {
   var userIssues = await prisma.$queryRaw`SELECT Issue.id, Issue.issueName, Issue.url FROM ((Timer INNER JOIN User ON Timer.id = User.id) INNER JOIN Issue ON Timer.id = User.id) WHERE User.id = ${req.params.id};`;
@@ -221,6 +234,8 @@ app.get("/usermodel/:id/issues", async (req, res) => {
 
 
 
+
+//PAGE VIEW ENDPOINTS
 
 
 app.listen(5220, () => console.log('Server running on port ${5220}'));
