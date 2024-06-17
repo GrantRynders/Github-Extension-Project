@@ -25,15 +25,15 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-app.use('/pages/users.html', require('./pages/users.html'));
-app.use('/pages/timers.html', require('./pages/timers.html'));
-app.use('/pages/timerperiods.html', require('./pages/timerperiods.html'));
-app.use('/pages/issues.html', require('./pages/issues.html'));
+// app.use('/pages/users.html', require('./pages/users.html'));
+// app.use('/pages/timers.html', require('./pages/timers.html'));
+// app.use('/pages/timerperiods.html', require('./pages/timerperiods.html'));
+// app.use('/pages/issues.html', require('./pages/issues.html'));
 
-app.use('/pages/user.html', require('./pages/objectmodels/user.html'));
-app.use('/pages/timer.html', require('./pages/objectmodels/timer.html'));
-app.use('/pages/timerperiod.html', require('./pages/objectmodels/timerperiod.html'));
-app.use('/pages/issue.html', require('./pages/objectmodels/issue.html'));
+// app.use('/pages/user.html', require('./pages/objectmodels/user.html'));
+// app.use('/pages/timer.html', require('./pages/objectmodels/timer.html'));
+// app.use('/pages/timerperiod.html', require('./pages/objectmodels/timerperiod.html'));
+// app.use('/pages/issue.html', require('./pages/objectmodels/issue.html'));
 
 
 app.post("/user/:username", async (req, res) => {
