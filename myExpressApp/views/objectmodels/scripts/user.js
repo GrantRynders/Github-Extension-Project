@@ -88,7 +88,7 @@ async function DrawUserIssuesGraph(userId)
         console.log("Unable to fetch user graph data");
   });
 
-  nnew Chart(
+  new Chart(
     document.getElementById('acquisitions'),
     {
       type: 'bar',

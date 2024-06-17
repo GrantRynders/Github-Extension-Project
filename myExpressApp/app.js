@@ -232,7 +232,44 @@ app.get("/usermodel/:id/issues", async (req, res) => {
   res.json(userIssues);
 });
 
-
+//MODEL MAIN PAGES
+app.get('^/$|/test(.html)?', (req, res) => {
+  //res.sendFile('./views/index.html', { root: __dirname });
+  res.sendFile(path.join(__dirname, 'views', 'test.html'));
+});
+app.get('^/$|/views/users(.html)?', (req, res) => {
+  //res.sendFile('./views/index.html', { root: __dirname });
+  res.sendFile(path.join(__dirname, 'views', 'users.html'));
+});
+app.get('^/$|/views/issues(.html)?', (req, res) => {
+  //res.sendFile('./views/index.html', { root: __dirname });
+  res.sendFile(path.join(__dirname, 'views', 'issues.html'));
+});
+app.get('^/$|/views/timers(.html)?', (req, res) => {
+  //res.sendFile('./views/index.html', { root: __dirname });
+  res.sendFile(path.join(__dirname, 'views', 'timers.html'));
+});
+app.get('^/$|/views/timerperiods(.html)?', (req, res) => {
+  //res.sendFile('./views/index.html', { root: __dirname });
+  res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+});
+//MODEL INSTANCE PAGES
+app.get('^/$|/timermodel(.html)?', (req, res) => {
+  res.sendFile('./views/objectmodels/timer.html', { root: __dirname });
+  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+});
+app.get('^/$|/usermodel(.html)?', (req, res) => {
+  res.sendFile('./views/objectmodels/user.html', { root: __dirname });
+  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+});
+app.get('^/$|/issuemodel(.html)?', (req, res) => {
+  res.sendFile('./views/objectmodels/issue.html', { root: __dirname });
+  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+});
+app.get('^/$|/timerperiodmodel(.html)?', (req, res) => {
+  res.sendFile('./views/objectmodels/timerperiod.html', { root: __dirname });
+  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+});
 
 
 //PAGE VIEW ENDPOINTS
