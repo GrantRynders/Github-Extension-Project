@@ -1,20 +1,3 @@
-import Chart from 'chart.js/auto';
-import { getRelativePosition } from 'chart.js/helpers';
-
-// const chart = new Chart(ctx, {
-//   type: 'line',
-//   data: data,
-//   options: {
-//     onClick: (e) => {
-//       const canvasPosition = getRelativePosition(e, chart);
-
-//       // Substitute the appropriate scale IDs
-//       const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
-//       const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
-//     }
-//   }
-// });
-
 async function ModelData()
 {
     const data = await GetData();
@@ -23,13 +6,16 @@ async function ModelData()
     {
         var objectLink = document.createElement("a");
         objectLink.textContent(key + ": " + obj[key]);
-        objectLink.href("")
-        destinationDiv.appendChild
+        if (key = "id")
+        {
+            objectLink.href("http://localhost:5220/timermodel/" + obj[key]);
+        }
+        destinationDiv.appendChild(objectLink);
     }
 }
 async function GetData()
 {
-    const returnData = await fetch("http://localhost:5220/user", {
+    const returnData = await fetch("http://localhost:5220/timer", {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -42,7 +28,7 @@ async function GetData()
         referrerPolicy: "no-referrer",
     })
     .catch( function() {
-            console.log("New timer was unable to save");
+            console.log("Unable to fetch timers");
     });
     return returnData;
 }
