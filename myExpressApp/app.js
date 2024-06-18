@@ -247,8 +247,8 @@ app.get("timermodel/:id/timerperiods", async (req, res) => { //returns all timer
   var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.startDate, TimerPeriod.stopDate, TimerPeriod.TimerId FROM Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId WHERE Timer.url = ${req.params.url};`;
   res.json(timerPeriods);
 });
-app.get("timerperiodmodel/", async (req, res) => { //returns 
-  var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.stopDate AS stopTime, TimerPeriod.TimerId, User.UserName FROM ((Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) INNER JOIN User ON Timer.UserId = User.id) WHERE Timer.url = ${req.params.url};`;
+app.get("timerperiodmodel/endtimes", async (req, res) => { //returns the end dates in milliseconds of all time periods
+  var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.stopDate AS stopTime, TimerPeriod.TimerId, User.UserName FROM ((Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) INNER JOIN User ON Timer.UserId = User.id)`;
   timerPeriods.stopTime = new Date(timerPeriods.stopTime).getTime();
   res.json(timerPeriods);
 });
