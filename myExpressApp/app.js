@@ -20,6 +20,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views/scripts')));
+app.use(express.static(path.join(__dirname, 'views/stylesheets')));
 app.use(cors({ origin: '*' }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -91,19 +93,19 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
     where: {
       UserName: req.params.username,
     },
-  })
+  });
   const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
       issueName: req.params.issueName,
     },
-  })
+  });
   const timer = await prisma.timer.findFirst({
     where: {
       userId: user.id,
       issueId: issue.id,
     },
-  })
+  });
   console.log(timer);
   const newTimerPeriod = await prisma.timerPeriod.create({
     data: {
@@ -112,7 +114,7 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
       endDate: req.params.enddate,
       totalTimeElapsed: Number(req.params.time),
     },
-  })
+  });
   console.log(newTimerPeriod);
 });
 //GENERAL ENDPOINTS
@@ -220,7 +222,7 @@ app.get("/usermodel/:id/issues", async (req, res) => { //Every tracked issue a u
   console.log(userIssues);
   res.json(userIssues);
 });
-app.get("issuemodel/:url/timespent", async (req, res) => { //total amount of time spent on an issue by all users
+app.get("/issuemodel/:url/timespent", async (req, res) => { //total amount of time spent on an issue by all users
   var issueTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, Issue.Id FROM ((Timer INNER JOIN Issue ON Timer.issueId = Issue.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) WHERE Timer.url = ${req.params.url};`;
   var issueTimeSpent = 0;
   for (var j = 0; j < issueTimeSpentArray.length; j++) 
@@ -232,12 +234,12 @@ app.get("issuemodel/:url/timespent", async (req, res) => { //total amount of tim
     'totaltimespent': issueTimeSpent,
   });
 });
-app.get("timermodel/:id/timerperiods", async (req, res) => { //returns all timerperiods for a given timer
-  var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.startDate, TimerPeriod.stopDate, TimerPeriod.TimerId FROM Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId WHERE Timer.url = ${req.params.url};`;
+app.get("/timermodel/:id/timerperiods", async (req, res) => { //returns all timerperiods for a given timer
+  var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.startDate, TimerPeriod.endDate, TimerPeriod.TimerId FROM Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId WHERE Timer.id = ${req.params.id};`;
   res.json(timerPeriods);
 });
-app.get("timerperiodmodel/endtimes", async (req, res) => { //returns the end dates in milliseconds of all time periods
-  var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.stopDate AS stopTime, TimerPeriod.TimerId, User.UserName, TimerPeriod.totalTimeElapsed FROM ((Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) INNER JOIN User ON Timer.UserId = User.id)`;
+app.get("/timerperiodmodel/endtimes", async (req, res) => { //returns the end dates in milliseconds of all time periods
+  var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.endDate AS stopTime, TimerPeriod.TimerId, User.UserName, TimerPeriod.totalTimeElapsed FROM ((Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) INNER JOIN User ON Timer.UserId = User.id)`;
   timerPeriods.stopTime = new Date(timerPeriods.stopTime).getTime();
   res.json(timerPeriods);
 });
@@ -285,7 +287,7 @@ app.get('^/$|/users(.js)?', (req, res) => {
   //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
 });
 app.get('^/$|/app(.css)?', (req, res) => {
-  res.sendFile('./views/objectmodels/stylesheet/app.css', { root: __dirname });
+  res.sendFile('app.css', { root: './views/stylesheet' });
   //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
 });
 
