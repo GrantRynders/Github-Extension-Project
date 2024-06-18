@@ -8,9 +8,9 @@
 </head>
 <body>
     <H1> TIMERS DATA </H1>
-    <p id="myChart">
+    <canvas id="myChart">
 
-    </p>
+    </canvas>
 
 
 
@@ -22,13 +22,15 @@
     <script>
         //import Chart from 'chart.js/auto';
         Main();
-        function Main()
+        async function Main()
         {
-            DrawTimePeriodsForTimer(1);
+            var chartData = await DrawTimePeriodsForTimer(1);
+            var myChart = document.getElementById("myChart");
+            myChart.textContent = chartData;
         }
         async function DrawTimePeriodsForTimer(timerId) 
         {
-            const chartData = await fetch("./timermodel/" + timerId + "/timerperiods", {
+            const chartData = await fetch("http://localhost:5220/timermodel/" + timerId + "/timerperiods", {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -41,10 +43,9 @@
                 referrerPolicy: "no-referrer",
             })
             .catch( function() {
-                console.log("Unable to fetch user graph data");
+                console.log("Unable to fetch timer graph data");
             });
-            var myChart = document.getElementById("myChart");
-            myChart.textContent = chartData;
+            return chartData;
         }
     </script>
 </body>
