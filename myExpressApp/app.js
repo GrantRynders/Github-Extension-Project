@@ -25,17 +25,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-// app.use('/pages/users.html', require('./pages/users.html'));
-// app.use('/pages/timers.html', require('./pages/timers.html'));
-// app.use('/pages/timerperiods.html', require('./pages/timerperiods.html'));
-// app.use('/pages/issues.html', require('./pages/issues.html'));
-
-// app.use('/pages/user.html', require('./pages/objectmodels/user.html'));
-// app.use('/pages/timer.html', require('./pages/objectmodels/timer.html'));
-// app.use('/pages/timerperiod.html', require('./pages/objectmodels/timerperiod.html'));
-// app.use('/pages/issue.html', require('./pages/objectmodels/issue.html'));
-
-
 app.post("/user/:username", async (req, res) => {
   if (await prisma.user.findUnique({
     where: {
@@ -198,26 +187,26 @@ app.get("/timer/:username/:url/:issuename", async (req, res) => {
     where: {
       UserName: req.params.username,
     },
-  })
+  });
   const issue = await prisma.issue.findUnique({
     where: {
       url: req.params.issueUrl,
       issueName: req.params.issueName,
     },
-  })
+  });
   const timer = await prisma.timer.findUnique({
     where: {
       userId: user.id,
       issueId: issue.id,
     },
-  })
+  });
   res.json(timer);
-});
+  });
 app.get("/usermodel/:id/timespent", async (req, res) => {//Net amount of time spent by the user using our timer extension
   
   var userTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.timerId FROM ((Timer INNER JOIN User ON Timer.id = User.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) WHERE User.id = ${req.params.id};`;
   var userTimeSpent = 0;
-  for (var j = 0; j < userTimeSpentArray.length; j++) 
+  for (var j = 0; j < userTimeSpentArray.length; j++)
   {
     console.log(userTimeSpentArray[j]);
     userTimeSpent += Number(userTimeSpentArray[j].totalTimeElapsed);
@@ -291,7 +280,14 @@ app.get('^/$|/timerperiodmodel(.html)?', (req, res) => {
   res.sendFile('./views/objectmodels/timerperiod.html', { root: __dirname });
   //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
 });
-
+app.get('^/$|/users(.js)?', (req, res) => {
+  res.sendFile('./views/objectmodels/scripts/users.js', { root: __dirname });
+  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+});
+app.get('^/$|/app(.css)?', (req, res) => {
+  res.sendFile('./views/objectmodels/stylesheet/app.css', { root: __dirname });
+  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+});
 
 app.listen(5220, () => console.log('Server running on port ${5220}'));
 
