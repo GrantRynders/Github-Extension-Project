@@ -103,44 +103,61 @@
     <!--<script type="module" src="objectmodels/scripts/user.js"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        var names;
+        var issueCounts;
         //import Chart from 'chart.js/auto';
         Main();
-        function Main()
+        async function Main()
         {
-            DrawUserTimeSpentGraph(1);
+            await UserIssuesDataGet();
+            await DrawUserIssuesInvolvedGraph();
         }
-        async function DrawUserTimeSpentGraph(userId) 
+        async function UserIssuesDataGet()
         {
             // const chartData = await fetch("http://localhost:5220/usermodel/" + userId + "/timespent", {
             const allUsersResponse = await fetch("http://localhost:5220/user");
-            const allUsers = await chartData2Response.json();
-            for (var i = 0; i < allUsers.length; i++) 
+            const allUsers = await allUsersResponse.json();
+            issueCounts = await Promise.all(allUsers.map(async function(index){
+                console.log("About to fetch issues for user");
+                const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
+                console.log("Turning it into json");
+                const userIssues = await userIssuesResponse.json();
+                const count = userIssues.length;
+                console.log("length:" + userIssues.length);
+                return count;
+            }));
+            names = allUsers.map(function(index){
+                    console.log(index.UserName);
+                    return index.UserName;
+            });
+            for (const i of issueCounts)
             {
-                const allUsersResponse = await fetch("http://localhost:5220/usermodel/" + allUsers[i].id + "/issues");
-                
+                console.log("loop: " + i);
             }
-
-
+        }
+        async function DrawUserIssuesInvolvedGraph() 
+        {
+            console.log("Start graphing");
             const xValues = [100,200,300,400,500,600,700,800,900,1000];
             var myChart = document.getElementById("myChart");
             new Chart(myChart, {
-    type: 'bar',
-    data: {
-      labels: ['REGGIE', 'BOB', 'DILLON', 'SAMUS', 'RALPH', 'ORANGE'],
-      datasets: [{
-        label: 'MINUTES SPENT ON ISSUE',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'ISSUE COUNT FOR EACH USER',
+                    data: issueCounts,
+                    borderWidth: 1
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
         }
         async function DrawUserIssuesGraph(userId) 
         {

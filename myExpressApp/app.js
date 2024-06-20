@@ -218,7 +218,7 @@ app.get("/usermodel/:id/timespent", async (req, res) => {//Net amount of time sp
   });
 });
 app.get("/usermodel/:id/issues", async (req, res) => { //Every tracked issue a user has worked on
-  var userIssues = await prisma.$queryRaw`SELECT Issue.id, Issue.issueName, Issue.url FROM ((Timer INNER JOIN User ON Timer.id = User.id) INNER JOIN Issue ON Timer.id = User.id) WHERE User.id = ${req.params.id};`;
+  var userIssues = await prisma.$queryRaw`SELECT Issue.id, Issue.issueName, Issue.url FROM ((Timer INNER JOIN User ON Timer.userId = User.id) INNER JOIN Issue ON Timer.issueId = Issue.id) WHERE User.id = ${req.params.id};`;
   console.log(userIssues);
   res.json(userIssues);
 });

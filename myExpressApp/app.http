@@ -30,3 +30,11 @@ GET {{WebApiHost}}/user/JohnSmith
 ###
 //get user by username and that user's timers
 GET {{WebApiHost}}/timer/user/JohnSmith
+
+###
+
+GET {{WebApiHost}}/usermodel/1/issues
+
+###
+
+GET {{WebApiHost}}/timer
