@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheets/app.css">
+    <!-- <link rel="stylesheet" href="stylesheets/app.css"> -->
     <title>Issues</title>
     <style>
         *{
@@ -59,6 +59,9 @@
         #CurrentTab{
             background-color:#383c40;
         }
+        canvas{
+            margin: 3em 0em 3em 0em;
+        }
     </style>
 </head>
 <body>
@@ -87,6 +90,56 @@
     
     <div id="content">
         <H1> ISSUES DATA</H1>
+        <canvas id="timeSpent">
+
+        </canvas>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var timeSpentArray;
+        var names;
+        Main();
+        async function Main()
+        {
+            await IssueTimeSpentDataGet();
+            await DrawIssueTimeSpentGraph();
+        }
+        async function IssueTimeSpentDataGet()
+        {
+            const allIssuesResponse = await fetch("http://localhost:5220/issue");
+            const allIssues = await allIssuesResponse.json();
+            timeSpentArray = await Promise.all(allIssues.map(async function(index){
+                const issueTimeResponse = await fetch("http://localhost:5220/issuemodel/" + index.id + "/timespent");
+                const issueTime = await issueTimeResponse.json();
+                return issueTime.totaltimespent;
+            }));
+            names = allIssues.map(function(index){
+                    return index.issueName;
+            });
+        }
+        async function DrawIssueTimeSpentGraph() 
+        {
+            const xValues = [100,200,300,400,500,600,700,800,900,1000];
+            var myChart = document.getElementById("timeSpent");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'TOTAL TIME SPENT BY ALL USERS ON THE ISSUE IN SECONDS',
+                    data: timeSpentArray,
+                    borderWidth: 1
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
