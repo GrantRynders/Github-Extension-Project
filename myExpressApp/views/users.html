@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheets/app.css">
+    <!-- <link rel="stylesheet" href="stylesheets/app.css"> -->
     <title>Users</title>
     <style>
         *{
@@ -112,40 +112,8 @@
         async function DrawUserTimeSpentGraph(userId) 
         {
             // const chartData = await fetch("http://localhost:5220/usermodel/" + userId + "/timespent", {
-            const chartData = await fetch("http://localhost:5220/user", {
-                method: "GET", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer",
-            })
-            .then( function() {
-                console.log(chartData);
-                document.getElementsByTagName('h1')[0].textContent = chartData;
-            })
-            .catch( function() {
-                console.log("Unable to fetch user graph data");
-            });
-            
-            // new Chart(
-            //     document.getElementById('acquisitions'),
-            //     {
-            //     type: 'bar',
-            //     data: {
-            //         labels: chartData.map(row => row.year),
-            //         datasets: [
-            //         {
-            //             label: 'Time spent by user by period',
-            //             data: chartData.map(row => row.count)
-            //         }
-            //         ]
-            //     }
-            // });
+            const chartData2Response = await fetch("http://localhost:5220/user");
+            const chartData2 = await chartData2Response.json();
             const xValues = [100,200,300,400,500,600,700,800,900,1000];
             var myChart = document.getElementById("myChart");
             new Chart(myChart, {
