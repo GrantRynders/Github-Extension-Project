@@ -81,7 +81,7 @@ function InitializeTimer()
         if (results == 0)
         {
             console.log("crippling failure");
-            CreateUserTimerLog(userName);
+           // CreateUserTimerLog(userName);
         }
         if (results == 1)
         {
