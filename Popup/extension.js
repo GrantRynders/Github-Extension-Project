@@ -1,35 +1,104 @@
 //SCRIPT TO BE INJECTED INTO https://github.com/*/*/issues/*
 
 console.log("Script Injected");
-//CREATE BUTTONS and set their attributes
-var startButton = document.createElement('button');
-startButton.textContent = "\u25B6"; //Unicode play button
-startButton.id = "startButton";
-var pauseButton = document.createElement('button');
-pauseButton.textContent = "| |";
-pauseButton.id = "pauseButton";
-var stopButton = document.createElement('button');
-stopButton.textContent = "X";
-stopButton.id = "stopButton";
-var timerDisplay = document.createElement('h1');
-timerDisplay.textContent = "DD:HH:MM:SS";
-timerDisplay.id = "timerDisplay";
-var credits = document.createElement('p');
-credits.textContent = "Timer Extension for Github issues as part of ITSC Summer Internship 2024\n https://github.com/GrantRynders/Github-Extension-Project";
-credits.id = "credits";
-//Find the destination for our new content
+var startButton;
+var pauseButton;
+var stopButton;
+var timerDisplay;
+var credits;
 var destinationDiv = document.getElementById("js-repo-pjax-container");
-var textArea = document.getElementById("new_comment_field");
-var commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
-var commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
-var titleBar = "js-issue-title markdown-title";
-//append instances of our new buttons to the page
-AppendAdditions();
-//find those instances we just created
-var startButtonInstance = document.getElementById("startButton");
-var pauseButtonInstance = document.getElementById("pauseButton");
-var stopButtonInstance = document.getElementById("stopButton");
-var timerDisplayInstance = document.getElementById("timerDisplay");
+var textArea;
+var commentParent;
+var commentButton;
+var titleBar;
+var startButtonInstance;
+var pauseButtonInstance;
+var stopButtonInstance;
+var timerDisplayInstance;
+
+var createTimerButton = document.createElement('button');
+createTimerButton.textContent = "Track This Issue";
+createTimerButton.id = "createTimerButton";
+results = FindUserTimerLog(userName);
+if (results == 0)
+{
+    destinationDiv.append(createTimerButton);
+    var createTimerButtonInstance = document.getElementById("createTimerButton");
+    createTimerButtonInstance.addEventListener('click',function ()
+    {
+        console.log("CREATE TIMER Button Clicked");
+        CreateTimerDisplay();
+        createTimerButtonInstance.remove();
+        InitializeTimer();
+    });
+}
+if (results == 1)
+{
+    CreateTimerDisplay();
+    InitializeTimer();
+}
+function CreateTimerDisplay()
+{
+    startButton = document.createElement('button');
+    startButton.textContent = "\u25B6"; //Unicode play button
+    startButton.id = "startButton";
+    pauseButton = document.createElement('button');
+    pauseButton.textContent = "| |";
+    pauseButton.id = "pauseButton";
+    stopButton = document.createElement('button');
+    stopButton.textContent = "X";
+    stopButton.id = "stopButton";
+    timerDisplay = document.createElement('h1');
+    timerDisplay.textContent = "DD:HH:MM:SS";
+    timerDisplay.id = "timerDisplay";
+    credits = document.createElement('p');
+    credits.textContent = "Timer Extension for Github issues as part of ITSC Summer Internship 2024\n https://github.com/GrantRynders/Github-Extension-Project";
+    credits.id = "credits";
+    //Find the destination for our new content
+    textArea = document.getElementById("new_comment_field");
+    commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
+    commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
+    titleBar = "js-issue-title markdown-title";
+    //append instances of our new buttons to the page
+    AppendAdditions();
+    //find those instances we just created
+    createTimerButtonInstance = document.getElementById("createTimerButton");
+    startButtonInstance = document.getElementById("startButton");
+    pauseButtonInstance = document.getElementById("pauseButton");
+    stopButtonInstance = document.getElementById("stopButton");
+    timerDisplayInstance = document.getElementById("timerDisplay");
+    startButtonInstance.addEventListener('click',function ()
+    {
+        console.log("Start Button Clicked");
+        if (isTimerActive == 0) //Can't start a timer that is already started
+        {
+            isTimerActive = 1;
+            startDate = Date();
+            SaveData();
+            startTimer();
+            LogTime();
+        }
+        
+    });
+    pauseButtonInstance.addEventListener('click',function ()
+    {
+        console.log("PAUSE Button Clicked");
+        if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
+        {
+            isTimerPaused = 1;
+            StopTimer();
+            SaveData();
+            LogEndOfTimer();
+        }
+    });
+    stopButtonInstance.addEventListener('click',function ()
+    {
+        console.log("STOP Button Clicked");
+        LogEndOfTimer(); //Create a comment detailing end timer stats
+        StopTimer();
+        ResetTimerValues();//Reset the timer
+    });
+}
 //Numbers for our time variables
 var sec = 0;
 var totalSeconds = 0;//deprecated
@@ -53,17 +122,16 @@ var userName;
 var timerCount = 0;
 var startDate;
 var endDate;
-InitializeTimer();
 timerCount++;
-navigation.addEventListener("navigate", function ()
-{
-    console.log("Location change");
-    if(timerCount == 0)
-    {
-        InitializeTimer(); 
-    }
-    timerCount++;
-});
+// navigation.addEventListener("navigate", function ()
+// {
+//     console.log("Location change");
+//     if(timerCount == 0)
+//     {
+//         InitializeTimer(); 
+//     }
+//     timerCount++;
+// });
 //On initialize
 function InitializeTimer()
 {
@@ -81,7 +149,7 @@ function InitializeTimer()
         if (results == 0)
         {
             console.log("crippling failure");
-            //CreateUserTimerLog(userName); //temporarily disabled
+            CreateUserTimerLog(userName); //temporarily disabled
         }
         if (results == 1)
         {
@@ -192,37 +260,6 @@ function StopTimer() //Stops the interval func
     SaveData();
     timerCount = 0;
 }
-startButtonInstance.addEventListener('click',function ()
-{
-    console.log("Start Button Clicked");
-    if (isTimerActive == 0) //Can't start a timer that is already started
-    {
-        isTimerActive = 1;
-        startDate = Date();
-        SaveData();
-        startTimer();
-        LogTime();
-    }
-    
-});
-pauseButtonInstance.addEventListener('click',function ()
-{
-    console.log("PAUSE Button Clicked");
-    if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
-    {
-        isTimerPaused = 1;
-        StopTimer();
-        SaveData();
-        LogEndOfTimer();
-    }
-});
-stopButtonInstance.addEventListener('click',function ()
-{
-    console.log("STOP Button Clicked");
-    LogEndOfTimer(); //Create a comment detailing end timer stats
-    StopTimer();
-    ResetTimerValues();//Reset the timer
-});
 function AppendAdditions() //Append new elements to the destination for the extension
 {
     if (destinationDiv != null)
