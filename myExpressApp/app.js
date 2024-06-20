@@ -39,7 +39,7 @@ app.post("/user/:username", async (req, res) => {
       {
         UserName: req.params.username,
       },
-      })
+      });
   }
 });
 app.post("/issue/:url/:issuename", async (req, res) => {
@@ -55,7 +55,7 @@ app.post("/issue/:url/:issuename", async (req, res) => {
       url: req.params.url,
       issueName: req.params.issuename,
     },
-    })
+    });
   }
   
 });

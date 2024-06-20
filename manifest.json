@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Github Issues Timer",
-  "version": "1.0.0",
-  "description": "An extension for github issues that adds a timer that logs to issue comments",
+  "version": "1.1.0",
+  "description": "An in-development extension for github issues that adds a timer that logs to issue comments.",
   "author": "ITSC Interns",
   "icons": {
     "48": "Icons/betterIcon.png",
