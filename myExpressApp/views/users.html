@@ -60,6 +60,9 @@
         #CurrentTab{
             background-color:#383c40;
         }
+        canvas{
+            margin: 3em 0em 3em 0em;
+        }
     </style>
 </head>
 <body>
@@ -87,11 +90,16 @@
     </header>
     <div id="content">
         <h1> USERS DATA</h1>
-        <canvas id="myChart">
+        <canvas id="issuesChart">
+
+        </canvas>
+        <canvas id="timespentChart">
+
+        </canvas>
     </div>
     
 
-    </canvas>
+    
 
 
 
@@ -105,41 +113,47 @@
     <script>
         var names;
         var issueCounts;
+        var timeSpentArray;
         //import Chart from 'chart.js/auto';
         Main();
         async function Main()
         {
             await UserIssuesDataGet();
             await DrawUserIssuesInvolvedGraph();
+            await UserTimeSpentDataGet();
+            await DrawUserTimeSpentGraph();
         }
         async function UserIssuesDataGet()
         {
-            // const chartData = await fetch("http://localhost:5220/usermodel/" + userId + "/timespent", {
             const allUsersResponse = await fetch("http://localhost:5220/user");
             const allUsers = await allUsersResponse.json();
             issueCounts = await Promise.all(allUsers.map(async function(index){
-                console.log("About to fetch issues for user");
                 const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
-                console.log("Turning it into json");
                 const userIssues = await userIssuesResponse.json();
                 const count = userIssues.length;
-                console.log("length:" + userIssues.length);
                 return count;
             }));
             names = allUsers.map(function(index){
-                    console.log(index.UserName);
                     return index.UserName;
             });
-            for (const i of issueCounts)
-            {
-                console.log("loop: " + i);
-            }
+        }
+        async function UserTimeSpentDataGet()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            timeSpentArray = await Promise.all(allUsers.map(async function(index){
+                const userTimeResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/timespent");
+                const userTime = await userTimeResponse.json();
+                return userTime.totaltimespent;
+            }));
+            names = allUsers.map(function(index){
+                    return index.UserName;
+            });
         }
         async function DrawUserIssuesInvolvedGraph() 
         {
-            console.log("Start graphing");
             const xValues = [100,200,300,400,500,600,700,800,900,1000];
-            var myChart = document.getElementById("myChart");
+            var myChart = document.getElementById("issuesChart");
             new Chart(myChart, {
                 type: 'bar',
                 data: {
@@ -159,40 +173,29 @@
                 }
             });
         }
-        async function DrawUserIssuesGraph(userId) 
+        async function DrawUserTimeSpentGraph() 
         {
-        const chartData = await fetch("/usermodel/" + userId + "/issues", {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer",
-        })
-        .catch( function() {
-                console.log("Unable to fetch user graph data");
-        });
-
-        new Chart(
-            document.getElementById('acquisitions'),
-            {
-            type: 'bar',
-            data: {
-                labels: chartData.map(row => row.year),
-                datasets: [
-                {
-                    label: 'Time spent by user by period',
-                    data: chartData.map(row => row.count)
+            const xValues = [100,200,300,400,500,600,700,800,900,1000];
+            var myChart = document.getElementById("timespentChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'TOTAL TIME SPENT WORKING ON GITHUB ISSUES IN SECONDS',
+                    data: timeSpentArray,
+                    borderWidth: 1
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
                 }
-                ]
-            }
-            }
-        );
-    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

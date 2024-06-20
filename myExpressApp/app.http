@@ -33,8 +33,8 @@ GET {{WebApiHost}}/timer/user/JohnSmith
 
 ###
 
-GET {{WebApiHost}}/usermodel/1/issues
+GET {{WebApiHost}}/usermodel/1/timespent
 
 ###
 
-GET {{WebApiHost}}/timer
+GET {{WebApiHost}}/timerperiod

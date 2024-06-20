@@ -206,7 +206,7 @@ app.get("/timer/:username/:url/:issuename", async (req, res) => {
   });
 app.get("/usermodel/:id/timespent", async (req, res) => {//Net amount of time spent by the user using our timer extension
   
-  var userTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.timerId FROM ((Timer INNER JOIN User ON Timer.id = User.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) WHERE User.id = ${req.params.id};`;
+  var userTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.timerId FROM ((Timer INNER JOIN User ON Timer.userId = User.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) WHERE User.id = ${req.params.id};`;
   var userTimeSpent = 0;
   for (var j = 0; j < userTimeSpentArray.length; j++)
   {
