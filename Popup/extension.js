@@ -539,18 +539,7 @@ function CalculateTimeSpent(log)
 async function CreateNewUser(inputUserName)
 {
     var isUserFound = 0;
-    await fetch("http://localhost:5220/user/" + inputUserName,{
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-            "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer",
-    })
+    await fetch("http://localhost:5220/user/" + inputUserName)
     .then(function (){
         if (Response.ok)
         {
@@ -589,18 +578,7 @@ async function CreateNewUser(inputUserName)
 async function CreateNewIssue(inputUrl, inputIssueName)
 {
     var isIssueFound = 0;
-    await fetch("http://localhost:5220/issueGet/" + inputUrl + "/" + inputIssueName, {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-            "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer",
-    })
+    await fetch("http://localhost:5220/issueGet/" + inputUrl + "/" + inputIssueName)
     .then(function (){
         if (Response.ok)
         {
@@ -640,18 +618,7 @@ async function CreateNewIssue(inputUrl, inputIssueName)
 async function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
 {
     var isTimerFound = 0;
-    await fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-            "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer",
-    })
+    await fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName)
     .then(function (){
         if (Response.ok)
         {

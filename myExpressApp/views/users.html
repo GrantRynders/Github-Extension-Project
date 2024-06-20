@@ -112,8 +112,15 @@
         async function DrawUserTimeSpentGraph(userId) 
         {
             // const chartData = await fetch("http://localhost:5220/usermodel/" + userId + "/timespent", {
-            const chartData2Response = await fetch("http://localhost:5220/user");
-            const chartData2 = await chartData2Response.json();
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await chartData2Response.json();
+            for (var i = 0; i < allUsers.length; i++) 
+            {
+                const allUsersResponse = await fetch("http://localhost:5220/usermodel/" + allUsers[i].id + "/issues");
+                
+            }
+
+
             const xValues = [100,200,300,400,500,600,700,800,900,1000];
             var myChart = document.getElementById("myChart");
             new Chart(myChart, {
