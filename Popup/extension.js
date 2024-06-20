@@ -15,28 +15,62 @@ var startButtonInstance;
 var pauseButtonInstance;
 var stopButtonInstance;
 var timerDisplayInstance;
-
+var userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
 var createTimerButton = document.createElement('button');
 createTimerButton.textContent = "Track This Issue";
 createTimerButton.id = "createTimerButton";
-results = FindUserTimerLog(userName);
-if (results == 0)
+//Numbers for our time variables
+var sec = 0;
+var totalSeconds = 0;//deprecated
+var start;
+//The formatted strings for our numbers
+var secString = "00";
+var minString = "00";
+var hourString = "00";
+var dayString = "00";
+var totalTimeString = "00:00:00:00";
+//Our interval timer for the app
+var timer;
+var isTimerActive = 0; //Essentially a bool for if the timer is running
+var isTimerPaused = 0;//a bool for if the timer is paused (different than it not being active)
+//Dates to save
+var lastDate;
+var currentDate;
+var commentNum = 0;
+var commentId = "";
+var timerCount = 0;
+var startDate;
+var endDate;
+timerCount++;
+CheckIfInitialized();
+// window.onbeforeunload = function (){
+//     SaveData();
+// };
+async function CheckIfInitialized()
 {
-    destinationDiv.append(createTimerButton);
-    var createTimerButtonInstance = document.getElementById("createTimerButton");
-    createTimerButtonInstance.addEventListener('click',function ()
+    results = await FindUserTimerLog(userName);
+    console.log(results);
+    if (results == 0)
     {
-        console.log("CREATE TIMER Button Clicked");
+        console.log("Ping");
+        destinationDiv.append(createTimerButton);
+        var createTimerButtonInstance = document.getElementById("createTimerButton");
+        createTimerButtonInstance.addEventListener('click',function ()
+        {
+            console.log("CREATE TIMER Button Clicked");
+            CreateTimerDisplay();
+            createTimerButtonInstance.remove();
+            InitializeTimer();
+            //window.location.reload();
+        });
+    }
+    if (results == 1)
+    {
         CreateTimerDisplay();
-        createTimerButtonInstance.remove();
         InitializeTimer();
-    });
+    }
 }
-if (results == 1)
-{
-    CreateTimerDisplay();
-    InitializeTimer();
-}
+
 function CreateTimerDisplay()
 {
     startButton = document.createElement('button');
@@ -99,57 +133,36 @@ function CreateTimerDisplay()
         ResetTimerValues();//Reset the timer
     });
 }
-//Numbers for our time variables
-var sec = 0;
-var totalSeconds = 0;//deprecated
-var start;
-//The formatted strings for our numbers
-var secString = "00";
-var minString = "00";
-var hourString = "00";
-var dayString = "00";
-var totalTimeString = "00:00:00:00";
-//Our interval timer for the app
-var timer;
-var isTimerActive = 0; //Essentially a bool for if the timer is running
-var isTimerPaused = 0;//a bool for if the timer is paused (different than it not being active)
-//Dates to save
-var lastDate;
-var currentDate;
-var commentNum = 0;
-var commentId = "";
-var userName;
-var timerCount = 0;
-var startDate;
-var endDate;
-timerCount++;
 // navigation.addEventListener("navigate", function ()
 // {
 //     console.log("Location change");
-//     if(timerCount == 0)
+//     if (document.getElementById("startButton") == null)
 //     {
-//         InitializeTimer(); 
+//         CheckIfInitialized();
 //     }
-//     timerCount++;
+//     // if(timerCount == 0)
+//     // {
+//     //     InitializeTimer(); 
+//     // }
+//     // timerCount++;
 // });
 //On initialize
-function InitializeTimer()
+async function InitializeTimer()
 {
     // if (window.location.href.includes("\\issues\\"))
     // {
-        userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
         console.log(userName);
         if (localStorage.getItem(userName + window.location.href) == null)
         {
             SaveData();
         }
         LoadData(); //Get our local storage values if there are any, making sure nothing is null
-        results = FindUserTimerLog(userName);
+        results = await FindUserTimerLog(userName);
         console.log(results);
         if (results == 0)
         {
             console.log("crippling failure");
-            CreateUserTimerLog(userName); //temporarily disabled
+            await CreateUserTimerLog(userName); //temporarily disabled
         }
         if (results == 1)
         {
@@ -324,7 +337,7 @@ function EditComment(value1, value2, value3)
             commentTextArea.textContent += "\n. . . .\nTotal Time Spent So Far: " + formattedTimeElapsed;
         }
         submitEditButton.click();
-        window.location.reload();//reload the page to submit the comment
+        //window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else
@@ -393,9 +406,9 @@ function ResetLocalStorage()
     startDate = null;
     SaveData();
 }
-function FindUserTimerLog(user)
+async function FindUserTimerLog(user)
 {
-
+    console.log("Bingo");
     var isLogFound = 0;
     commentNum = 0;
     var comments = document.getElementsByClassName("TimelineItem js-comment-container");
@@ -419,7 +432,7 @@ function FindUserTimerLog(user)
     SaveData();
     return isLogFound;
 }
-function CreateUserTimerLog(user)
+async function CreateUserTimerLog(user)
 {
     if (commentButton != null) //Make sure comment button is not null
     {

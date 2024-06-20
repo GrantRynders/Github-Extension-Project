@@ -111,7 +111,8 @@
         }
         async function DrawUserTimeSpentGraph(userId) 
         {
-            const chartData = await fetch("http://localhost:5220/usermodel/" + userId + "/timespent", {
+            // const chartData = await fetch("http://localhost:5220/usermodel/" + userId + "/timespent", {
+            const chartData = await fetch("http://localhost:5220/user", {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -123,10 +124,14 @@
                 redirect: "follow", // manual, *follow, error
                 referrerPolicy: "no-referrer",
             })
+            .then( function() {
+                console.log(chartData);
+                document.getElementsByTagName('h1')[0].textContent = chartData;
+            })
             .catch( function() {
                 console.log("Unable to fetch user graph data");
             });
-
+            
             // new Chart(
             //     document.getElementById('acquisitions'),
             //     {
