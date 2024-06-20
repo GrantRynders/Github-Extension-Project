@@ -10,9 +10,10 @@
             font-family:Segoe UI, SegoeUI, Arial, sans-serif;
             margin: 0;
             padding: 0;
+            color: white;
         }
         body{
-            background-color: #FFFFFF;
+            background-color: #161b22;
         }
         header{
             display:inline-block;
@@ -62,6 +63,20 @@
         }
         canvas{
             margin: 3em 0em 3em 0em;
+            background-color: #FFFFFF;
+        }
+        .UserLink{
+            color: white;
+            text-decoration: none;
+            font-size: 2em;
+            width: 100%;
+            display: inline-block;
+        }
+        .CanvasWrapper{
+            background-color: #FFFFFF;
+            padding:2em 2em 2em 2em;
+            margin: 3em 3em 3em 3em;
+            border-radius:3em;
         }
     </style>
 </head>
@@ -90,12 +105,21 @@
     </header>
     <div id="content">
         <h1> USERS DATA</h1>
-        <canvas id="issuesChart">
+        <div class="CanvasWrapper">
+            <canvas id="issuesChart">
 
-        </canvas>
-        <canvas id="timespentChart">
+            </canvas>
+        </div>
+        
+        <div class="CanvasWrapper">
+            <canvas id="timespentChart">
 
-        </canvas>
+            </canvas>
+        </div>
+        
+        <div id="UserList">
+
+        </div>
     </div>
     
 
@@ -122,6 +146,21 @@
             await DrawUserIssuesInvolvedGraph();
             await UserTimeSpentDataGet();
             await DrawUserTimeSpentGraph();
+            await DisplayAllUsers();
+        }
+        async function DisplayAllUsers()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            var destinationDiv = document.getElementById("UserList");
+            for (var i = 0; i < allUsers.length; i++)
+            {
+                var userLink = document.createElement('A');
+                userLink.className = "UserLink";
+                userLink.href = "http://localhost:5220/views/usermodel/" + allUsers[i].id;
+                userLink.textContent = "Id: " + allUsers[i].id + ", UserName: " + allUsers[i].UserName + "\n";
+                destinationDiv.appendChild(userLink);
+            }
         }
         async function UserIssuesDataGet()
         {
@@ -161,7 +200,8 @@
                 datasets: [{
                     label: 'ISSUE COUNT FOR EACH USER',
                     data: issueCounts,
-                    borderWidth: 1
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
                 }]
                 },
                 options: {
@@ -172,6 +212,7 @@
                 }
                 }
             });
+            
         }
         async function DrawUserTimeSpentGraph() 
         {

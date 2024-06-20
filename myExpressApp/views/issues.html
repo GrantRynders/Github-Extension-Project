@@ -10,9 +10,10 @@
             font-family:Segoe UI, SegoeUI, Arial, sans-serif;
             margin: 0;
             padding: 0;
+            color: white;
         }
         body{
-            background-color: #FFFFFF;
+            background-color: #161b22;
         }
         header{
             display:inline-block;
@@ -60,7 +61,13 @@
             background-color:#383c40;
         }
         canvas{
-            margin: 3em 0em 3em 0em;
+            background-color: #FFFFFF;
+        }
+        .CanvasWrapper{
+            background-color: #FFFFFF;
+            padding:2em 2em 2em 2em;
+            margin: 3em 3em 3em 3em;
+            border-radius:3em;
         }
     </style>
 </head>
@@ -90,9 +97,12 @@
     
     <div id="content">
         <H1> ISSUES DATA</H1>
-        <canvas id="timeSpent">
+        <div class="CanvasWrapper">
+            <canvas id="timeSpent">
 
-        </canvas>
+            </canvas>
+        </div>
+        
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
