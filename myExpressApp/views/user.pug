@@ -1,3 +1,56 @@
 extends default
 
 block content
+    #content
+        h1 User: #{UserName}
+        canvas#issuesChart
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        var names;
+        var issueCounts;
+        var timeSpentArray;
+        Main();
+        async function Main()
+        {
+            await UserIssuesDataGet();
+            await DrawUserIssuesInvolvedGraph();
+        }
+        async function UserIssuesDataGet()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            issueCounts = await Promise.all(allUsers.map(async function(index){
+                const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
+                const userIssues = await userIssuesResponse.json();
+                const count = userIssues.length;
+                return count;
+            }));
+            names = allUsers.map(function(index){
+                    return index.UserName;
+            });
+        }
+        async function DrawUserIssuesInvolvedGraph() 
+        {
+            const xValues = [100,200,300,400,500,600,700,800,900,1000];
+            var myChart = document.getElementById("issuesChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'ISSUE COUNT FOR EACH USER',
+                    data: issueCounts,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+            
+        }
