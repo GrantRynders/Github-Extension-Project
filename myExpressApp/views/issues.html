@@ -68,6 +68,7 @@
             padding:2em 2em 2em 2em;
             margin: 3em 3em 3em 3em;
             border-radius:3em;
+            margin: 3em 20% 3em 20%;
         }
     </style>
 </head>
@@ -101,18 +102,31 @@
             <canvas id="timeSpent">
 
             </canvas>
+            <canvas id="timeSpentByUser">
+
+            </canvas>
         </div>
         
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        //IssueTimeSpent
         var timeSpentArray;
-        var names;
+        var issueNames;
+        
+
+        //IssueTimeSpentByUser
+        var issueName;
+        var userNames;
+        var timeSpentByUserArray;
         Main();
         async function Main()
         {
             await IssueTimeSpentDataGet();
             await DrawIssueTimeSpentGraph();
+            await IssueTimeSpentByUserDataGet(1);
+            await IssueTimeSpentByUserGraph();
+
         }
         async function IssueTimeSpentDataGet()
         {
@@ -123,7 +137,7 @@
                 const issueTime = await issueTimeResponse.json();
                 return issueTime.totaltimespent;
             }));
-            names = allIssues.map(function(index){
+            issueNames = allIssues.map(function(index){
                     return index.issueName;
             });
         }
@@ -134,7 +148,7 @@
             new Chart(myChart, {
                 type: 'bar',
                 data: {
-                labels: names,
+                labels: issueNames,
                 datasets: [{
                     label: 'TOTAL TIME SPENT BY ALL USERS ON THE ISSUE IN SECONDS',
                     data: timeSpentArray,
@@ -149,6 +163,39 @@
                 }
                 }
             });
+        }
+        async function IssueTimeSpentByUserDataGet(issueId)
+        {
+            const myIssueResponse = await fetch("http://localhost:5220/issue/" + issueId);
+            const myIssue = await allIssuesResponse.json();
+            issueName = myIssue.issueName;
+
+            const issueTimeResponse = await fetch("http://localhost:5220/issuemodel/" + myIssue.id + "/timespentbyuser");
+            const issueTime = await issueTimeResponse.json();
+            return issueTime.totaltimespent;
+            issueNames = allIssues.map(function(index){
+                    return index.issueName;
+            });
+        }
+        async function IssueTimeSpentByUserGraph()
+        {
+            var myChart = document.getElementById("timeSpentByUser");
+            const data = {
+            labels: userNames,
+            datasets: [{
+                label: issueName,
+                data: timeSpentByUserArray,
+                // backgroundColor: [
+                // 'rgb(255, 99, 132)',
+                // 'rgb(54, 162, 235)',
+                // 'rgb(255, 205, 86)'
+                // ],
+                hoverOffset: 4
+            }]};
+            const config = {
+                type: 'pie',
+                data: data,
+            };
         }
     </script>
 </body>
