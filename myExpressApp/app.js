@@ -7,7 +7,10 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const cors = require('cors');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var userRouter = require('./routes/user'); //Look for routes in js scripts in /routes
+var issueRouter = require('./routes/issue');
+var timerRouter = require('./routes/timer');
+var timerPeriodRouter = require('./routes/timerperiod');
 
 var app = express();
 
@@ -24,7 +27,10 @@ app.use(express.static(path.join(__dirname, 'views/scripts')));
 app.use(express.static(path.join(__dirname, 'views/stylesheets')));
 app.use(cors({ origin: '*' }));
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/views/usermodel/user', userRouter);
+app.use('/views/timermodel/timer', timerRouter);
+app.use('/views/timerperiodmodel/timerperiod', timerPeriodRouter);
+app.use('/views/issuemodel/issue', issueRouter);
 
 
 app.post("/user/:username", async (req, res) => {
