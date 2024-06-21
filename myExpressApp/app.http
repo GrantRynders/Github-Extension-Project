@@ -29,11 +29,11 @@ GET {{WebApiHost}}/user/JohnSmith
 
 ###
 //get user by username and that user's timers
-GET {{WebApiHost}}/timer/user/JohnSmith
+GET {{WebApiHost}}/timermodel/timerperiod
 
 ###
 
-GET {{WebApiHost}}/usermodel/1/timespent
+GET {{WebApiHost}}/issuemodel/1/timespentbyuser
 
 ###
 
