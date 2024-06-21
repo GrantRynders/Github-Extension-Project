@@ -75,6 +75,21 @@
             padding: 1em 1em 1em 1em;
             font-size:1em;
         }
+        .TimerLink{
+            color: white;
+            font-size: 2em;
+            width: 100%;
+            padding: 1em 0em 1em 0em;
+            display: inline-block;
+            text-align:center;
+        }
+        #TimerListHeader{
+            width: 100%;
+            text-align:center;
+        }
+        #TimerList{
+            padding: 1em 1em 1em 1em;
+        }
     </style>
 </head>
 <body>
@@ -107,6 +122,12 @@
 
             </canvas>
         </div>
+        <h1 id ="TimerListHeader">
+            Tracked Timers
+        </h1>
+        <div id="TimerList">
+                
+        </div>
     </div>
     
 
@@ -121,35 +142,27 @@
         <br>Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a>
         <br>Author: Grant Rynders
     </footer>
-    <script type="module" src="objectmodels/scripts/timer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        //import Chart from 'chart.js/auto';
         Main();
         async function Main()
         {
-            var chartData = await DrawTimePeriodsForTimer(1);
-            var myChart = document.getElementById("myChart");
-            myChart.textContent = chartData;
+            await ListTimers();
         }
-        async function DrawTimePeriodsForTimer(timerId) 
+        async function ListTimers()
         {
-            const chartData = await fetch("http://localhost:5220/timermodel/" + timerId + "/timerperiods", {
-                method: "GET", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer",
-            })
-            .catch( function() {
-                console.log("Unable to fetch timer graph data");
-            });
-            return chartData;
+            const destinationDiv = document.getElementById("TimerList");
+            const allTimersResponse = await fetch("http://localhost:5220/timer");
+            const allTimers = await allTimersResponse.json();
+            for (let i = 0; i < allTimers.length; i++) 
+            {
+                var timerLink = document.createElement('a');
+                timerLink.className = "TimerLink";
+                timerLink.href = "http://localhost:5220/views/timermodel/" + allTimers[i].id;
+                timerLink.textContent = "Id: " + allTimers[i].id + ", UserId: " + allTimers[i].userId + ", IssueId: " + allTimers[i].issueId + "\n";
+                destinationDiv.appendChild(timerLink);
+
+            }
         }
     </script>
 </body>

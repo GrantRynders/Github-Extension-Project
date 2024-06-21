@@ -114,6 +114,20 @@
             padding: 1em 1em 1em 1em;
             font-size:1em;
         }
+        .IssueLink{
+            color: white;
+            font-size: 2em;
+            width: 100%;
+            padding: 1em 0em 1em 0em;
+            display: inline-block;
+            text-align:center;
+        }
+        #issuesListHeader{
+            text-align:center;
+        }
+        #issuesList{
+            padding: 1em 1em 1em 1em;
+        }
     </style>
 </head>
 <body>
@@ -159,6 +173,12 @@
             </div>
         </div>
     </div>
+    <h1 id ="issuesListHeader">
+        Tracked Issues
+    </h1>
+    <div id="issuesList">
+            
+    </div>
     <footer>
         Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.
         <br>Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a>
@@ -185,7 +205,7 @@
             await PopulateDropdown();
             await IssueTimeSpentByUserDataGet(1);
             await IssueTimeSpentByUserGraph();
-
+            await ListIssues();
         }
         async function IssueTimeSpentDataGet()
         {
@@ -322,6 +342,21 @@
                     IssueTimeSpentByUserGraph();
                 });
                 dropdown.appendChild(dropElement);
+            }
+        }
+        async function ListIssues()
+        {
+            const destinationDiv = document.getElementById("issuesList");
+            const allIssuesResponse = await fetch("http://localhost:5220/issue");
+            const allIssues = await allIssuesResponse.json();
+            for (let i = 0; i < allIssues.length; i++) 
+            {
+                var issueLink = document.createElement('a');
+                issueLink.className = "IssueLink";
+                issueLink.href = "http://localhost:5220/views/issuemodel/" + allIssues[i].id;
+                issueLink.textContent = "Id: " + allIssues[i].id + ", UserName: " + allIssues[i].url + "\n";
+                destinationDiv.appendChild(issueLink);
+
             }
         }
     </script>

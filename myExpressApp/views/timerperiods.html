@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheets/app.css">
     <title>TimerPeriods</title>
     <style>
         *{
@@ -75,6 +74,21 @@
             padding: 1em 1em 1em 1em;
             font-size:1em;
         }
+        .TimerLink{
+            color: white;
+            font-size: 2em;
+            width: 100%;
+            padding: 1em 0em 1em 0em;
+            display: inline-block;
+            text-align:center;
+        }
+        #TimerListHeader{
+            width: 100%;
+            text-align:center;
+        }
+        #TimerList{
+            padding: 1em 1em 1em 1em;
+        }
     </style>
 </head>
 <body>
@@ -107,11 +121,40 @@
 
             </canvas>
         </div>
+        <h1 id ="TimerListHeader">
+            Tracked Timer Periods
+        </h1>
+        <div id="TimerList">
+                
+        </div>
     </div>
     <footer>
         Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.
         <br>Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a>
         <br>Author: Grant Rynders
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        Main();
+        async function Main()
+        {
+            await ListTimers();
+        }
+        async function ListTimers()
+        {
+            const destinationDiv = document.getElementById("TimerList");
+            const allTimersResponse = await fetch("http://localhost:5220/timerperiod");
+            const allTimers = await allTimersResponse.json();
+            for (let i = 0; i < allTimers.length; i++) 
+            {
+                var timerLink = document.createElement('a');
+                timerLink.className = "TimerLink";
+                timerLink.href = "http://localhost:5220/views/timerperiodmodel/" + allTimers[i].id;
+                timerLink.textContent = "Id: " + allTimers[i].id + ", StartDate: " + allTimers[i].startDate + ", EndDate: " + allTimers[i].endDate + ", TimerId: " + allTimers[i].timerId + "\n";
+                destinationDiv.appendChild(timerLink);
+
+            }
+        }
+    </script>
 </body>
 </html>
