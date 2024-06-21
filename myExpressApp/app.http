@@ -33,7 +33,7 @@ GET {{WebApiHost}}/timermodel/timerperiod
 
 ###
 
-GET {{WebApiHost}}/issuemodel/1/timespentbyuser
+GET {{WebApiHost}}/issuemodel/1/1/timespentbyuser
 
 ###
 

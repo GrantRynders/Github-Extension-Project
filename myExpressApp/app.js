@@ -144,6 +144,14 @@ app.get("/user/:username", async (req, res) => {
   })
   res.json(user);
 });
+app.get("/issue/:issueId", async (req, res) => {
+  const returnissue = await prisma.issue.findFirst({
+    where: {
+      id: Number(req.params.issueId),
+    },
+  })
+  res.json(returnissue);
+});
 app.get("/issueGet/:issueUrl/:issueName", async (req, res) => {
   const issue = await prisma.issue.findUnique({
     where: {
@@ -208,6 +216,9 @@ app.get("/timermodel/timerperiod", async (req, res) => {
   var timersWithPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.timerId FROM Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId;`;
   res.json(timersWithPeriods);
 });
+
+
+
 app.get("/usermodel/:id/timespent", async (req, res) => {//Net amount of time spent by the user using our timer extension
   
   var userTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.timerId FROM ((Timer INNER JOIN User ON Timer.userId = User.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) WHERE User.id = ${req.params.id};`;
@@ -238,8 +249,12 @@ app.get("/issuemodel/:id/timespent", async (req, res) => { //total amount of tim
     'totaltimespent': issueTimeSpent,
   });
 });
-app.get("/issuemodel/:issueId/timespentbyuser", async (req, res) => { //total amount of time spent on an issue by all users
-  var issueTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, Issue.issueName, User.UserName FROM (((Timer INNER JOIN Issue ON Timer.issueId = Issue.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) INNER JOIN User ON Timer.userId = User.id) WHERE Issue.id = ${req.params.issueId};`;
+app.get("/issuemodel/:issueId/users", async (req, res) => { //users related to an issue
+  var usersForIssue = await prisma.$queryRaw`SELECT User.id, User.UserName FROM ((Timer INNER JOIN Issue ON Timer.issueId = Issue.id) INNER JOIN User ON Timer.userId = User.id) WHERE Issue.id = ${req.params.issueId};`;
+  res.json(usersForIssue);
+});
+app.get("/issuemodel/:issueId/:userId/timespentbyuser", async (req, res) => { //total amount of time spent on an issue by all users
+  var issueTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, Issue.issueName, User.UserName FROM (((Timer INNER JOIN Issue ON Timer.issueId = Issue.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) INNER JOIN User ON Timer.userId = User.id) WHERE Issue.id = ${req.params.issueId} AND User.id = ${req.params.userId};`;
   res.json(issueTimeSpentArray);
 });
 app.get("/timermodel/:id/timerperiods", async (req, res) => { //returns all timerperiods for a given timer
