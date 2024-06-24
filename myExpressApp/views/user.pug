@@ -6,7 +6,10 @@ block content
         h1 ID: #{id}
         h3 Total Time Spent Working On GitHub Issues: #{TotalTimeElapsed}
         h3 Total Issues Logged: #{issues.length}
-        canvas#issuesChart
+        canvas#myChart
+        h1 Logged Issues:
+        p#issuesHidden #{JSON.stringify(issues)}
+        div#issuesList
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
         var names;
@@ -15,44 +18,20 @@ block content
         Main();
         async function Main()
         {
-            await UserIssuesDataGet();
-            await DrawUserIssuesInvolvedGraph();
+            await ListIssues();
         }
-        async function UserIssuesDataGet()
+        async function ListIssues()
         {
-            const allUsersResponse = await fetch("http://localhost:5220/user");
-            const allUsers = await allUsersResponse.json();
-            issueCounts = await Promise.all(allUsers.map(async function(index){
-                const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
-                const userIssues = await userIssuesResponse.json();
-                const count = userIssues.length;
-                return count;
-            }));
-            names = allUsers.map(function(index){
-                    return index.UserName;
-            });
-        }
-        async function DrawUserIssuesInvolvedGraph() 
-        {
-            var myChart = document.getElementById("issuesChart");
-            new Chart(myChart, {
-                type: 'bar',
-                data: {
-                labels: names,
-                datasets: [{
-                    label: 'ISSUE COUNT FOR EACH USER',
-                    data: issueCounts,
-                    borderWidth: 1,
-                    backgroundColor: '#9BD0F5'
-                }]
-                },
-                options: {
-                scales: {
-                    y: {
-                    beginAtZero: true
-                    }
-                }
-                }
-            });
-            
+            console.log("LIST ISSUES");
+            const issuesReference = await document.getElementById("issuesHidden");
+            const issues = await JSON.parse(issuesReference.textContent);
+            const destinationDiv = document.getElementById("issuesList");
+            for (let i = 0; i < issues.length; i++) 
+            {
+                var issueLink = document.createElement('a');
+                issueLink.className = "IssueLink";
+                issueLink.href = "http://localhost:5220/views/issuemodel/issue/" + issues[i].id;
+                issueLink.textContent = "Id: " + issues[i].id + ", URL: " + issues[i].url + ", Name: " + issues[i].issueName + "\n";
+                destinationDiv.appendChild(issueLink);
+            }
         }

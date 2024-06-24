@@ -352,8 +352,8 @@
             {
                 var issueLink = document.createElement('a');
                 issueLink.className = "IssueLink";
-                issueLink.href = "http://localhost:5220/views/issuemodel/" + allIssues[i].id;
-                issueLink.textContent = "Id: " + allIssues[i].id + ", UserName: " + allIssues[i].url + "\n";
+                issueLink.href = "http://localhost:5220/views/issuemodel/issue" + allIssues[i].id;
+                issueLink.textContent = "Id: " + allIssues[i].id + ", URL: " + allIssues[i].url + ", IssueName: " + allIssues[i].issueName + "\n";
                 destinationDiv.appendChild(issueLink);
 
             }
