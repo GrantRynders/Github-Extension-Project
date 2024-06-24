@@ -151,6 +151,9 @@ async function InitializeTimer()
 {
     // if (window.location.href.includes("\\issues\\"))
     // {
+        var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
+        await CreateNewUser(userName);
+        await CreateNewIssue(encodeURIComponent(window.location.href), issueHeader.textContent);
         console.log(userName);
         if (localStorage.getItem(userName + window.location.href) == null)
         {
@@ -351,7 +354,6 @@ function LogEndOfTimer()
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
-    console.log(optionsPanel.tagName)
     endDate = Date();
     setTimeout(() => {
         EditComment(". . . .\n", "stop", "");
@@ -408,7 +410,6 @@ function ResetLocalStorage()
 }
 async function FindUserTimerLog(user)
 {
-    console.log("Bingo");
     var isLogFound = 0;
     commentNum = 0;
     var comments = document.getElementsByClassName("TimelineItem js-comment-container");
@@ -538,121 +539,65 @@ function CalculateTimeSpent(log)
 
 async function CreateNewUser(inputUserName)
 {
-    var isUserFound = 0;
-    await fetch("http://localhost:5220/user/" + inputUserName)
-    .then(function (){
-        if (Response.ok)
-        {
-            isUserFound = 1;
-            console.log("User already exists");
-        }
-        else
-        {
-            console.log("User does not exist yet");
-        }
-        if (isUserFound == 0)
-            {
-                fetch("http://localhost:5220/user/" + inputUserName, {
-                    method: "POST", // *GET, POST, PUT, DELETE, etc.
-                    mode: "cors", // no-cors, *cors, same-origin
-                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                    credentials: "same-origin", // include, *same-origin, omit
-                    headers: {
-                      "Content-Type": "application/json",
-                      // 'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    redirect: "follow", // manual, *follow, error
-                    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                }).then(function (){
-                        console.log(Response.name);
-                    })
-                    .catch( function() {
-                        console.log("User was unable to save due to error");
-                    });
-            }
-    })
-    .catch( function() {
-        console.log("Unable to find user due to error");
+    fetch("http://localhost:5220/user/" + inputUserName, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    }).then(function ()
+    {
+        console.log(Response.name);
+    }).catch( function() 
+    {
+        console.log("User was unable to save due to error");
     });
 }
 async function CreateNewIssue(inputUrl, inputIssueName)
 {
-    var isIssueFound = 0;
-    await fetch("http://localhost:5220/issueGet/" + inputUrl + "/" + inputIssueName)
+    fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    })
     .then(function (){
-        if (Response.ok)
-        {
-            isIssueFound = 1;
-            console.log("Issue already exists");
-        }
-        else
-        {
-            console.log("Issue does not exist yet");
-        }
-        if (isIssueFound == 0)
-        {
-            fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            })
-            .then(function (){
-                console.log(Response);
-            })
-            .catch( function() {
-                console.log("New issue was unable to save");
-            });
-        }
+        console.log(Response);
     })
     .catch( function() {
-        console.log("Issue was unable to save due to error");
+        console.log("New issue was unable to save");
     });
 }
 async function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
 {
-    var isTimerFound = 0;
-    await fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName)
+    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    })
     .then(function (){
-        if (Response.ok)
-        {
-            isTimerFound = 1;
-            console.log("Timer already exists");
-        }
-        else
-        {
-            console.log("Timer does not exist yet");
-        }
-        if (isTimerFound == 0)
-            {
-                fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
-                    method: "POST", // *GET, POST, PUT, DELETE, etc.
-                    mode: "cors", // no-cors, *cors, same-origin
-                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                    credentials: "same-origin", // include, *same-origin, omit
-                    headers: {
-                      "Content-Type": "application/json",
-                      // 'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    redirect: "follow", // manual, *follow, error
-                    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                })
-                .then(function (){
-                    console.log(Response);
-                })
-                .catch( function() {
-                    console.log("New timer was unable to save");
-                });
-            }
+        console.log(Response);
     })
     .catch( function() {
-        console.log("Timer was unable to be found due to error");
+        console.log("New timer was unable to save");
     });
 }
 async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate, time)
@@ -688,8 +633,9 @@ function CheckServer(url, timeout)
 }
 async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
-    if (CheckServer("http://localhost:5220", 1000) != null)
+    if (CheckServer("http://localhost:5220", 100) != null)
     {
+        console.log("SAVING DATA TO DATABASE");
         var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
         var time = Number(Math.round(difference /1000));
         await CreateNewUser(username);
