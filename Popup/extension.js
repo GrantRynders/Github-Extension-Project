@@ -626,10 +626,11 @@ function CheckServer(url, timeout)
     const controller = new AbortController();
     const signal = controller.signal;
     const options = { mode: 'no-cors', signal };
-    return fetch(url, options)
+    var returnValue = fetch(url, options)
       .then(setTimeout(() => { controller.abort() }, timeout))
       .then(response => console.log('Check server response:', response.statusText))
       .catch(error => console.error('Check server error:', error.message));
+    return returnValue;
 }
 async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
