@@ -5,7 +5,6 @@ html
       meta(name='viewport' content='width=device-width, initial-scale=1.0')
       meta(http-equiv='X-UA-Compatible' content='ie=edge')
       title= title
-      link(rel='stylesheet' type="text/css" href='/public/stylesheets/style.css')
       style.
         *{
             font-family:Segoe UI, SegoeUI, Arial, sans-serif;
@@ -94,10 +93,24 @@ html
             padding: 1em 1em 1em 1em;
             font-size:1em;
         }
+        #Hidden{
+          display:none;
+        }
     body
+      header
+        h1#SiteHeader Visualization for GitHub Issues Timer Data
+        nav
+          ul
+            li.navLi
+              a(href="http://localhost:5220/views/main") Home
+            li.navLi
+              a(href="http://localhost:5220/views/users") Users
+            li.navLi
+              a(href="http://localhost:5220/views/issues") Issues
+            li.navLi
+              a(href="http://localhost:5220/views/timers") Timers
+            li.navLi
+              a(href="http://localhost:5220/views/timerperiods") Timer Periods
       block content
-  footer
-    Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.
-        Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a>
-        Author: Grant Rynders
+    footer Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.<br> Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a><br>Author: Grant Rynders
       

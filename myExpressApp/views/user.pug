@@ -8,7 +8,7 @@ block content
         h3 Total Issues Logged: #{issues.length}
         canvas#myChart
         h1 Logged Issues:
-        p#issuesHidden #{JSON.stringify(issues)}
+        p#Hidden #{JSON.stringify(issues)}
         div#issuesList
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
@@ -22,8 +22,7 @@ block content
         }
         async function ListIssues()
         {
-            console.log("LIST ISSUES");
-            const issuesReference = await document.getElementById("issuesHidden");
+            const issuesReference = await document.getElementById("Hidden");
             const issues = await JSON.parse(issuesReference.textContent);
             const destinationDiv = document.getElementById("issuesList");
             for (let i = 0; i < issues.length; i++) 

@@ -8,7 +8,7 @@ block content
         h3 Total time users spent on this issue: #{TotalTimeElapsed}
         canvas#myChart
         h1 Related Users:
-        p#usersHidden #{JSON.stringify(users)}
+        p#Hidden #{JSON.stringify(users)}
         div#usersList
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
@@ -22,7 +22,7 @@ block content
         }
         async function ListUsers()
         {
-            const reference = await document.getElementById("usersHidden");
+            const reference = await document.getElementById("Hidden");
             const users = await JSON.parse(reference.textContent);
             const destinationDiv = document.getElementById("usersList");
             for (let i = 0; i < users.length; i++) 
