@@ -59,7 +59,11 @@ app.get("/views/issuemodel/issue/:id", async (req, res) => {
       id: Number(req.params.id),
     },
   });
-  res.render('issue', { id: req.params.id, issueUrl: issue.url, issueName: issue.issueName });
+  const usersResponse = await fetch("http://localhost:5220/issuemodel/" + req.params.id + "/users");
+  const users = await usersResponse.json();
+  const timeElapsedResponse = await fetch("http://localhost:5220/issuemodel/" + req.params.id + "/timespent");
+  const timeElapsed = await timeElapsedResponse.json();
+  res.render('issue', { id: req.params.id, issueUrl: issue.url, issueName: issue.issueName, users: users, TotalTimeElapsed: timeElapsed.totaltimespent });
 });
 
 
@@ -289,7 +293,7 @@ app.get("/issuemodel/:issueId/users", async (req, res) => { //users related to a
   var usersForIssue = await prisma.$queryRaw`SELECT User.id, User.UserName FROM ((Timer INNER JOIN Issue ON Timer.issueId = Issue.id) INNER JOIN User ON Timer.userId = User.id) WHERE Issue.id = ${req.params.issueId};`;
   res.json(usersForIssue);
 });
-app.get("/issuemodel/:issueId/:userId/timespentbyuser", async (req, res) => { //total amount of time spent on an issue by all users
+app.get("/issuemodel/:issueId/:userId/timespentbyuser", async (req, res) => { //total amount of time spent on an issue by auser
   var issueTimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, Issue.issueName, User.UserName FROM (((Timer INNER JOIN Issue ON Timer.issueId = Issue.id) INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) INNER JOIN User ON Timer.userId = User.id) WHERE Issue.id = ${req.params.issueId} AND User.id = ${req.params.userId};`;
   res.json(issueTimeSpentArray);
 });
