@@ -43,9 +43,6 @@ var startDate;
 var endDate;
 timerCount++;
 CheckIfInitialized();
-// window.onbeforeunload = function (){
-//     SaveData();
-// };
 async function CheckIfInitialized()
 {
     results = await FindUserTimerLog(userName);
@@ -133,19 +130,6 @@ function CreateTimerDisplay()
         ResetTimerValues();//Reset the timer
     });
 }
-// navigation.addEventListener("navigate", function ()
-// {
-//     console.log("Location change");
-//     if (document.getElementById("startButton") == null)
-//     {
-//         CheckIfInitialized();
-//     }
-//     // if(timerCount == 0)
-//     // {
-//     //     InitializeTimer(); 
-//     // }
-//     // timerCount++;
-// });
 //On initialize
 async function InitializeTimer()
 {
@@ -232,15 +216,10 @@ function ConvertTimeToFormat(seconds)
         seconds = 0;
     }
     Number(seconds); //Input number of seconds to be converted
-    //console.log("seconds: " + Number(seconds));
     day = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
-    //console.log("Days: " + day)
     hour = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
-    //console.log("Hours: " + hour);
     min = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
-    //console.log("minutes: " + min)
     seconds = Math.floor(Number(seconds) % 60);
-    //console.log("Last date: " + lastDate);
     secString = seconds;
     if (Number(seconds) < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
     {
@@ -280,14 +259,11 @@ function AppendAdditions() //Append new elements to the destination for the exte
 {
     if (destinationDiv != null)
     {
-        // if (window.location.href.includes("\\issues\\"))
-        // {
-            destinationDiv.appendChild(timerDisplay);
-            destinationDiv.appendChild(startButton);
-            destinationDiv.appendChild(pauseButton);
-            destinationDiv.appendChild(stopButton);
-            destinationDiv.appendChild(credits);
-        //}
+        destinationDiv.appendChild(timerDisplay);
+        destinationDiv.appendChild(startButton);
+        destinationDiv.appendChild(pauseButton);
+        destinationDiv.appendChild(stopButton);
+        destinationDiv.appendChild(credits);
     }
     else
     {
@@ -305,22 +281,6 @@ function LogTime()
         EditComment( ". . . . \n", "start", "");
     }, "1000");
 
-}
-function LogTimeToNewComment()
-{
-    //DEPRECATED
-    if (commentButton != null) //Make sure comment button is not null
-    {
-        textArea.textContent = "Start Date: " + new Date() + "\nTimer Start Value: " + totalTimeString; //Set the comment's text value
-        commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
-        commentButton.click(); //Click the button programmatically
-        window.location.reload();//reload the page to submit the comment
-        startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
-    }
-    else 
-    {
-        console.log("Comment Button is null");//uh oh where'd our button go
-    }
 }
 function EditComment(value1, value2, value3)
 {
@@ -362,27 +322,6 @@ function LogEndOfTimer()
 
     var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
     LogDataToSQLite(userName, window.location.href, issueHeader.textContent, startDate, endDate);
-}
-function LogEndOfTimerToNewComment()
-{
-    //DEPRECATED
-    console.log(commentParent.tagName);
-    console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
-    if (commentButton != null)
-    {
-        textArea.textContent = "End Date: " + new Date() + "\nTimer End Value: " + totalTimeString + "\n----";
-        console.log(totalTimeString);
-        commentButton.disabled = false;
-        console.log("Disabled");
-        commentButton.click();
-        console.log("Clicked");
-        window.location.reload();
-        startButtonInstance.scrollIntoView({behavior: 'instant'});
-    }
-    else
-    {
-        console.log("Comment Button is null when attempting to end timer");
-    }
 }
 function ResetTimerValues()
 {
@@ -468,8 +407,6 @@ function SaveData() {
     };
     localStorage.setItem(userName + window.location.href, JSON.stringify(state));
   }
-  
-  // Function to load the timer state from local storage
   // Function to load the timer state from local storage
 function LoadData()
 {
