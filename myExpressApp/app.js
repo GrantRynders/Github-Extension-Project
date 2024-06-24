@@ -409,7 +409,7 @@ async function main() {
   console.log(allTimerPeriods);
 }
 
-async function ConvertTimeToFormat(seconds)
+async function ConvertSeconds(seconds)
 {
   var minutes = 0;
   var hours = 0;   
