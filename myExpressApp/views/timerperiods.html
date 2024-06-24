@@ -121,6 +121,12 @@
 
             </canvas>
         </div>
+        <h1>
+            Average Time Spent Per Period: 
+        </h1>
+        <h1 id="average">
+
+        </h1>
         <h1 id ="TimerListHeader">
             Tracked Timer Periods
         </h1>
@@ -139,6 +145,7 @@
         async function Main()
         {
             await ListTimers();
+            await GetAverageTimerPeriod();
         }
         async function ListTimers()
         {
@@ -154,6 +161,12 @@
                 destinationDiv.appendChild(timerLink);
 
             }
+        }
+        async function GetAverageTimerPeriod()
+        {
+            var destination = document.getElementById("average");
+            var averageResponse = await fetch("/timerperiodmodel/average");
+            destination.textContent = await averageResponse.json().average;
         }
     </script>
 </body>

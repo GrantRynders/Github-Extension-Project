@@ -331,7 +331,6 @@ app.get("/usermodel/:id/timespent", async (req, res) => {//Net amount of time sp
 });
 app.get("/usermodel/:id/issues", async (req, res) => { //Every tracked issue a user has worked on
   var userIssues = await prisma.$queryRaw`SELECT Issue.id, Issue.issueName, Issue.url FROM ((Timer INNER JOIN User ON Timer.userId = User.id) INNER JOIN Issue ON Timer.issueId = Issue.id) WHERE User.id = ${req.params.id};`;
-  console.log(userIssues);
   res.json(userIssues);
 });
 app.get("/issuemodel/:id/timespent", async (req, res) => { //total amount of time spent on an issue by all users
@@ -339,11 +338,23 @@ app.get("/issuemodel/:id/timespent", async (req, res) => { //total amount of tim
   var issueTimeSpent = 0;
   for (var j = 0; j < issueTimeSpentArray.length; j++) 
   {
-    console.log(issueTimeSpentArray[j]);
     issueTimeSpent += Number(issueTimeSpentArray[j].totalTimeElapsed);
   }
   res.json({
     'totaltimespent': issueTimeSpent,
+  });
+});
+app.get("/timerperiodmodel/average", async (req, res) => { //total amount of time spent on an issue by all users
+  var TimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.totalTimeElapsed FROM TimerPeriod`;
+  var TimeSpent = 0;
+  for (var j = 0; j < TimeSpentArray.length; j++) 
+  {
+    TimeSpent += Number(TimeSpentArray[j].totalTimeElapsed);
+  }
+  var average = Number(TimeSpent / TimeSpentArray.length);
+  var roundedAverage = Math.round((average + Number.EPSILON) * 100) / 100
+  res.json({
+    'average': roundedAverage,
   });
 });
 app.get("/issuemodel/:issueId/users", async (req, res) => { //users related to an issue
