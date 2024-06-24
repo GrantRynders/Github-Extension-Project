@@ -1,3 +1,33 @@
 extends default
 
 block content
+    #content
+        h1 TimerId: #{id}
+        h1 UserId: #{id}
+        h1 IssueId: #{id}
+        h3 Total Time Spent #{TotalTimeElapsed}
+        canvas#myChart
+        h1 Related Timer Periods:
+        p#Hidden #{JSON.stringify(timerperiods)}
+        div#referenceList
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        Main();
+        async function Main()
+        {
+            await ListTimerPeriods();
+        }
+        async function ListTimerPeriods()
+        {
+            const timerperiodsReference = await document.getElementById("Hidden");
+            const timerperiods = await JSON.parse(timerperiodsReference.textContent);
+            const destinationDiv = document.getElementById("referenceList");
+            for (let i = 0; i < timerperiods.length; i++)
+            {
+                var link = document.createElement('a');
+                link.className = "referenceLink";
+                link.href = "http://localhost:5220/views/timerperiodmodel/timerperiod/" + timerperiods[i].id;
+                link.textContent = "Id: " + timerperiods[i].id + ", StartDate: " + timerperiods[i].startDate + ", EndDate: " + timerperiods[i].endDate + ", TimerId: " + timerperiods[i].timerId + "\n";
+                destinationDiv.appendChild(link);
+            }
+        }

@@ -9,7 +9,7 @@ block content
         canvas#myChart
         h1 Logged Issues:
         p#Hidden #{JSON.stringify(issues)}
-        div#issuesList
+        div#referenceList
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
         var names;
@@ -24,13 +24,13 @@ block content
         {
             const issuesReference = await document.getElementById("Hidden");
             const issues = await JSON.parse(issuesReference.textContent);
-            const destinationDiv = document.getElementById("issuesList");
-            for (let i = 0; i < issues.length; i++) 
+            const destinationDiv = document.getElementById("referenceList");
+            for (let i = 0; i < issues.length; i++)
             {
-                var issueLink = document.createElement('a');
-                issueLink.className = "IssueLink";
-                issueLink.href = "http://localhost:5220/views/issuemodel/issue/" + issues[i].id;
-                issueLink.textContent = "Id: " + issues[i].id + ", URL: " + issues[i].url + ", Name: " + issues[i].issueName + "\n";
-                destinationDiv.appendChild(issueLink);
+                var link = document.createElement('a');
+                link.className = "referenceLink";
+                link.href = "http://localhost:5220/views/issuemodel/issue/" + issues[i].id;
+                link.textContent = "Id: " + issues[i].id + ", URL: " + issues[i].url + ", Name: " + issues[i].issueName + "\n";
+                destinationDiv.appendChild(link);
             }
         }

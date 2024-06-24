@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
-    <!-- <link rel="stylesheet" href="stylesheets/app.css"> -->
     <title>Users</title>
     <style>
         *{
@@ -133,11 +132,13 @@
             </canvas>
         </div>
         <h1 id="UserListHeader">
-            Tracker Users
+            Tracked Users
         </h1>
         <div id="UserList">
 
         </div>
+        <button id="nextbtn" class="tabbtn" onclick="TabForward()">Next</button>
+        <button id="backbtn" class="tabbtn" onclick="TabBack()">Previous</button>
     </div>
     <footer>
         Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.
@@ -257,6 +258,14 @@
                 }
                 }
             });
+        }
+        async function TabForward()
+        {
+
+        }
+        async function TabBack()
+        {
+
         }
     </script>
 </body>
