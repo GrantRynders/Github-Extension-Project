@@ -30,7 +30,12 @@ app.get("/views/usermodel/user/:id", async (req, res) => {
       id: Number(req.params.id),
     },
   });
-  res.render('user', { id: req.params.id, username: user.UserName });
+  const timeElapsedResponse = await fetch("http://localhost:5220/usermodel/" + req.params.id + "/timespent");
+  const timeElapsedJson = await timeElapsedResponse.json();
+  const timeElapsed = timeElapsedJson.totaltimespent;
+  const issuesResponse = await fetch("http://localhost:5220/usermodel/" + req.params.id + "/issues");
+  const issues = await issuesResponse.json();
+  res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues});
 });
 app.get("/views/timermodel/timer/:id", async (req, res) => {
   const timer = await prisma.timer.findFirst({
