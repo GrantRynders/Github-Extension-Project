@@ -56,3 +56,20 @@
     text-align: center;
     padding: 0.5em;
 }
+
+#createTimerButton{
+    font-size: 1.5em;
+    font-style: bold;
+    fill: var(--button-primary-iconColor-rest);
+    background-color: var(--button-primary-bgColor-rest);
+    border-color: var(--button-primary-borderColor-rest);
+    box-shadow: var(--shadow-resting-small, var(--color-btn-primary-shadow));
+    border-radius: 4px;
+    width: 90%;
+    margin-top: 3em;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+#createTimerButton:hover{
+    background-color: #1be800;
+}

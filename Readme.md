@@ -84,3 +84,10 @@ Chrome refresh background scripts: https://github.com/orgs/community/discussions
 
 Web storage example: https://github.com/mdn/dom-examples/tree/main/web-storage
 
+Prisma SQLite quickstart: https://www.prisma.io/docs/getting-started/quickstart
+
+Prisma PostgreSQL guide: https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases-typescript-postgresql
+
+Prisma video: https://youtu.be/J8ObGtfy5n0?si=Lq463OEyFXGa6Lb0
+
+Bar chart: https://www.chartjs.org/docs/latest/charts/bar.html

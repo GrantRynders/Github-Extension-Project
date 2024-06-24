@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 model User {
   id    Int     @id @default(autoincrement())
@@ -16,7 +16,8 @@ model User {
 }
 model Issue {
   id    Int     @id @default(autoincrement())
-  issueName String  @unique
+  issueName String
+  url String  @unique
   timers Timer[]
 }
 model TimerPeriod {
@@ -25,6 +26,7 @@ model TimerPeriod {
     timer Timer    @relation(fields: [timerId], references: [id])
     startDate String
     endDate String
+    totalTimeElapsed Int?
 }
 model Timer {
   id    Int     @id @default(autoincrement())
@@ -34,3 +36,4 @@ model Timer {
   user User    @relation(fields: [userId], references: [id])
   timerPeriods TimerPeriod[]
 }
+//npx prisma migrate dev

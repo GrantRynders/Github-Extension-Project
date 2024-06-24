@@ -1,0 +1,38 @@
+//This file tests the API endpoints for our Express.js app, responses will be given in the form of JSON data with status headers
+
+
+@WebApiHost = http://localhost:5220
+
+
+###
+//add a user
+POST {{WebApiHost}}/user/SteveBrown
+
+###
+
+//get all users
+GET {{WebApiHost}}/user
+
+###
+//get all issues
+GET {{WebApiHost}}/issue
+
+###
+//get all Timer Periods
+GET {{WebApiHost}}/timerperiod/GrantRynders/url/timeIstarted/timeIstopped
+
+###
+//get user by username
+GET {{WebApiHost}}/user/GrantRynders
+
+###
+
+GET {{WebApiHost}}/timermodel/timerperiod
+
+###
+
+GET {{WebApiHost}}/issuemodel/1/1/timespentbyuser
+
+###
+
+GET {{WebApiHost}}/timerperiod

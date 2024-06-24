@@ -1,0 +1,36 @@
+extends default
+
+block content
+    #content
+        h1 Issue Name: #{issueName}
+        h1 ID: #{id}
+        h1 URL: #{issueUrl}
+        h3 Total time users spent on this issue: #{TotalTimeElapsed}
+        canvas#myChart
+        h1 Related Users:
+        p#Hidden #{JSON.stringify(users)}
+        div#referenceList
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        var names;
+        var issueCounts;
+        var timeSpentArray;
+        Main();
+        async function Main()
+        {
+            await ListUsers();
+        }
+        async function ListUsers()
+        {
+            const reference = await document.getElementById("Hidden");
+            const users = await JSON.parse(reference.textContent);
+            const destinationDiv = document.getElementById("referenceList");
+            for (let i = 0; i < users.length; i++) 
+            {
+                var userLink = document.createElement('a');
+                userLink.className = "referenceLink";
+                userLink.href = "http://localhost:5220/views/usermodel/user/" + users[i].id;
+                userLink.textContent = "Id: " + users[i].id + ", UserName: " + users[i].UserName + "\n";
+                destinationDiv.appendChild(userLink);
+            }
+        }

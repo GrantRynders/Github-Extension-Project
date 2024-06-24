@@ -1,35 +1,24 @@
 //SCRIPT TO BE INJECTED INTO https://github.com/*/*/issues/*
 
 console.log("Script Injected");
-//CREATE BUTTONS and set their attributes
-var startButton = document.createElement('button');
-startButton.textContent = "\u25B6"; //Unicode play button
-startButton.id = "startButton";
-var pauseButton = document.createElement('button');
-pauseButton.textContent = "||"; //Unicode pause button
-pauseButton.id = "pauseButton";
-var stopButton = document.createElement('button');
-stopButton.textContent = "X";
-stopButton.id = "stopButton";
-var timerDisplay = document.createElement('h1');
-timerDisplay.textContent = "DD:HH:MM:SS";
-timerDisplay.id = "timerDisplay";
-var credits = document.createElement('p');
-credits.textContent = "Timer Extension for Github issues as part of ITSC Summer Internship 2024\n https://github.com/GrantRynders/Github-Extension-Project";
-credits.id = "credits";
-//Find the destination for our new content
+var startButton;
+var pauseButton;
+var stopButton;
+var timerDisplay;
+var credits;
 var destinationDiv = document.getElementById("js-repo-pjax-container");
-var textArea = document.getElementById("new_comment_field");
-var commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
-var commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
-var titleBar = "js-issue-title markdown-title"
-//append instances of our new buttons to the page
-AppendAdditions();
-//find those instances we just created
-var startButtonInstance = document.getElementById("startButton");
-var pauseButtonInstance = document.getElementById("pauseButton");
-var stopButtonInstance = document.getElementById("stopButton");
-var timerDisplayInstance = document.getElementById("timerDisplay");
+var textArea;
+var commentParent;
+var commentButton;
+var titleBar;
+var startButtonInstance;
+var pauseButtonInstance;
+var stopButtonInstance;
+var timerDisplayInstance;
+var userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
+var createTimerButton = document.createElement('button');
+createTimerButton.textContent = "Track This Issue";
+createTimerButton.id = "createTimerButton";
 //Numbers for our time variables
 var sec = 0;
 var totalSeconds = 0;//deprecated
@@ -49,34 +38,118 @@ var lastDate;
 var currentDate;
 var commentNum = 0;
 var commentId = "";
-var userName;
 var timerCount = 0;
-
-InitializeTimer();
+var startDate;
+var endDate;
 timerCount++;
-navigation.addEventListener("navigate", function ()
+CheckIfInitialized();
+async function CheckIfInitialized()
 {
-    console.log("Location change");
-    InitializeTimer(); 
-    timerCount++;
-});
+    results = await FindUserTimerLog(userName);
+    console.log(results);
+    if (results == 0)
+    {
+        console.log("Ping");
+        destinationDiv.append(createTimerButton);
+        var createTimerButtonInstance = document.getElementById("createTimerButton");
+        createTimerButtonInstance.addEventListener('click',function ()
+        {
+            console.log("CREATE TIMER Button Clicked");
+            CreateTimerDisplay();
+            createTimerButtonInstance.remove();
+            InitializeTimer();
+            //window.location.reload();
+        });
+    }
+    if (results == 1)
+    {
+        CreateTimerDisplay();
+        InitializeTimer();
+    }
+}
+
+function CreateTimerDisplay()
+{
+    startButton = document.createElement('button');
+    startButton.textContent = "\u25B6"; //Unicode play button
+    startButton.id = "startButton";
+    pauseButton = document.createElement('button');
+    pauseButton.textContent = "| |";
+    pauseButton.id = "pauseButton";
+    stopButton = document.createElement('button');
+    stopButton.textContent = "X";
+    stopButton.id = "stopButton";
+    timerDisplay = document.createElement('h1');
+    timerDisplay.textContent = "DD:HH:MM:SS";
+    timerDisplay.id = "timerDisplay";
+    credits = document.createElement('p');
+    credits.textContent = "Timer Extension for Github issues as part of ITSC Summer Internship 2024\n https://github.com/GrantRynders/Github-Extension-Project";
+    credits.id = "credits";
+    //Find the destination for our new content
+    textArea = document.getElementById("new_comment_field");
+    commentParent = document.getElementById("partial-new-comment-form-actions");//The parent element for the comment submit button, we use it to narrow our search for the button itself
+    commentButton = commentParent.getElementsByClassName("btn-primary btn")[0];//Finds all elements of this button class which is just gonna be the button we are looking for. Despite the list only having one, you still must specify the index
+    titleBar = "js-issue-title markdown-title";
+    //append instances of our new buttons to the page
+    AppendAdditions();
+    //find those instances we just created
+    createTimerButtonInstance = document.getElementById("createTimerButton");
+    startButtonInstance = document.getElementById("startButton");
+    pauseButtonInstance = document.getElementById("pauseButton");
+    stopButtonInstance = document.getElementById("stopButton");
+    timerDisplayInstance = document.getElementById("timerDisplay");
+    startButtonInstance.addEventListener('click',function ()
+    {
+        console.log("Start Button Clicked");
+        if (isTimerActive == 0) //Can't start a timer that is already started
+        {
+            isTimerActive = 1;
+            startDate = Date();
+            SaveData();
+            startTimer();
+            LogTime();
+        }
+        
+    });
+    pauseButtonInstance.addEventListener('click',function ()
+    {
+        console.log("PAUSE Button Clicked");
+        if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
+        {
+            isTimerPaused = 1;
+            StopTimer();
+            SaveData();
+            LogEndOfTimer();
+        }
+    });
+    stopButtonInstance.addEventListener('click',function ()
+    {
+        console.log("STOP Button Clicked");
+        LogEndOfTimer(); //Create a comment detailing end timer stats
+        StopTimer();
+        ResetTimerValues();//Reset the timer
+    });
+}
 //On initialize
-function InitializeTimer()
+async function InitializeTimer()
 {
     // if (window.location.href.includes("\\issues\\"))
     // {
-        userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
+        var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
+        await CreateNewUser(userName);
+        await CreateNewIssue(encodeURIComponent(window.location.href), issueHeader.textContent);
         console.log(userName);
         if (localStorage.getItem(userName + window.location.href) == null)
         {
             SaveData();
         }
         LoadData(); //Get our local storage values if there are any, making sure nothing is null
-        results = FindUserTimerLog(userName);
+        results = await FindUserTimerLog(userName);
+        console.log(results);
         if (results == 0)
         {
             console.log("crippling failure");
-            CreateUserTimerLog(userName);
+            await CreateUserTimerLog(userName); //temporarily disabled
         }
         if (results == 1)
         {
@@ -143,15 +216,10 @@ function ConvertTimeToFormat(seconds)
         seconds = 0;
     }
     Number(seconds); //Input number of seconds to be converted
-    //console.log("seconds: " + Number(seconds));
     day = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
-    //console.log("Days: " + day)
     hour = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
-    //console.log("Hours: " + hour);
     min = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
-    //console.log("minutes: " + min)
     seconds = Math.floor(Number(seconds) % 60);
-    //console.log("Last date: " + lastDate);
     secString = seconds;
     if (Number(seconds) < 10) //Format the string if there would be a leading 0 on the display, e.g. "05:03"
     {
@@ -187,50 +255,15 @@ function StopTimer() //Stops the interval func
     SaveData();
     timerCount = 0;
 }
-startButtonInstance.addEventListener('click',function ()
-{
-    console.log("Start Button Clicked");
-    if (isTimerActive == 0) //Can't start a timer that is already started
-    {
-        isTimerActive = 1;
-        SaveData();
-        startTimer();
-        LogTime();
-    }
-    
-});
-pauseButtonInstance.addEventListener('click',function ()
-{
-    console.log("PAUSE Button Clicked");
-    if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
-    {
-        
-        isTimerPaused = 1;
-        StopTimer();
-        SaveData();
-        LogEndOfTimer();
-    }
-});
-stopButtonInstance.addEventListener('click',function ()
-{
-    console.log("STOP Button Clicked");
-    //SaveData();
-    LogEndOfTimer(); //Create a comment detailing end timer stats
-    StopTimer();
-    ResetTimerValues();//Reset the timer
-});
 function AppendAdditions() //Append new elements to the destination for the extension
 {
     if (destinationDiv != null)
     {
-        // if (window.location.href.includes("\\issues\\"))
-        // {
-            destinationDiv.appendChild(timerDisplay);
-            destinationDiv.appendChild(startButton);
-            destinationDiv.appendChild(pauseButton);
-            destinationDiv.appendChild(stopButton);
-            destinationDiv.appendChild(credits);
-        //}
+        destinationDiv.appendChild(timerDisplay);
+        destinationDiv.appendChild(startButton);
+        destinationDiv.appendChild(pauseButton);
+        destinationDiv.appendChild(stopButton);
+        destinationDiv.appendChild(credits);
     }
     else
     {
@@ -239,48 +272,25 @@ function AppendAdditions() //Append new elements to the destination for the exte
 }
 function LogTime()
 {
+    
     FindUserTimerLog(userName);
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
-    for (const child of optionsPanel.childNodes)
-    {
-        console.log(child.textContent);
-    }
     setTimeout(() => {
         EditComment( ". . . . \n", "start", "");
     }, "1000");
-}
-function LogTimeToNewComment()
-{
-    //DEPRECATED
-    if (commentButton != null) //Make sure comment button is not null
-    {
-        textArea.textContent = "Start Date: " + new Date() + "\nTimer Start Value: " + totalTimeString; //Set the comment's text value
-        commentButton.disabled = false; //The button is naturally disabled for input, we need to change that
-        commentButton.click(); //Click the button programmatically
-        //window.location.reload();//reload the page to submit the comment
-        startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
-    }
-    else 
-    {
-        console.log("Comment Button is null");//uh oh where'd our button go
-    }
+
 }
 function EditComment(value1, value2, value3)
 {
     console.log("Edit Comment Func");
-    for (const child of document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0].childNodes)
-    {
-        console.log(child.textContent);
-    }
     var editBtn = document.getElementsByClassName("dropdown-item btn-link js-comment-edit-button")[0];//the button that literally says "edit"
     if (editBtn != null)
     {
         editBtn.click();
         var commentBlock = document.getElementById(commentId);
         var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
-        //var commentTextArea = commentBlock.getElementsByTagName("textarea")[0];
         var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
         commentTextArea.textContent += "\n" + value1 + value2 + " date: " + new Date() + "\ntimer " + value2 + " value: " + totalTimeString + value3;
         if (value2 == "stop")
@@ -292,7 +302,6 @@ function EditComment(value1, value2, value3)
         submitEditButton.click();
         //window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
-        
     }
     else
     {
@@ -305,35 +314,14 @@ function LogEndOfTimer()
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
     optionBtn.click();
     var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
-    console.log(optionsPanel.tagName)
-    for (const child of optionsPanel.childNodes)
-    {
-        console.log(child.textContent);
-    }
+    endDate = Date();
     setTimeout(() => {
         EditComment(". . . .\n", "stop", "");
     }, "1000");
-}
-function LogEndOfTimerToNewComment()
-{
-    //DEPRECATED
-    console.log(commentParent.tagName);
-    console.log(commentParent.querySelectorAll(".btn-primary btn").tagName);
-    if (commentButton != null)
-    {
-        textArea.textContent = "End Date: " + new Date() + "\nTimer End Value: " + totalTimeString + "\n----";
-        console.log(totalTimeString);
-        commentButton.disabled = false;
-        console.log("Disabled");
-        commentButton.click();
-        console.log("Clicked");
-        window.location.reload();
-        startButtonInstance.scrollIntoView({behavior: 'instant'});
-    }
-    else
-    {
-        console.log("Comment Button is null when attempting to end timer");
-    }
+
+
+    var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
+    LogDataToSQLite(userName, window.location.href, issueHeader.textContent, startDate, endDate);
 }
 function ResetTimerValues()
 {
@@ -346,6 +334,8 @@ function ResetTimerValues()
     hourString = "00";
     dayString = "00";
     timerDisplayInstance.textContent = "00:00:00:00";
+    startDate = null;
+    endDate = null;
     ResetLocalStorage();
 }
 function ResetLocalStorage()
@@ -354,9 +344,10 @@ function ResetLocalStorage()
     isTimerActive = 0;
     isTimerPaused = 0;
     lastDate = null;
+    startDate = null;
     SaveData();
 }
-function FindUserTimerLog(user)
+async function FindUserTimerLog(user)
 {
     var isLogFound = 0;
     commentNum = 0;
@@ -373,7 +364,7 @@ function FindUserTimerLog(user)
                 isLogFound = 1;
                 var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
                 commentId = commentIdInstance;
-                console.log("LOG FOUND AT COMMENT NUM: " + commentNum + "WITH ID: " + commentId);
+                console.log("LOG FOUND AT COMMENT NUM: " + commentNum + " WITH ID: " + commentId);
             }
         }
         commentNum = Number(commentNum) + 1;
@@ -381,7 +372,7 @@ function FindUserTimerLog(user)
     SaveData();
     return isLogFound;
 }
-function CreateUserTimerLog(user)
+async function CreateUserTimerLog(user)
 {
     if (commentButton != null) //Make sure comment button is not null
     {
@@ -394,7 +385,9 @@ function CreateUserTimerLog(user)
         console.log("Clicked");
         window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
-        FindUserTimerLog(user);
+        setTimeout(() => {
+            results = FindUserTimerLog(user);
+        });
     }
     else
     {
@@ -409,12 +402,11 @@ function SaveData() {
       isTimerPaused,
       lastDate,
       commentNum,
-      commentId
+      commentId,
+      startDate
     };
     localStorage.setItem(userName + window.location.href, JSON.stringify(state));
   }
-  
-  // Function to load the timer state from local storage
   // Function to load the timer state from local storage
 function LoadData()
 {
@@ -442,8 +434,10 @@ function LoadData()
     console.log("Last saved Date: " + lastDate);
     commentNum = state.commentNum;
     commentId = state.commentId;
+    startDate = state.startDate;
     console.log("Comment Number: " + commentNum);
     console.log("Comment Id: " + commentId);
+    console.log("Start Date");
 }
 
 
@@ -470,15 +464,126 @@ function CalculateTimeSpent(log)
     var totalTimeSpent = Number(0);
     for (let i = 1; i < length; i++)
     {
-        var stopDate = new Date(stopRecords[i].replace("stop date: ", ""));
-        var stopTime = stopDate.getTime();
-        var startDate = new Date(startRecords[i].replace("start date: ", ""));
-        var startTime = startDate.getTime();
+        var stop = new Date(stopRecords[i].replace("stop date: ", ""));
+        var stopTime = stop.getTime();
+        var start = new Date(startRecords[i].replace("start date: ", ""));
+        var startTime = start.getTime();
         var difference = ((Number(stopTime) - Number(startTime)) / 1000);
         totalTimeSpent = Number(totalTimeSpent) + Number(difference);
     }
     return Number(totalTimeSpent);
 }
+
+async function CreateNewUser(inputUserName)
+{
+    fetch("http://localhost:5220/user/" + inputUserName, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    }).then(function ()
+    {
+        console.log(Response.name);
+    }).catch( function() 
+    {
+        console.log("User was unable to save due to error");
+    });
+}
+async function CreateNewIssue(inputUrl, inputIssueName)
+{
+    fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    })
+    .then(function (){
+        console.log(Response);
+    })
+    .catch( function() {
+        console.log("New issue was unable to save");
+    });
+}
+async function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
+{
+    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    })
+    .then(function (){
+        console.log(Response);
+    })
+    .catch( function() {
+        console.log("New timer was unable to save");
+    });
+}
+async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate, time)
+{
+    await fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate + "/" + time, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    })
+    .then(function (){
+        console.log(Response);
+    })
+    .catch( function() {
+        console.log("New Timer Period was unable to save");
+    });
+}
+function CheckServer(url, timeout)
+{
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const options = { mode: 'no-cors', signal };
+    var returnValue = fetch(url, options)
+      .then(setTimeout(() => { controller.abort() }, timeout))
+      .then(response => console.log('Check server response:', response.statusText))
+      .catch(error => console.error('Check server error:', error.message));
+    return returnValue;
+}
+async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
+{
+    if (CheckServer("http://localhost:5220", 100) != null)
+    {
+        console.log("SAVING DATA TO DATABASE");
+        var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
+        var time = Number(Math.round(difference /1000));
+        await CreateNewUser(username);
+        await CreateNewIssue(encodeURIComponent(url), issuename);
+        await CreateNewTimer(username, encodeURIComponent(url), issuename);
+        await CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, Number(time));
+    }
+    
+}
+
 
 
 
