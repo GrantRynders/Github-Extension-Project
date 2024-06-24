@@ -14,6 +14,7 @@ Users --|> Timers : One-To-Many
 Timers --|> TimerPeriods : One-To-Many
 class Issues{
     +int IssueId PK
+    +VarChar(200) Url
     +VarChar(50) IssueName
 }
 class Users{
@@ -30,6 +31,7 @@ class TimerPeriods{
     +int TimerId FK
     +Varchar(50) StartDate
     +Varchar(50) EndDate
+    +int TotalTimeElapsed
 }
 
 ```
@@ -42,8 +44,8 @@ class TimerPeriods{
     "timer_id": "12345",
     "user_name": "John Smith",
     "issue": "https://github.com/GrantRynders/Github-Extension-Project/issues/32",
-    "dates" [
-
+    "issue_name":"Example Issue",
+    "timer_periods" [
         {
             "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
             "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
