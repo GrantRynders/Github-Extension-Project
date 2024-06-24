@@ -122,11 +122,9 @@
             </canvas>
         </div>
         <h1>
-            Average Time Spent Per Period: 
+            Average Time Spent Per Period: <h1 id="average"></h1>
         </h1>
-        <h1 id="average">
-
-        </h1>
+        
         <h1 id ="TimerListHeader">
             Tracked Timer Periods
         </h1>
@@ -166,7 +164,8 @@
         {
             var destination = document.getElementById("average");
             var averageResponse = await fetch("/timerperiodmodel/average");
-            destination.textContent = await averageResponse.json().average;
+            var averageValue = await averageResponse.json();
+            destination.textContent = averageValue.average;
         }
     </script>
 </body>

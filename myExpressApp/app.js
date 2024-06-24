@@ -409,6 +409,28 @@ async function main() {
   console.log(allTimerPeriods);
 }
 
+async function ConvertTimeToFormat(seconds)
+{
+  var minutes = 0;
+  var hours = 0;   
+  var days = 0;
+  if (seconds == NaN)
+  {
+      console.log("Seconds is null, resetting");
+      seconds = 0;
+  }
+  Number(seconds); //Input number of seconds to be converted
+  days = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
+  hours = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
+  minutes = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
+  seconds = Math.floor(Number(seconds) % 60);
+  const data = {
+    seconds,
+    minutes,
+    hours,
+    days,
+  }
+}
 
 main().then(async () => {
     await prisma.$disconnect()
