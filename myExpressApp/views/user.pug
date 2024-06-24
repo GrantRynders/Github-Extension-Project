@@ -2,7 +2,10 @@ extends default
 
 block content
     #content
-        h1 User: #{UserName}
+        h1 User: #{username}
+        h1 ID: #{id}
+        h3 Total Time Spent Working On GitHub Issues: #{TotalTimeElapsed}
+        h3 Total Issues Logged: #{TotalIssuesLogged}
         canvas#issuesChart
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.

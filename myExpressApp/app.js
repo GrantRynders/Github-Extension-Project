@@ -7,10 +7,6 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const cors = require('cors');
 var indexRouter = require('./routes/index');
-var userRouter = require('./routes/user'); //Look for routes in js scripts in /routes
-var issueRouter = require('./routes/issue');
-var timerRouter = require('./routes/timer');
-var timerPeriodRouter = require('./routes/timerperiod');
 
 var app = express();
 
@@ -27,10 +23,39 @@ app.use(express.static(path.join(__dirname, 'views/scripts')));
 app.use(express.static(path.join(__dirname, 'views/stylesheets')));
 app.use(cors({ origin: '*' }));
 app.use('/', indexRouter);
-app.use('/views/usermodel/user', userRouter);
-app.use('/views/timermodel/timer', timerRouter);
-app.use('/views/timerperiodmodel/timerperiod', timerPeriodRouter);
-app.use('/views/issuemodel/issue', issueRouter);
+
+app.get("/views/usermodel/user/:id", async (req, res) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+  res.render('user', { id: req.params.id, username: user.UserName });
+});
+app.get("/views/timermodel/timer/:id", async (req, res) => {
+  const timer = await prisma.timer.findFirst({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+  res.render('timer', { id: req.params.id, issueId: timer.issueId, userId: timer.userId });
+});
+app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
+  const timerperiod = await prisma.timerperiod.findFirst({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+  res.render('timerperiod', { id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId });
+});
+app.get("/views/issuemodel/issue/:id", async (req, res) => {
+  const issue = await prisma.issue.findFirst({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+  res.render('issue', { id: req.params.id, issueUrl: issue.url, issueName: issue.issueName });
+});
 
 
 app.post("/user/:username", async (req, res) => {
@@ -70,13 +95,13 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
     where: {
       UserName: req.params.username,
     },
-  })
+  });
   const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
       issueName: req.params.issueName,
     },
-  })
+  });
   if (await prisma.timer.findFirst({
     where: {
       userId: user.id,
