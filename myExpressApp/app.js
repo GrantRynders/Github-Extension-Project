@@ -6,7 +6,6 @@ var logger = require('morgan');
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const cors = require('cors');
-var indexRouter = require('./routes/index');
 
 var app = express();
 
@@ -19,10 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'views/scripts')));
-app.use(express.static(path.join(__dirname, 'views/stylesheets')));
 app.use(cors({ origin: '*' }));
-app.use('/', indexRouter);
 
 app.get("/views/usermodel/user/:id", async (req, res) => {
   const user = await prisma.user.findFirst({
@@ -369,56 +365,24 @@ app.get("/timerperiodmodel/endtimes", async (req, res) => { //returns the end da
 });
 
 //MODEL MAIN PAGES
-app.get('^/$|/test(.html)?', (req, res) => {
-  //res.sendFile('./views/index.html', { root: __dirname });
-  res.sendFile(path.join(__dirname, 'views', 'test.html'));
-});
 app.get('^/$|/main(.html)?', (req, res) => {
-  //res.sendFile('./views/index.html', { root: __dirname });
   res.sendFile(path.join(__dirname, 'views', 'main.html'));
 });
 app.get('^/$|/views/users(.html)?', (req, res) => {
-  //res.sendFile('./views/index.html', { root: __dirname });
   res.sendFile(path.join(__dirname, 'views', 'users.html'));
 });
 app.get('^/$|/views/issues(.html)?', (req, res) => {
-  //res.sendFile('./views/index.html', { root: __dirname });
   res.sendFile(path.join(__dirname, 'views', 'issues.html'));
 });
 app.get('^/$|/views/timers(.html)?', (req, res) => {
-  //res.sendFile('./views/index.html', { root: __dirname });
   res.sendFile(path.join(__dirname, 'views', 'timers.html'));
 });
 app.get('^/$|/views/timerperiods(.html)?', (req, res) => {
-  //res.sendFile('./views/index.html', { root: __dirname });
   res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
 });
-//MODEL INSTANCE PAGES
-app.get('^/$|/timermodel(.html)?', (req, res) => {
-  res.sendFile('./views/objectmodels/timer.html', { root: __dirname });
-  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'main.html'));
 });
-app.get('^/$|/usermodel(.html)?', (req, res) => {
-  res.sendFile('./views/objectmodels/user.html', { root: __dirname });
-  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
-});
-app.get('^/$|/issuemodel(.html)?', (req, res) => {
-  res.sendFile('./views/objectmodels/issue.html', { root: __dirname });
-  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
-});
-app.get('^/$|/timerperiodmodel(.html)?', (req, res) => {
-  res.sendFile('./views/objectmodels/timerperiod.html', { root: __dirname });
-  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
-});
-app.get('^/$|/users(.js)?', (req, res) => {
-  res.sendFile('./views/objectmodels/scripts/users.js', { root: __dirname });
-  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
-});
-app.get('^/$|/app(.css)?', (req, res) => {
-  res.sendFile('app.css', { root: './views/stylesheet' });
-  //res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
-});
-
 app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 
