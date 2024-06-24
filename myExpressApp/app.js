@@ -68,7 +68,7 @@ app.get("/views/issuemodel/issue/:id", async (req, res) => {
 
 
 app.post("/user/:username", async (req, res) => {
-  if (await prisma.user.findUnique({
+  if (await prisma.user.findFirst({
     where: {
       UserName: req.params.username,
     },
@@ -80,6 +80,10 @@ app.post("/user/:username", async (req, res) => {
         UserName: req.params.username,
       },
       });
+  }
+  else
+  {
+    console.log("User already exists")
   }
 });
 app.post("/issue/:url/:issuename", async (req, res) => {
@@ -97,7 +101,10 @@ app.post("/issue/:url/:issuename", async (req, res) => {
     },
     });
   }
-  
+  else
+  {
+    console.log("Issue already exists");
+  }
 });
 app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
   const user = await prisma.user.findUnique({
@@ -105,27 +112,45 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
       UserName: req.params.username,
     },
   });
-  const issue = await prisma.issue.findFirst({
+  if (user != null)
+  {
+    const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
       issueName: req.params.issueName,
     },
-  });
-  if (await prisma.timer.findFirst({
-    where: {
-      userId: user.id,
-      issueId: issue.id,
-    },
-  }) == null)
-  {
-    const timer = await prisma.timer.create({
-      data: 
-      {
+    });
+    if (issue != null)
+    {
+      if (await prisma.timer.findFirst({
+      where: {
         userId: user.id,
         issueId: issue.id,
       },
-      })
-      console.log(timer);
+      }) == null)
+      {
+        const timer = await prisma.timer.create({
+          data: 
+          {
+            userId: user.id,
+            issueId: issue.id,
+          },
+          })
+          console.log(timer);
+      }
+      else
+      {
+        console.log("Timer already exists when creating timer.")
+      }
+    }
+    else
+    {
+      console.log("Issue was found null when creating timer.")
+    }
+  }
+  else
+  {
+    console.log("User was found null when creating timer.")
   }
 });
 app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time", async (req, res) => {
@@ -134,28 +159,47 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
       UserName: req.params.username,
     },
   });
-  const issue = await prisma.issue.findFirst({
+  if (user != null)
+  {
+    const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
       issueName: req.params.issueName,
     },
-  });
-  const timer = await prisma.timer.findFirst({
-    where: {
-      userId: user.id,
-      issueId: issue.id,
-    },
-  });
-  console.log(timer);
-  const newTimerPeriod = await prisma.timerPeriod.create({
-    data: {
-      timerId: timer.id,
-      startDate: req.params.startdate,
-      endDate: req.params.enddate,
-      totalTimeElapsed: Number(req.params.time),
-    },
-  });
-  console.log(newTimerPeriod);
+    });
+    if (issue != null)
+    {
+      const timer = await prisma.timer.findFirst({
+      where: {
+        userId: user.id,
+        issueId: issue.id,
+      },
+      });
+      if (timer != null)
+      {
+        const newTimerPeriod = await prisma.timerPeriod.create({
+          data: {
+            timerId: timer.id,
+            startDate: req.params.startdate,
+            endDate: req.params.enddate,
+            totalTimeElapsed: Number(req.params.time),
+          },
+        });
+      }
+      else
+      {
+        console.log("Timer was found null when creating timer period");
+      }
+    }
+    else
+    {
+      console.log("Issue was found null when creating timer period");
+    }
+  }
+  else
+  {
+    console.log("User was found null when creating timer period")
+  }
 });
 //GENERAL ENDPOINTS
 app.get("/user", async (req, res) => {
