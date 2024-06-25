@@ -37,7 +37,7 @@ app.get("/views/timermodel/timer/:id", async (req, res) => {
     where: {
       id: Number(req.params.id),
     },
-  });  
+  });
   const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timerperiods")
   const timerPeriods = await timerPeriodsResponse.json();
   const totalTimeResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timespent");
@@ -50,7 +50,7 @@ app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
       id: Number(req.params.id),
     },
   });
-  const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timerperiods")
+  const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + timerperiod.timerId + "/timerperiods")
   const timerPeriods = await timerPeriodsResponse.json();
   res.render('timerperiod', { id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timerperiod.totalTimeElapsed, timerperiods: timerPeriods });
 });
