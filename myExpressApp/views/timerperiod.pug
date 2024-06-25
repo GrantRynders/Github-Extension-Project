@@ -9,7 +9,8 @@ block content
             h3 End Date: #{endDate}
             h3 Total Time Elapsed #{TotalTimeElapsed}
         canvas#myChart
-        h1 Related Timer Periods:
+        h1 Related Records:
+        p#idhidden #{timerId}
         p#Hidden #{JSON.stringify(timerperiods)}
         div#referenceList
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
@@ -17,7 +18,9 @@ block content
         Main();
         async function Main()
         {
+            await ListUserAndIssue();
             await ListTimerPeriods();
+           
         }
         async function ListTimerPeriods()
         {
@@ -32,4 +35,31 @@ block content
                 link.textContent = "Id: " + timerperiods[i].id + ", StartDate: " + timerperiods[i].startDate + ", EndDate: " + timerperiods[i].endDate + ", TimerId: " + timerperiods[i].timerId + "\n";
                 destinationDiv.appendChild(link);
             }
+        }
+        async function ListUserAndIssue()
+        {
+            var idElement = await document.getElementById("idhidden");
+            var id = Number(idElement.textContent);
+            var timerResponse = await fetch("http://localhost:5220/timermodel/" + id + "/timer");
+            var timer = await timerResponse.json();
+            var userResponse = await fetch("http://localhost:5220/timermodel/" + id + "/user");
+            var user = await userResponse.json();
+            var issueResponse = await fetch("http://localhost:5220/timermodel/" + id + "/issue");
+            var issue = await issueResponse.json();
+            var destinationDiv = await document.getElementById("referenceList");
+            var timerlink = await document.createElement('a');
+            timerlink.className = "referenceLink";
+            timerlink.href = "http://localhost:5220/views/timermodel/timer/" + id;
+            timerlink.textContent = "Id: " + timer[0].id + ", userId: " + timer[0].userId + ", issueId: " + timer[0].issueId + "\n";
+            destinationDiv.appendChild(timerlink);
+            var userlink = await document.createElement('a');
+            userlink.className = "referenceLink";
+            userlink.href = "http://localhost:5220/views/usermodel/user/" + user[0].id;
+            userlink.textContent = "Id: " + user[0].id + ", UserName: " + user[0].UserName + "\n";
+            destinationDiv.appendChild(userlink);
+            var issuelink = await document.createElement('a');
+            issuelink.className = "referenceLink";
+            issuelink.href = "http://localhost:5220/views/issuemodel/issue/" + issue[0].id;
+            issuelink.textContent = "Id: " + issue[0].id + ", URL: " + issue[0].url + ", Name: " + issue[0].issueName + "\n";
+            destinationDiv.appendChild(issuelink);
         }

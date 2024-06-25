@@ -17,7 +17,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 
 app.get("/views/usermodel/user/:id", async (req, res) => {
@@ -38,10 +37,10 @@ app.get("/views/timermodel/timer/:id", async (req, res) => {
     where: {
       id: Number(req.params.id),
     },
-  });  
+  });
   const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timerperiods")
   const timerPeriods = await timerPeriodsResponse.json();
-  const totalTimeResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/totaltimespent");
+  const totalTimeResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timespent");
   const totalTime = totalTimeResponse.json();
   res.render('timer', { id: req.params.id, issueId: timer.issueId, userId: timer.userId, timerperiods: timerPeriods, totalTimeElapsed: totalTime.totaltimespent });
 });
@@ -51,7 +50,7 @@ app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
       id: Number(req.params.id),
     },
   });
-  const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timerperiods")
+  const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + timerperiod.timerId + "/timerperiods")
   const timerPeriods = await timerPeriodsResponse.json();
   res.render('timerperiod', { id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timerperiod.totalTimeElapsed, timerperiods: timerPeriods });
 });
@@ -344,7 +343,11 @@ app.get("/issuemodel/:id/timespent", async (req, res) => { //total amount of tim
     'totaltimespent': issueTimeSpent,
   });
 });
-app.get("/timerperiodmodel/average", async (req, res) => { //total amount of time spent on an issue by all users
+app.get("/timermodel/:id/timer", async (req, res) => { //get timer by ID
+  var timer = await prisma.$queryRaw`SELECT Timer.id, Timer.userId, Timer.issueId FROM Timer WHERE Timer.id = ${Number(req.params.id)};`;
+  res.json(timer);
+});
+app.get("/timerperiodmodel/average", async (req, res) => { //Average time spent on all timer periods
   var TimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.totalTimeElapsed FROM TimerPeriod`;
   var TimeSpent = 0;
   for (var j = 0; j < TimeSpentArray.length; j++) 
@@ -374,7 +377,14 @@ app.get("/timerperiodmodel/endtimes", async (req, res) => { //returns the end da
   timerPeriods.stopTime = new Date(timerPeriods.stopTime).getTime();
   res.json(timerPeriods);
 });
-
+app.get("/timermodel/:id/user", async (req, res) => { //returns the user for a timer
+  const user = await prisma.$queryRaw`SELECT User.id, User.UserName FROM Timer INNER JOIN User ON Timer.userId = User.id WHERE Timer.id = ${req.params.id};`;
+  res.json(user);
+});
+app.get("/timermodel/:id/issue", async (req, res) => { //returns the issue for a timer
+  const issue = await prisma.$queryRaw`SELECT Issue.id, Issue.issueName, Issue.url FROM Timer INNER JOIN Issue ON Timer.issueId = Issue.id WHERE Timer.id = ${req.params.id};`;
+  res.json(issue);
+});
 //MODEL MAIN PAGES
 app.get('^/$|/main(.html)?', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'main.html'));
