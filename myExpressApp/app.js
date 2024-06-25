@@ -17,7 +17,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 
 app.get("/views/usermodel/user/:id", async (req, res) => {
@@ -374,7 +373,14 @@ app.get("/timerperiodmodel/endtimes", async (req, res) => { //returns the end da
   timerPeriods.stopTime = new Date(timerPeriods.stopTime).getTime();
   res.json(timerPeriods);
 });
-
+app.get("/timermodel/:id/user", async (req, res) => { //returns the user for a timer
+  const user = await prisma.$queryRaw`SELECT User.id, User.UserName FROM Timer INNER JOIN User ON Timer.userId = User.id WHERE Timer.id = ${req.params.id};`;
+  res.json(user);
+});
+app.get("/timermodel/:id/issue", async (req, res) => { //returns the issue for a timer
+  const issue = await prisma.$queryRaw`SELECT Issue.id, Issue.issueName, Issue.url FROM Timer INNER JOIN Issue ON Timer.issueId = Issue.id WHERE Timer.id = ${req.params.id};`;
+  res.json(issue);
+});
 //MODEL MAIN PAGES
 app.get('^/$|/main(.html)?', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'main.html'));
