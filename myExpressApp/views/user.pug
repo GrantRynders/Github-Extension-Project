@@ -2,10 +2,11 @@ extends default
 
 block content
     #content
-        h1 User: #{username}
-        h1 ID: #{id}
-        h3 Total Time Spent Working On GitHub Issues: #{TotalTimeElapsed}
-        h3 Total Issues Logged: #{issues.length}
+        div.recordHeader
+            h1 Username: #{username}
+            h1 User ID: #{id}
+            h3 Total Time Spent Working On GitHub Issues: #{TotalTimeElapsed}
+            h3 Total Issues Logged: #{issues.length}
         canvas#myChart
         h1 Logged Issues:
         p#Hidden #{JSON.stringify(issues)}
