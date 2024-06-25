@@ -7,22 +7,26 @@ block content
             h1 User ID: #{id}
             h3 Total Time Spent Working On GitHub Issues: #{TotalTimeElapsed}
             h3 Total Issues Logged: #{issues.length}
-        canvas#myChart
+        div.CanvasWrapper
+            canvas#myChart
         h1 Logged Issues:
+        p#idhidden #{id}
         p#Hidden #{JSON.stringify(issues)}
         div#referenceList
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
-        var names;
-        var issueCounts;
         var timeSpentArray;
+        var issueName;
         Main();
         async function Main()
         {
             await ListIssues();
+            await GetIssuesTimeSpentData();
+            await IssueTimeSpentByUserGraph();
         }
         async function ListIssues()
         {
+          
             const issuesReference = await document.getElementById("Hidden");
             const issues = await JSON.parse(issuesReference.textContent);
             const destinationDiv = document.getElementById("referenceList");
@@ -34,4 +38,45 @@ block content
                 link.textContent = "Id: " + issues[i].id + ", URL: " + issues[i].url + ", Name: " + issues[i].issueName + "\n";
                 destinationDiv.appendChild(link);
             }
+        }
+        async function GetIssuesTimeSpentData()
+        {
+            var userid = await document.getElementById("idhidden").textContent;
+            var relatedIssuesResponse = await fetch("http://localhost:5220/usermodel/" + userid + "/issues")
+            const relatedIssues = await relatedIssuesResponse.json();
+            timeSpentArray = await Promise.all(relatedIssues.map(async function(index){
+                const issueTimeResponse = await fetch("http://localhost:5220/issuemodel/" + index.id + "/timespent");
+                const issueTime = await issueTimeResponse.json();
+                return issueTime.totaltimespent;
+            }));
+            issueNames = relatedIssues.map(function(index){
+                return index.issueName;
+            });
+            
+        }
+        async function IssueTimeSpentByUserGraph()
+        {
+            console.log("GRAPHING");
+            var myChart = document.getElementById("myChart");
+            timeSpentByUserChart = new Chart(myChart, 
+            {
+                type: 'pie',
+                data: {
+                    labels: issueNames,
+                    datasets: [{
+                        label: issueName,
+                        data: timeSpentArray,
+                        hoverOffset: 4
+                    }],
+                    options: {
+                    plugins: {
+                    datalabels: {
+                        formatter: (value) => {
+                        if (value < 15) return '';
+                        return value + '%';
+                        },
+                    },
+                    }
+                }
+            }});
         }

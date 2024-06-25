@@ -7,19 +7,23 @@ block content
             h1 ID: #{id}
             h1 URL: #{issueUrl}
             h3 Total time users spent on this issue: #{TotalTimeElapsed}
-        canvas#myChart
+        div.CanvasWrapper
+            canvas#timeSpentByUser
         h1 Related Users:
+        p#idhidden #{id}
         p#Hidden #{JSON.stringify(users)}
         div#referenceList
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
-        var names;
-        var issueCounts;
-        var timeSpentArray;
+        var userNames;
+        var timeSpentByUserArray;
         Main();
         async function Main()
         {
             await ListUsers();
+            const issueId = await document.getElementById("idhidden").textContent;
+            await IssueTimeSpentByUserDataGet(issueId);
+            await IssueTimeSpentByUserGraph();
         }
         async function ListUsers()
         {
@@ -34,4 +38,63 @@ block content
                 userLink.textContent = "Id: " + users[i].id + ", UserName: " + users[i].UserName + "\n";
                 destinationDiv.appendChild(userLink);
             }
+        }
+        async function IssueTimeSpentByUserDataGet(issueId)
+        {
+            const myIssueResponse = await fetch("http://localhost:5220/issue/" + issueId);
+            const myIssue = await myIssueResponse.json();
+            const allUsersResponse = await fetch("http://localhost:5220/issuemodel/" + issueId + "/users");
+            const allUsers = await allUsersResponse.json();
+            issueName = myIssue.issueName;
+            var timesWithUsersArray = await Promise.all(allUsers.map(async function(index){
+                const issueTimeResponse = await fetch("http://localhost:5220/issuemodel/" + myIssue.id + "/" + index.id + "/timespentbyuser");
+                const issueTimes = await issueTimeResponse.json();
+                var issueTimeSpent = 0;
+                for (var i = 0; i < issueTimes.length; i++)
+                {
+                    issueTimeSpent += Number(issueTimes[i].totalTimeElapsed);
+                }
+                
+                var data = {
+                    'UserName': index.UserName,
+                    'totalTimeSpent': issueTimeSpent
+                };
+                return data;
+            }));
+            userNames = timesWithUsersArray.map(function(index){
+                return index.UserName;
+            });
+            timeSpentByUserArray = timesWithUsersArray.map(function(index){
+                return index.totalTimeSpent;
+            });
+        }
+        async function IssueTimeSpentByUserGraph()
+        {
+            var myChart = document.getElementById("timeSpentByUser");
+            timeSpentByUserChart = new Chart(myChart, 
+            {
+                type: 'pie',
+                data: {
+                    labels: userNames,
+                    datasets: [{
+                        label: "TimeSpent",
+                        data: timeSpentByUserArray,
+                        // backgroundColor: [
+                        // 'rgb(255, 99, 132)',
+                        // 'rgb(54, 162, 235)',
+                        // 'rgb(255, 205, 86)'
+                        // ],
+                        hoverOffset: 4
+                    }],
+                    options: {
+                    plugins: {
+                    datalabels: {
+                        formatter: (value) => {
+                        if (value < 15) return '';
+                        return value + '%';
+                        },
+                    },
+                    }
+                }
+            }});
         }

@@ -344,7 +344,7 @@ app.get("/issuemodel/:id/timespent", async (req, res) => { //total amount of tim
     'totaltimespent': issueTimeSpent,
   });
 });
-app.get("/timerperiodmodel/average", async (req, res) => { //total amount of time spent on an issue by all users
+app.get("/timerperiodmodel/average", async (req, res) => { //Average time spent on all timer periods
   var TimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.totalTimeElapsed FROM TimerPeriod`;
   var TimeSpent = 0;
   for (var j = 0; j < TimeSpentArray.length; j++) 
