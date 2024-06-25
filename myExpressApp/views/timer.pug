@@ -2,10 +2,11 @@ extends default
 
 block content
     #content
-        h1 TimerId: #{id}
-        h1 UserId: #{id}
-        h1 IssueId: #{id}
-        h3 Total Time Spent: #{TotalTimeElapsed}
+        div.recordHeader
+            h1 TimerId: #{id}
+            h1 UserId: #{id}
+            h1 IssueId: #{id}
+            h3 Total Time Spent: #{TotalTimeElapsed}
         canvas#myChart
         h1 Related Timer Periods:
         p#Hidden #{JSON.stringify(timerperiods)}
