@@ -157,6 +157,13 @@ html
             width: 100%;
             padding: 0.5em 0 0.5em 0;
         }
+        #searchLink{
+            display: inline-block;
+            width:100%;
+            font-size: 2em;
+            text-align:center;
+            padding: 1em 0em 1em 0em;
+        }
     body
       header
         h1#SiteHeader Visualization for GitHub Issues Timer Data
@@ -173,5 +180,7 @@ html
             li.navLi
               a(href="http://localhost:5220/views/timerperiods") Timer Periods
       block content
+    div(id="searchLink")
+      a(href="http://localhost:5220/views/search") Not what you're looking for? Do a search!
     footer Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.<br> Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a><br>Author: Grant Rynders
       
