@@ -55,20 +55,24 @@ var startDate;
 var endDate;
 InitializeTimer();
 timerCount++;
-navigation.addEventListener("navigate", function ()
-{
-    console.log("Location change");
-    if(timerCount == 0)
-    {
-        InitializeTimer(); 
-    }
-    timerCount++;
-});
+// navigation.addEventListener("navigate", function ()
+// {
+//     console.log("Location change");
+//     if(timerCount == 0)
+//     {
+//         InitializeTimer(); 
+//     }
+//     timerCount++;
+// });
 //On initialize
 function InitializeTimer()
 {
     // if (window.location.href.includes("\\issues\\"))
     // {
+        var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
+        CreateNewUser(userName);
+        CreateNewIssue(encodeURIComponent(url), issueHeader.textContent);
+        CreateNewTimer(userName, encodeURIComponent(url), issueHeader);
         userName = document.getElementsByName("user-login")[0].content; //ADD CHECK FOR NULL
         console.log(userName);
         if (localStorage.getItem(userName + window.location.href) == null)
@@ -81,7 +85,7 @@ function InitializeTimer()
         if (results == 0)
         {
             console.log("crippling failure");
-           // CreateUserTimerLog(userName);
+            CreateUserTimerLog(userName);
         }
         if (results == 1)
         {
@@ -287,7 +291,7 @@ function EditComment(value1, value2, value3)
             commentTextArea.textContent += "\n. . . .\nTotal Time Spent So Far: " + formattedTimeElapsed;
         }
         submitEditButton.click();
-        window.location.reload();//reload the page to submit the comment
+        // window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else

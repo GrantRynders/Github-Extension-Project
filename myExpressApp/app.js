@@ -163,12 +163,12 @@ app.get("/issueGet/:issueUrl/:issueName", async (req, res) => {
   res.json(issue);
 });
 app.get("/timer/:userName/:issueUrl/:issueName", async (req, res) => {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: {
       UserName: req.params.userName,
     },
   })
-  const issue = await prisma.issue.findUnique({
+  const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
       issueName: req.params.issueName,

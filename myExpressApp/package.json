@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "devStart": "ts-node ./prisma/index.ts"
+    "devStart": "ts-node ./prisma/index.ts",
+    "server": "node ./app.js"
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
