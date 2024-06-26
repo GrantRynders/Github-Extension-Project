@@ -170,6 +170,8 @@ block content
                 dropElement.textContent = tables[i];
                 dropElement.addEventListener('click',function ()
                 {
+                    var dropBtn = document.getElementsByClassName("dropbtn")[0];
+                    dropBtn.textContent = tables[i];
                     SetField(i);
                 });
                 dropdown.appendChild(dropElement);
