@@ -4,14 +4,13 @@ block content
     #content
         div.searchdiv
             h1#searchtitle Search the Database
-            input(type="text" class="SearchField" id="modelInput" placeholder="Record Type")
-            input(type="text" class="SearchField" id="queryInput" placeholder="id")
-            button(class="SearchField" onclick="Search()") Search
-            h1#results
-        div.searchdiv
             div.dropdown
                 button(onclick="ToggleDropdown()" class="dropbtn") Choose a table to query
                 div(id="myDropdown" class="dropdown-content")
+            input(type="text" class="SearchField" id="queryInput" placeholder="Query")
+            button(class="SearchField" onclick="Search()") Search
+            h1#results
+            
 
 
 
@@ -33,6 +32,7 @@ block content
             {
                 if (query != null)
                 {
+                    query = query.trim();
                     if (selectedTable == "user")
                     {
                         const url = "http://localhost:5220/user/" + query;
@@ -59,6 +59,7 @@ block content
                     }
                     else if (selectedTable == "issue")
                     {
+                        query = encodeURIComponent(query);
                         const url = "http://localhost:5220/issue/url/" + query;
                         var issueResponse = await fetch(url);
                         if (issueResponse.status < 400 && issueResponse != null)
