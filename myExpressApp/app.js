@@ -161,7 +161,8 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
   }
 });
 app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time", async (req, res) => {
-  const user = await prisma.user.findUnique({
+  console.log("POST TIMER PERIOD");
+  const user = await prisma.user.findFirst({
     where: {
       UserName: req.params.username,
     },
@@ -190,7 +191,7 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
             startDate: req.params.startdate,
             endDate: req.params.enddate,
             totalTimeElapsed: Number(req.params.time),
-          },
+          }, 
         });
       }
       else
@@ -228,12 +229,19 @@ app.get("/timerPeriod", async (req, res) => {
 });
 //SPECIFIC ENDPOINTS
 app.get("/user/:username", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      UserName: req.params.username,
-    },
-  })
-  res.json(user);
+  try
+  {
+    const user = await prisma.user.findUnique({
+      where: {
+        UserName: req.params.username,
+      },
+    })
+    res.json(user);
+  }
+  catch (error) 
+  {
+    console.log("Error getting user " + error);
+  }
 });
 app.get("/user/id/:id", async (req, res) => {
   try
@@ -251,73 +259,108 @@ app.get("/user/id/:id", async (req, res) => {
   }
 });
 app.get("/issue/:issueId", async (req, res) => {
-  const returnissue = await prisma.issue.findFirst({
-    where: {
-      id: Number(req.params.issueId),
-    },
-  })
-  res.json(returnissue);
+  try
+  {
+    const returnissue = await prisma.issue.findFirst({
+      where: {
+        id: Number(req.params.issueId),
+      },
+    })
+    res.json(returnissue);
+  }
+  catch (error) 
+  {
+    console.log("Error getting issue " + error);
+  }
 });
 app.get("/issueGet/:issueUrl/:issueName", async (req, res) => {
-  const issue = await prisma.issue.findUnique({
-    where: {
-      url: req.params.issueUrl,
-      issueName: req.params.issueName,
-    },
-  })
-  res.json(issue);
+  try
+  {
+    const issue = await prisma.issue.findUnique({
+      where: {
+        url: req.params.issueUrl,
+        issueName: req.params.issueName,
+      },
+    })
+    res.json(issue);
+  }
+  catch (error) 
+  {
+    console.log("Error getting issue " + error);
+  }
 });
 app.get("/timer/:userName/:issueUrl/:issueName", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      UserName: req.params.userName,
-    },
-  })
-  const issue = await prisma.issue.findUnique({
-    where: {
-      url: req.params.issueUrl,
-      issueName: req.params.issueName,
-    },
-  })
-  const timer = await prisma.timer.findFirst({
-    where: {
-      userId: user.id,
-      issueId: issue.id,
-    },
-  })
-  res.json(timer);
+  try
+  {
+    const user = await prisma.user.findUnique({
+      where: {
+        UserName: req.params.userName,
+      },
+    })
+    const issue = await prisma.issue.findUnique({
+      where: {
+        url: req.params.issueUrl,
+        issueName: req.params.issueName,
+      },
+    })
+    const timer = await prisma.timer.findFirst({
+      where: {
+        userId: user.id,
+        issueId: issue.id,
+      },
+    })
+    res.json(timer);
+  }
+  catch (error) 
+  {
+    console.log("Error getting timer " + error);
+  }
 });
 app.get("/timer/user/:username", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      UserName: req.params.username,
-    },
-    include: {
-      timers: true,
-    },
-  })
-  res.json(user);
+  try
+  {
+    const user = await prisma.user.findUnique({
+      where: {
+        UserName: req.params.username,
+      },
+      include: {
+        timers: true,
+      },
+    })
+    res.json(user);
+  }
+  catch (error) 
+  {
+    console.log("Error getting users with timers " + error);
+  }
 });
 app.get("/timer/:username/:url/:issuename", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      UserName: req.params.username,
-    },
-  });
-  const issue = await prisma.issue.findUnique({
-    where: {
-      url: req.params.issueUrl,
-      issueName: req.params.issueName,
-    },
-  });
-  const timer = await prisma.timer.findUnique({
-    where: {
-      userId: user.id,
-      issueId: issue.id,
-    },
-  });
-  res.json(timer);
-  });
+  try
+  {
+    const user = await prisma.user.findUnique({
+      where: {
+        UserName: req.params.username,
+      },
+    });
+    const issue = await prisma.issue.findUnique({
+      where: {
+        url: req.params.issueUrl,
+        issueName: req.params.issueName,
+      },
+    });
+    const timer = await prisma.timer.findUnique({
+      where: {
+        userId: user.id,
+        issueId: issue.id,
+      },
+    });
+    res.json(timer);
+  }
+  catch (error) 
+  {
+    console.log("Error getting user " + error);
+  }
+});
 app.get("/timermodel/timerperiod", async (req, res) => {
   var timersWithPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.timerId FROM Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId;`;
   res.json(timersWithPeriods);
