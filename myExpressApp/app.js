@@ -332,6 +332,21 @@ app.get("/timer/:userName/:issueUrl/:issueName", async (req, res) => {
     console.log("Error getting timer " + error);
   }
 });
+app.get("/timer/:id", async (req, res) => {
+  try
+  {
+    const timer = await prisma.timer.findFirst({
+      where: {
+        id: Number(req.params.id),
+      },
+    })
+    res.json(timer);
+  }
+  catch (error) 
+  {
+    console.log("Error getting timer " + error);
+  }
+});
 app.get("/timer/user/:username", async (req, res) => {
   try
   {
@@ -371,6 +386,21 @@ app.get("/timer/:username/:url/:issuename", async (req, res) => {
       },
     });
     res.json(timer);
+  }
+  catch (error) 
+  {
+    console.log("Error getting user " + error);
+  }
+});
+app.get("/timerPeriod/:id", async (req, res) => {
+  try
+  {
+    const timerPeriod = await prisma.timerPeriod.findFirst({
+      where: {
+        id: Number(req.params.id),
+      },
+    });
+    res.json(timerPeriod);
   }
   catch (error) 
   {
