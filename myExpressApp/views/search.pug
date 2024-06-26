@@ -2,77 +2,143 @@ extends default
 
 block content
     #content
-        h1#searchtitle Search the Database
-        input(type="text" class="SearchField" id="modelInput" placeholder="Record Type")
-        input(type="text" class="SearchField" id="idInput" placeholder="id")
-        button(class="SearchField" onclick="Search()") Search
-        h1#results
+        div.searchdiv
+            h1#searchtitle Search the Database
+            input(type="text" class="SearchField" id="modelInput" placeholder="Record Type")
+            input(type="text" class="SearchField" id="queryInput" placeholder="id")
+            button(class="SearchField" onclick="Search()") Search
+            h1#results
+        div.searchdiv
+            div.dropdown
+                button(onclick="ToggleDropdown()" class="dropbtn") Choose a table to query
+                div(id="myDropdown" class="dropdown-content")
 
 
 
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
+        var selectedTable;
+        var placeholder;
         Main();
         async function Main()
         {
-            
+            await PopulateDropdown();
         }
         async function Search()
         {
             var results = await document.getElementById("results");
-            var modelElement = await document.getElementById("modelInput");
-            console.log(modelElement);
-            var idElement = await document.getElementById("idInput");
-            var model = modelElement.value;
-            var id = idElement.value;
-            console.log("Model: " + model);
-            console.log("Id: " + id);
-            if (model != null)
+            var queryElement = await document.getElementById("queryInput");
+            var query = queryElement.value;
+            if (selectedTable != null)
             {
-                if (id != null)
+                if (query != null)
                 {
-                    const url = "http://localhost:5220/" + model + "/id/" + id;
-                    await fetch(url)
-                    .then((response) => {
-                        if (response.status < 400)
-                        {
-                            const pageurl = "http://localhost:5220/views/" + model + "model/" + model + "/" + id;
-                            fetch(pageurl)
-                            .then((response) => {
-                                if (response.status < 400)
-                                {
-                                    window.location.replace(pageurl);
-                                }
-                                else
-                                {
-                                    results.textContent = "No Valid Record to Return";
-                                }
-                            })
-                            .catch(function() {
-                                console.log("Something really bad happened when searching uh oh");
-                            });
-                        }
-                        else
-                        {
-                            results.textContent = "No Valid Record to Return";
-                        }
-                    })
-                    .catch(function() {
-                        console.log("Something really bad happened when searching uh oh");
-                    });
-                    
-
-                    
+                    if (selectedTable == "user")
+                    {
+                        const url = "http://localhost:5220/user/" + query;
+                        await fetch(url)
+                        .then((response) => {
+                            if (response.status < 400)
+                            {
+                                var userResponse = await fetch(url);
+                                var user = userResponse.json();
+                                const pageurl = "http://localhost:5220/views/" + model + "model/" + model + "/" + user.id;
+                                fetch(pageurl)
+                                .then((response) => {
+                                    if (response.status < 400)
+                                    {
+                                        window.location.replace(pageurl);
+                                    }
+                                    else
+                                    {
+                                        results.textContent = "No Valid Record to Return";
+                                    }
+                                })
+                                .catch(function() {
+                                    console.log("Something really bad happened when searching uh oh");
+                                });
+                            }
+                            else
+                            {
+                                results.textContent = "No Valid Record to Return";
+                            }
+                        })
+                        .catch(function() {
+                            console.log("Something really bad happened when searching uh oh");
+                        });
+                    }
+                    else if (selectedTable == "issue")
+                    {
+                        const url = "http://localhost:5220/issue/url/" + query;
+                        await fetch(url);
+                        .then((response) => {
+                            if (response.status < 400)
+                            {
+                                const pageurl = "http://localhost:5220/views/issuemodel/issue/" + id;
+                                fetch(pageurl)
+                                .then((response) => {
+                                    if (response.status < 400)
+                                    {
+                                        window.location.replace(pageurl);
+                                    }
+                                    else
+                                    {
+                                        results.textContent = "No Valid Record to Return";
+                                    }
+                                })
+                                .catch(function() {
+                                    console.log("Something really bad happened when searching uh oh");
+                                });
+                            }
+                            else
+                            {
+                                results.textContent = "No Valid Record to Return";
+                            }
+                        })
+                        .catch(function() {
+                            console.log("Something really bad happened when searching uh oh");
+                        });
+                    }
                 }
                 else
                 {
-                    console.log("Id is null for search");
+                    console.log("Query is null for search");
                 }
             }
             else
             {
                 console.log("Model is null for search");
             }
+        }
+        function ToggleDropdown() 
+        {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+        async function PopulateDropdown()
+        {
+            const dropdown = document.getElementById("myDropdown");
+            const tables = ["Users", "Issues", "Timers", "Timer Periods"]
+            for (let i = 0; i < tables.length; i++) 
+            {
+                var dropElement = document.createElement("button");
+                dropElement.className = "dropdownElement";
+                dropElement.textContent = tables[i];
+                dropElement.addEventListener('click',function ()
+                {
+                    await SetField(i);
+                });
+                dropdown.appendChild(dropElement);
+            }
+        }
+        async function SetField(index)
+        {
+            const tables = ["user", "issue", "timer", "timerPeriod"];
+            const placeholders = ["Enter the username", "Enter the issue URL", "Enter the timer id", "Enter the timer period id"]
+            selectedTable = tables[index];
+            placeholder = placeholders[index];
+            var queryElement = await document.getElementById("queryInput");
+            queryElement.placeholder = placeholder;
+
         }
 
 

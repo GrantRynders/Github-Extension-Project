@@ -289,6 +289,22 @@ app.get("/issueGet/:issueUrl/:issueName", async (req, res) => {
     console.log("Error getting issue " + error);
   }
 });
+app.get("/issue/url/:issueUrl", async (req, res) => {
+  try
+  {
+    const issue = await prisma.issue.findUnique({
+      where: {
+        url: req.params.issueUrl,
+        issueName: req.params.issueName,
+      },
+    })
+    res.json(issue);
+  }
+  catch (error) 
+  {
+    console.log("Error getting issue " + error);
+  }
+});
 app.get("/timer/:userName/:issueUrl/:issueName", async (req, res) => {
   try
   {
