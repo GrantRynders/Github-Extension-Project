@@ -1,0 +1,79 @@
+extends default
+
+block content
+    #content
+        h1#searchtitle Search the Database
+        input(type="text" class="SearchField" id="modelInput" placeholder="Record Type")
+        input(type="text" class="SearchField" id="idInput" placeholder="id")
+        button(class="SearchField" onclick="Search()") Search
+        h1#results
+
+
+
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        Main();
+        async function Main()
+        {
+            
+        }
+        async function Search()
+        {
+            var results = await document.getElementById("results");
+            var modelElement = await document.getElementById("modelInput");
+            console.log(modelElement);
+            var idElement = await document.getElementById("idInput");
+            var model = modelElement.value;
+            var id = idElement.value;
+            console.log("Model: " + model);
+            console.log("Id: " + id);
+            if (model != null)
+            {
+                if (id != null)
+                {
+                    const url = "http://localhost:5220/" + model + "/id/" + id;
+                    await fetch(url)
+                    .then((response) => {
+                        if (response.status < 400)
+                        {
+                            const pageurl = "http://localhost:5220/views/" + model + "model/" + model + "/" + id;
+                            fetch(pageurl)
+                            .then((response) => {
+                                if (response.status < 400)
+                                {
+                                    window.location.replace(pageurl);
+                                }
+                                else
+                                {
+                                    results.textContent = "No Valid Record to Return";
+                                }
+                            })
+                            .catch(function() {
+                                console.log("Something really bad happened when searching uh oh");
+                            });
+                        }
+                        else
+                        {
+                            results.textContent = "No Valid Record to Return";
+                        }
+                    })
+                    .catch(function() {
+                        console.log("Something really bad happened when searching uh oh");
+                    });
+                    
+
+                    
+                }
+                else
+                {
+                    console.log("Id is null for search");
+                }
+            }
+            else
+            {
+                console.log("Model is null for search");
+            }
+        }
+
+
+

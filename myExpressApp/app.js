@@ -30,7 +30,10 @@ app.get("/views/usermodel/user/:id", async (req, res) => {
   const timeElapsed = timeElapsedJson.totaltimespent;
   const issuesResponse = await fetch("http://localhost:5220/usermodel/" + req.params.id + "/issues");
   const issues = await issuesResponse.json();
-  res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues});
+  if (user != null)
+    {
+      res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues});
+    }
 });
 app.get("/views/timermodel/timer/:id", async (req, res) => {
   const timer = await prisma.timer.findFirst({
@@ -53,6 +56,9 @@ app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
   const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + timerperiod.timerId + "/timerperiods")
   const timerPeriods = await timerPeriodsResponse.json();
   res.render('timerperiod', { id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timerperiod.totalTimeElapsed, timerperiods: timerPeriods });
+});
+app.get("/views/search", async (req, res) => {
+  res.render('search', { title: "Search" });
 });
 app.get("/views/issuemodel/issue/:id", async (req, res) => {
   const issue = await prisma.issue.findFirst({
@@ -228,6 +234,21 @@ app.get("/user/:username", async (req, res) => {
     },
   })
   res.json(user);
+});
+app.get("/user/id/:id", async (req, res) => {
+  try
+  {
+    const user = await prisma.user.findFirst({
+      where: {
+        id: Number(req.params.id),
+      },
+    })
+    res.json(user);
+  }
+  catch (error) 
+  {
+    console.log("Error getting user " + error);
+  }
 });
 app.get("/issue/:issueId", async (req, res) => {
   const returnissue = await prisma.issue.findFirst({
