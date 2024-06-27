@@ -571,8 +571,8 @@ function CheckServer(url, timeout)
 }
 async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
-    if (CheckServer("http://localhost:5220", 100) != null)
-    {
+    // if (CheckServer("http://localhost:5220", 100) != null)
+    // {
         console.log("SAVING DATA TO DATABASE");
         var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
         var time = Number(Math.round(difference /1000));
@@ -580,7 +580,7 @@ async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
         await CreateNewIssue(encodeURIComponent(url), issuename);
         await CreateNewTimer(username, encodeURIComponent(url), issuename);
         await CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, Number(time));
-    }
+    //}
     
 }
 

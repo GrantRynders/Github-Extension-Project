@@ -44,7 +44,6 @@ block content
             var id = Number(idElement.textContent);
             var userResponse = await fetch("http://localhost:5220/timermodel/" + id + "/user");
             var user = await userResponse.json();
-            console.log(user);
             var issueResponse = await fetch("http://localhost:5220/timermodel/" + id + "/issue");
             var issue = await issueResponse.json();
             destinationDiv = await document.getElementById("referenceList");
