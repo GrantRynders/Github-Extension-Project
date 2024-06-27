@@ -486,6 +486,45 @@ app.get("/timermodel/:id/timerperiods", async (req, res) => { //returns all time
   var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.startDate, TimerPeriod.endDate, TimerPeriod.TimerId FROM Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId WHERE Timer.id = ${req.params.id};`;
   res.json(timerPeriods);
 });
+app.get("/timermodel/:id/adjacenttimerperiods", async (req, res) => { //returns all timerperiods for a certain date based on one timer period's enddate
+  var targetTimerPeriod = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.startDate, TimerPeriod.endDate, TimerPeriod.TimerId FROM TimerPeriod WHERE TimerPeriod.id = ${req.params.id};`;
+  var targetDateObject = new Date(targetTimerPeriod[0].endDate);
+  var targetDate = targetDateObject.getDate();
+  var targetMonth = targetDateObject.getMonth();
+  var targetYear = targetDateObject.getFullYear();
+  var allPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.startDate, TimerPeriod.endDate, TimerPeriod.TimerId FROM TimerPeriod;`;
+  var adjacentPeriods = await Promise.all(allPeriods.map(async function(index){
+    if (index.id != req.params.id)
+    {
+      var indexDateObject = new Date(index.endDate);
+      var indexDate = indexDateObject.getDate();
+      var indexMonth = indexDateObject.getMonth();
+      var indexYear = indexDateObject.getFullYear();
+      if ((indexDate == targetDate) && (indexMonth == targetMonth) && (indexYear == targetYear))
+      {
+        const data = {
+          timerPeriodId: index.id,
+          startDate: index.startDate,
+          endDate: index.endDate,
+          totalTimeElapsed: index.totalTimeElapsed
+        }
+        return data;
+      }
+    }
+    else
+    {
+      return null;
+    }
+  }));
+  adjacentPeriods = adjacentPeriods.filter(function (element) {
+    if (element !== null)
+    {
+      return element;
+    }
+  }); 
+  console.log(adjacentPeriods);
+  res.json(adjacentPeriods);
+});
 app.get("/timerperiodmodel/endtimes", async (req, res) => { //returns the end dates in milliseconds of all time periods
   var timerPeriods = await prisma.$queryRaw`SELECT TimerPeriod.endDate AS stopTime, TimerPeriod.TimerId, User.UserName, TimerPeriod.totalTimeElapsed FROM ((Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId) INNER JOIN User ON Timer.UserId = User.id)`;
   timerPeriods.stopTime = new Date(timerPeriods.stopTime).getTime();
@@ -523,14 +562,14 @@ app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 
 async function main() {
-  const allUsers = await prisma.user.findMany();
-  const allIssues = await prisma.issue.findMany();
-  const allTimers = await prisma.timer.findMany();
-  const allTimerPeriods = await prisma.timerPeriod.findMany();
-  console.log(allUsers);
-  console.log(allIssues);
-  console.log(allTimers);
-  console.log(allTimerPeriods);
+  // const allUsers = await prisma.user.findMany();
+  // const allIssues = await prisma.issue.findMany();
+  // const allTimers = await prisma.timer.findMany();
+  // const allTimerPeriods = await prisma.timerPeriod.findMany();
+  // console.log(allUsers);
+  // console.log(allIssues);
+  // console.log(allTimers);
+  // console.log(allTimerPeriods);
 }
 
 async function ConvertSeconds(seconds)

@@ -57,6 +57,7 @@ block content
             issuelink.href = "http://localhost:5220/views/issuemodel/issue/" + issue[0].id;
             issuelink.textContent = "Id: " + issue[0].id + ", URL: " + issue[0].url + ", Name: " + issue[0].issueName + "\n";
             destinationDiv.appendChild(issuelink);
+            var date = new Date(Date()).get
         }
         async function GetTimerPeriodsGraphData()
         {
