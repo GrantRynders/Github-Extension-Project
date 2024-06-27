@@ -30,7 +30,10 @@ app.get("/views/usermodel/user/:id", async (req, res) => {
   const timeElapsed = timeElapsedJson.totaltimespent;
   const issuesResponse = await fetch("http://localhost:5220/usermodel/" + req.params.id + "/issues");
   const issues = await issuesResponse.json();
-  res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues});
+  if (user != null)
+    {
+      res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues});
+    }
 });
 app.get("/views/timermodel/timer/:id", async (req, res) => {
   const timer = await prisma.timer.findFirst({
@@ -53,6 +56,9 @@ app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
   const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + timerperiod.timerId + "/timerperiods")
   const timerPeriods = await timerPeriodsResponse.json();
   res.render('timerperiod', { id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timerperiod.totalTimeElapsed, timerperiods: timerPeriods });
+});
+app.get("/views/search", async (req, res) => {
+  res.render('search', { title: "Search" });
 });
 app.get("/views/issuemodel/issue/:id", async (req, res) => {
   const issue = await prisma.issue.findFirst({
@@ -155,7 +161,8 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
   }
 });
 app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time", async (req, res) => {
-  const user = await prisma.user.findUnique({
+  console.log("POST TIMER PERIOD");
+  const user = await prisma.user.findFirst({
     where: {
       UserName: req.params.username,
     },
@@ -184,7 +191,7 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
             startDate: req.params.startdate,
             endDate: req.params.enddate,
             totalTimeElapsed: Number(req.params.time),
-          },
+          }, 
         });
       }
       else
@@ -222,81 +229,184 @@ app.get("/timerPeriod", async (req, res) => {
 });
 //SPECIFIC ENDPOINTS
 app.get("/user/:username", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      UserName: req.params.username,
-    },
-  })
-  res.json(user);
+  try
+  {
+    const user = await prisma.user.findUnique({
+      where: {
+        UserName: req.params.username,
+      },
+    })
+    res.json(user);
+  }
+  catch (error) 
+  {
+    console.log("Error getting user " + error);
+  }
+});
+app.get("/user/id/:id", async (req, res) => {
+  try
+  {
+    const user = await prisma.user.findFirst({
+      where: {
+        id: Number(req.params.id),
+      },
+    })
+    res.json(user);
+  }
+  catch (error) 
+  {
+    console.log("Error getting user " + error);
+  }
 });
 app.get("/issue/:issueId", async (req, res) => {
-  const returnissue = await prisma.issue.findFirst({
-    where: {
-      id: Number(req.params.issueId),
-    },
-  })
-  res.json(returnissue);
+  try
+  {
+    const returnissue = await prisma.issue.findFirst({
+      where: {
+        id: Number(req.params.issueId),
+      },
+    })
+    res.json(returnissue);
+  }
+  catch (error) 
+  {
+    console.log("Error getting issue " + error);
+  }
 });
 app.get("/issueGet/:issueUrl/:issueName", async (req, res) => {
-  const issue = await prisma.issue.findUnique({
-    where: {
-      url: req.params.issueUrl,
-      issueName: req.params.issueName,
-    },
-  })
-  res.json(issue);
+  try
+  {
+    const issue = await prisma.issue.findUnique({
+      where: {
+        url: req.params.issueUrl,
+        issueName: req.params.issueName,
+      },
+    })
+    res.json(issue);
+  }
+  catch (error) 
+  {
+    console.log("Error getting issue " + error);
+  }
+});
+app.get("/issue/url/:issueUrl", async (req, res) => {
+  try
+  {
+    const issue = await prisma.issue.findUnique({
+      where: {
+        url: req.params.issueUrl,
+        issueName: req.params.issueName,
+      },
+    })
+    res.json(issue);
+  }
+  catch (error) 
+  {
+    console.log("Error getting issue " + error);
+  }
 });
 app.get("/timer/:userName/:issueUrl/:issueName", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      UserName: req.params.userName,
-    },
-  })
-  const issue = await prisma.issue.findUnique({
-    where: {
-      url: req.params.issueUrl,
-      issueName: req.params.issueName,
-    },
-  })
-  const timer = await prisma.timer.findFirst({
-    where: {
-      userId: user.id,
-      issueId: issue.id,
-    },
-  })
-  res.json(timer);
+  try
+  {
+    const user = await prisma.user.findUnique({
+      where: {
+        UserName: req.params.userName,
+      },
+    })
+    const issue = await prisma.issue.findUnique({
+      where: {
+        url: req.params.issueUrl,
+        issueName: req.params.issueName,
+      },
+    })
+    const timer = await prisma.timer.findFirst({
+      where: {
+        userId: user.id,
+        issueId: issue.id,
+      },
+    })
+    res.json(timer);
+  }
+  catch (error) 
+  {
+    console.log("Error getting timer " + error);
+  }
+});
+app.get("/timer/:id", async (req, res) => {
+  try
+  {
+    const timer = await prisma.timer.findFirst({
+      where: {
+        id: Number(req.params.id),
+      },
+    })
+    res.json(timer);
+  }
+  catch (error) 
+  {
+    console.log("Error getting timer " + error);
+  }
 });
 app.get("/timer/user/:username", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      UserName: req.params.username,
-    },
-    include: {
-      timers: true,
-    },
-  })
-  res.json(user);
+  try
+  {
+    const user = await prisma.user.findUnique({
+      where: {
+        UserName: req.params.username,
+      },
+      include: {
+        timers: true,
+      },
+    })
+    res.json(user);
+  }
+  catch (error) 
+  {
+    console.log("Error getting users with timers " + error);
+  }
 });
 app.get("/timer/:username/:url/:issuename", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      UserName: req.params.username,
-    },
-  });
-  const issue = await prisma.issue.findUnique({
-    where: {
-      url: req.params.issueUrl,
-      issueName: req.params.issueName,
-    },
-  });
-  const timer = await prisma.timer.findUnique({
-    where: {
-      userId: user.id,
-      issueId: issue.id,
-    },
-  });
-  res.json(timer);
-  });
+  try
+  {
+    const user = await prisma.user.findUnique({
+      where: {
+        UserName: req.params.username,
+      },
+    });
+    const issue = await prisma.issue.findUnique({
+      where: {
+        url: req.params.issueUrl,
+        issueName: req.params.issueName,
+      },
+    });
+    const timer = await prisma.timer.findUnique({
+      where: {
+        userId: user.id,
+        issueId: issue.id,
+      },
+    });
+    res.json(timer);
+  }
+  catch (error) 
+  {
+    console.log("Error getting user " + error);
+  }
+});
+app.get("/timerPeriod/:id", async (req, res) => {
+  try
+  {
+    const timerPeriod = await prisma.timerPeriod.findFirst({
+      where: {
+        id: Number(req.params.id),
+      },
+    });
+    res.json(timerPeriod);
+  }
+  catch (error) 
+  {
+    console.log("Error getting user " + error);
+  }
+});
 app.get("/timermodel/timerperiod", async (req, res) => {
   var timersWithPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.timerId FROM Timer INNER JOIN TimerPeriod ON Timer.id = TimerPeriod.timerId;`;
   res.json(timersWithPeriods);
@@ -359,6 +469,10 @@ app.get("/timerperiodmodel/average", async (req, res) => { //Average time spent 
   res.json({
     'average': roundedAverage,
   });
+});
+app.get("/timerperiodmodel/users", async (req, res) => { //All timer periods with associated users
+  var periodsWithUsers = await prisma.$queryRaw`SELECT User.UserName, TimerPeriod.totalTimeElapsed, TimerPeriod.endDate FROM ((TimerPeriod INNER JOIN Timer ON TimerPeriod.timerId = Timer.id) INNER JOIN User ON Timer.userId = User.id);`;
+  res.json(periodsWithUsers);
 });
 app.get("/issuemodel/:issueId/users", async (req, res) => { //users related to an issue
   var usersForIssue = await prisma.$queryRaw`SELECT User.id, User.UserName FROM ((Timer INNER JOIN Issue ON Timer.issueId = Issue.id) INNER JOIN User ON Timer.userId = User.id) WHERE Issue.id = ${req.params.issueId};`;

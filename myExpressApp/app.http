@@ -35,4 +35,6 @@ GET {{WebApiHost}}/issuemodel/1/1/timespentbyuser
 
 ###
 
-GET {{WebApiHost}}/timerperiod
+GET {{WebApiHost}}/timerperiodmodel/users
+
+###

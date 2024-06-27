@@ -69,14 +69,13 @@
         .UserLink{
                 color: white;
                 font-size: 2em;
-                width: 80%;
-                padding: 1em 5% 1em 5%;
+                width: 90%;
+                padding: 1em 0em 1em 0em;
                 display: inline-block;
                 text-align:center;
                 border: 1px solid;
                 border-color: #57606a;
                 border-radius: 0.5em;
-                margin: 0em 5% 0em 5%;
                 background-color: #252c36;
         }
         #UserListHeader{
@@ -84,6 +83,7 @@
             text-align:center;
         }
         #UserList{
+            text-align:center;
             padding: 1em 1em 1em 1em;
         }
         .CanvasWrapper{
@@ -97,6 +97,27 @@
             text-align:center;
             padding: 1em 1em 1em 1em;
             font-size:1em;
+        }
+        #searchLink{
+            display: inline-block;
+            width:100%;
+            font-size: 2em;
+            text-align:center;
+            padding: 1em 0em 1em 0em;
+            border: 1px solid;
+            background-color: #252c36;
+            border-color: #57606a;
+            border-radius: 0.5em;
+            
+        }
+        .tabbtn{
+            padding: 1em;
+            color: #000000;
+            border-radius: 1em;
+            display:none;
+        }
+        .show{
+            display:block;
         }
         @media only screen and (max-width: 900px) {
             *{
@@ -161,14 +182,13 @@
             .UserLink{
                 color: white;
                 font-size: 1em;
-                width: 80%;
-                padding: 1em 5% 1em 5%;
+                width: 90%;
+                padding: 1em 0 1em 0;
                 display: inline-block;
                 text-align:center;
                 border: 1px solid;
                 border-color: #57606a;
                 border-radius: 0.5em;
-                margin: 0em 5% 0em 5%;
                 background-color: #252c36;
             }
             #UserListHeader{
@@ -177,6 +197,7 @@
             }
             #UserList{
                 padding: 1em 0em 1em 0em;
+                text-align: center;
             }
             .CanvasWrapper{
                 background-color: #FFFFFF;
@@ -239,8 +260,12 @@
         <div id="UserList">
 
         </div>
-        <button id="nextbtn" class="tabbtn" onclick="TabForward()">Next</button>
-        <button id="backbtn" class="tabbtn" onclick="TabBack()">Previous</button>
+        <button id="nextbtn" class="tabbtn" onclick="Tab(1)">Next</button>
+        <button id="backbtn" class="tabbtn" onclick="Tab(-1)">Previous</button>
+        
+    </div>
+    <div id="searchLink">
+        <a href="http://localhost:5220/views/search">Not what you're looking for? Do a search!</a>
     </div>
     <footer>
         Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.
@@ -259,23 +284,30 @@
     <!--<script type="module" src="objectmodels/scripts/user.js"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        var index;
         var names;
+        var alllength = 0;
         var issueCounts;
         var timeSpentArray;
         //import Chart from 'chart.js/auto';
         Main();
+        document.getElementById("backbtn").classList.toggle("show");
+        document.getElementById("nextbtn").classList.toggle("show");
         async function Main()
         {
+            index = 0;
             await UserIssuesDataGet();
             await DrawUserIssuesInvolvedGraph();
             await UserTimeSpentDataGet();
             await DrawUserTimeSpentGraph();
             await DisplayAllUsers();
+            await DisplayButtonsToggle(10);
         }
         async function DisplayAllUsers()
         {
             const allUsersResponse = await fetch("http://localhost:5220/user");
             const allUsers = await allUsersResponse.json();
+            alllength = allUsers.length;
             var destinationDiv = document.getElementById("UserList");
             for (var i = 0; i < allUsers.length; i++)
             {
@@ -315,7 +347,6 @@
         }
         async function DrawUserIssuesInvolvedGraph() 
         {
-            const xValues = [100,200,300,400,500,600,700,800,900,1000];
             var myChart = document.getElementById("issuesChart");
             new Chart(myChart, {
                 type: 'bar',
@@ -340,7 +371,6 @@
         }
         async function DrawUserTimeSpentGraph() 
         {
-            const xValues = [100,200,300,400,500,600,700,800,900,1000];
             var myChart = document.getElementById("timespentChart");
             new Chart(myChart, {
                 type: 'bar',
@@ -349,7 +379,7 @@
                 datasets: [{
                     label: 'TOTAL TIME SPENT WORKING ON GITHUB ISSUES IN SECONDS',
                     data: timeSpentArray,
-                    borderWidth: 1
+                    borderWidth: 1,
                 }]
                 },
                 options: {
@@ -361,13 +391,50 @@
                 }
             });
         }
-        async function TabForward()
+        async function Tab(difference)
         {
-
+            if (index >= Number(-difference))
+            {
+                index += Number(difference);
+                const allUsersResponse = await fetch("http://localhost:5220/user");
+                const allUsers = await allUsersResponse.json();
+                if (allUsers.length >= (Number(index)))
+                {
+                    var lessUsers = allUsers.slice(index, Number(index + difference));
+                    var destinationDiv = document.getElementById("UserList");
+                    for (var child of destinationDiv.childNodes)
+                    {
+                        destinationDiv.removeChild(child);
+                    }
+                    for (var i = 0; i < lessUsers.length; i++)
+                    {
+                        var userLink = document.createElement('A');
+                        userLink.className = "UserLink";
+                        userLink.href = "http://localhost:5220/views/usermodel/user/" + lessUsers[i].id;
+                        userLink.textContent = "Id: " + lessUsers[i].id + ", UserName: " + lessUsers[i].UserName + "\n";
+                        destinationDiv.appendChild(userLink);
+                    }
+                }
+                else
+                {
+                    
+                } 
+            }
+            await DisplayButtonsToggle(difference);
         }
-        async function TabBack()
+        async function DisplayButtonsToggle(difference)
         {
-
+            console.log("Total User Length: " + alllength);
+            console.log("Index: " + index);
+            console.log("Difference: " + difference);
+            if (index >= Number(-difference))
+            {
+                document.getElementById("backbtn").classList.toggle("show");
+                if (alllength <= (Number(index) + Number(difference)))
+                {
+                    document.getElementById("nextbtn").classList.toggle("show");
+                }
+            }
         }
     </script>
 </body>
