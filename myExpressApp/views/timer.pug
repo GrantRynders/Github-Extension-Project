@@ -63,10 +63,42 @@ block content
         {
             var idElement = await document.getElementById("idhidden");
             var id = Number(idElement.textContent);
-            var timerPeriods = await fetch("/timermodel/" + id + "/timerperiods");
+            var timerPeriodsResponse = await fetch("/timermodel/" + id + "/timerperiods");
+            var timerPeriods = await timerPeriodsResponse.json()
+            periods = await Promise.all(timerPeriods.map(async function(index){
+                var period = index.startDate + " - " + index.endDate;
+                return period;
+            }));
+            timerPeriodsTimes = await Promise.all(timerPeriods.map(async function(index){
+                return index.totalTimeElapsed;
+            }));
 
         }
         async function DrawTimerPeriodsGraph()
         {
-            
+            var myChart = document.getElementById("myChart");
+            timeSpentByUserChart = new Chart(myChart, 
+            {
+                type: 'pie',
+                data: 
+                {
+                    labels: periods,
+                    datasets: 
+                    [{
+                        label: "Time elapsed in seconds",
+                        data: timerPeriodsTimes,
+                        hoverOffset: 4
+                    }],
+                    options: {
+                        plugins: {
+                            datalabels: {
+                                formatter: (value) => 
+                                {
+                                    if (value < 15) return '';
+                                    return value + '%';
+                                },
+                            },
+                        }
+                    }
+            }});
         }
