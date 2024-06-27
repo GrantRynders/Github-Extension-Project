@@ -4,8 +4,8 @@ block content
     #content
         div.recordHeader
             h1 TimerId: #{id}
-            h1 UserId: #{id}
-            h1 IssueId: #{id}
+            h1 UserId: #{userId}
+            h1 IssueId: #{issueId}
             h3 Total Time Spent: #{TotalTimeElapsed}
         canvas#myChart
         h1 Related Records:
@@ -14,11 +14,15 @@ block content
         div#referenceList
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
+        var timerPeriodsTimes;
+        var periods;
         Main();
         async function Main()
         {
             await ListUserAndIssue();
             await ListTimerPeriods();
+            await GetTimerPeriodsGraphData();
+            await DrawTimerPeriodsGraph();
         }
         async function ListTimerPeriods()
         {
@@ -54,4 +58,15 @@ block content
             issuelink.href = "http://localhost:5220/views/issuemodel/issue/" + issue[0].id;
             issuelink.textContent = "Id: " + issue[0].id + ", URL: " + issue[0].url + ", Name: " + issue[0].issueName + "\n";
             destinationDiv.appendChild(issuelink);
+        }
+        async function GetTimerPeriodsGraphData()
+        {
+            var idElement = await document.getElementById("idhidden");
+            var id = Number(idElement.textContent);
+            var timerPeriods = await fetch("/timermodel/" + id + "/timerperiods");
+            
+        }
+        async function DrawTimerPeriodsGraph()
+        {
+
         }

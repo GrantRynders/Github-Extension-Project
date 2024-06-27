@@ -256,11 +256,18 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        var endDates;
+        var endTimes;
+        var periodsTimeElapsed;
+        var compoundNameDates;
+        var usernames
         Main();
         async function Main()
         {
             await ListTimers();
             await GetAverageTimerPeriod();
+            await GetTimerPeriodGraphData();
+            await DisplayTimerPeriodGraph();
         }
         async function ListTimers()
         {
@@ -283,6 +290,67 @@
             var averageResponse = await fetch("/timerperiodmodel/average");
             var averageValue = await averageResponse.json();
             destination.textContent = averageValue.average;
+        }
+        async function GetTimerPeriodGraphData()
+        {
+            var allTimerPeriodsWithUsersResponse = await fetch("http://localhost:5220/timerperiodmodel/users");
+            var allTimerPeriodsWithUsers = await allTimerPeriodsWithUsersResponse.json();
+            var newPeriods = await Promise.all(allTimerPeriodsWithUsers.map(async function(index){
+                var endDate = new Date(index.endDate);
+                var endTime = endDate.getTime();
+                const data = {
+                    UserName: index.UserName,
+                    endDate: index.endDate,
+                    totalTimeElapsed: index.totalTimeElapsed,
+                    endTime: endTime
+                }
+                return data;
+            }));
+            console.log(newPeriods);
+            newPeriods.sort(function(a, b){
+                return b.endTime - a.endTime;
+            });
+            console.log(newPeriods);
+            endDates = await Promise.all(newPeriods.map(async function(index){
+                var endDate = new Date(index.endDate);
+                return endDate;
+            }));
+            userNames = await Promise.all(newPeriods.map(async function(index){
+                var username = index.UserName;
+                return username;
+            }));
+            compoundNameDates = await Promise.all(newPeriods.map(async function(index){
+                var username = index.UserName;
+                var endDate = new Date(index.endDate);
+                var compound = username + ": " + endDate;
+                return compound;
+            }));
+            periodsTimeElapsed = await Promise.all(newPeriods.map(async function(index){
+                return index.totalTimeElapsed;
+            }));
+        }
+        async function DisplayTimerPeriodGraph()
+        {
+            var myChart = document.getElementById("timeSpent");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: compoundNameDates,
+                datasets: [{
+                    label: 'Time spent on period',
+                    data: periodsTimeElapsed,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
         }
     </script>
 </body>

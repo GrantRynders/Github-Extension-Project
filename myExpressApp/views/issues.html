@@ -392,23 +392,26 @@
             timeSpentByUserChart = new Chart(myChart, 
             {
                 type: 'pie',
-                data: {
+                data: 
+                {
                     labels: userNames,
-                    datasets: [{
+                    datasets: 
+                    [{
                         label: issueName,
                         data: timeSpentByUserArray,
                         hoverOffset: 4
                     }],
                     options: {
-                    plugins: {
-                    datalabels: {
-                        formatter: (value) => {
-                        if (value < 15) return '';
-                        return value + '%';
-                        },
-                    },
+                        plugins: {
+                            datalabels: {
+                                formatter: (value) => 
+                                {
+                                    if (value < 15) return '';
+                                    return value + '%';
+                                },
+                            },
+                        }
                     }
-                }
             }});
         }
 
