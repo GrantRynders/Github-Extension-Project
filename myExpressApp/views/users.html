@@ -69,14 +69,13 @@
         .UserLink{
                 color: white;
                 font-size: 2em;
-                width: 80%;
-                padding: 1em 5% 1em 5%;
+                width: 90%;
+                padding: 1em 0em 1em 0em;
                 display: inline-block;
                 text-align:center;
                 border: 1px solid;
                 border-color: #57606a;
                 border-radius: 0.5em;
-                margin: 0em 5% 0em 5%;
                 background-color: #252c36;
         }
         #UserListHeader{
@@ -84,6 +83,7 @@
             text-align:center;
         }
         #UserList{
+            text-align:center;
             padding: 1em 1em 1em 1em;
         }
         .CanvasWrapper{
@@ -178,14 +178,13 @@
             .UserLink{
                 color: white;
                 font-size: 1em;
-                width: 80%;
-                padding: 1em 5% 1em 5%;
+                width: 90%;
+                padding: 1em 0 1em 0;
                 display: inline-block;
                 text-align:center;
                 border: 1px solid;
                 border-color: #57606a;
                 border-radius: 0.5em;
-                margin: 0em 5% 0em 5%;
                 background-color: #252c36;
             }
             #UserListHeader{
@@ -194,6 +193,7 @@
             }
             #UserList{
                 padding: 1em 0em 1em 0em;
+                text-align: center;
             }
             .CanvasWrapper{
                 background-color: #FFFFFF;
@@ -258,9 +258,10 @@
         </div>
         <button id="nextbtn" class="tabbtn" onclick="TabForward()">Next</button>
         <button id="backbtn" class="tabbtn" onclick="TabBack()">Previous</button>
-        <div id="searchLink">
-            <a href="http://localhost:5220/views/search">Not what you're looking for? Do a search!</a>
-        </div>
+        
+    </div>
+    <div id="searchLink">
+        <a href="http://localhost:5220/views/search">Not what you're looking for? Do a search!</a>
     </div>
     <footer>
         Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.
@@ -335,7 +336,6 @@
         }
         async function DrawUserIssuesInvolvedGraph() 
         {
-            const xValues = [100,200,300,400,500,600,700,800,900,1000];
             var myChart = document.getElementById("issuesChart");
             new Chart(myChart, {
                 type: 'bar',
@@ -360,7 +360,6 @@
         }
         async function DrawUserTimeSpentGraph() 
         {
-            const xValues = [100,200,300,400,500,600,700,800,900,1000];
             var myChart = document.getElementById("timespentChart");
             new Chart(myChart, {
                 type: 'bar',
