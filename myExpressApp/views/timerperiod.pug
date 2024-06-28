@@ -8,7 +8,9 @@ block content
             h3 Start Date: #{startDate}
             h3 End Date: #{endDate}
             h3 Total Time Elapsed #{TotalTimeElapsed}
-        canvas#myChart
+        div.CanvasWrapper
+            h1.CanvasHeader Periods from the Same Date and Their Sizes
+            canvas#myChart
         h1 Related Records:
         p#idhidden #{timerId}
         p#Hidden #{JSON.stringify(timerperiods)}
