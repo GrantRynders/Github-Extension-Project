@@ -327,28 +327,66 @@
         {
             const allUsersResponse = await fetch("http://localhost:5220/user");
             const allUsers = await allUsersResponse.json();
-            issueCounts = await Promise.all(allUsers.map(async function(index){
+            var usersWithIssueCounts = await Promise.all(allUsers.map(async function(index){
                 const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
                 const userIssues = await userIssuesResponse.json();
                 const count = userIssues.length;
-                return count;
+                const data = {
+                    count: count,
+                    userName: index.UserName,
+                }
+                return data;
             }));
-            names = allUsers.map(function(index){
-                    return index.UserName;
+            usersWithIssueCounts.sort(function(a, b){
+               return b.count - a.count;
             });
+            names = usersWithIssueCounts.map(function(index){
+                    return index.userName;
+            });
+            issueCounts = usersWithIssueCounts.map(function(index){
+                    return index.count;
+            });
+            const numRecords = 5;
+            if (issueCounts.length > numRecords)
+            {
+                issueCounts = issueCounts.slice(0, numRecords);
+            }
+            if (names.length > numRecords)
+            {
+                names = names.slice(0, numRecords);
+            }
         }
         async function UserTimeSpentDataGet()
         {
             const allUsersResponse = await fetch("http://localhost:5220/user");
             const allUsers = await allUsersResponse.json();
-            timeSpentArray = await Promise.all(allUsers.map(async function(index){
+            usersWithTimesSpentArray = await Promise.all(allUsers.map(async function(index){
                 const userTimeResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/timespent");
                 const userTime = await userTimeResponse.json();
-                return userTime.totaltimespent;
+                const data = {
+                    totalTimeSpent: userTime.totaltimespent,
+                    userName: index.UserName,
+                }
+                return data;
             }));
-            names = allUsers.map(function(index){
-                    return index.UserName;
+            usersWithTimesSpentArray.sort(function(a, b){
+               return b.totalTimeSpent - a.totalTimeSpent;
             });
+            timeSpentArray = usersWithTimesSpentArray.map(function(index){
+                return index.totalTimeSpent;
+            });
+            names = usersWithTimesSpentArray.map(function(index){
+                return index.userName;
+            });
+            const numRecords = 5;
+            if (timeSpentArray.length > numRecords)
+            {
+                timeSpentArray = timeSpentArray.slice(0, numRecords);
+            }
+            if (names.length > numRecords)
+            {
+                names = names.slice(0, numRecords);
+            }
         }
         async function DrawUserIssuesInvolvedGraph() 
         {

@@ -325,14 +325,33 @@
         {
             const allIssuesResponse = await fetch("http://localhost:5220/issue");
             const allIssues = await allIssuesResponse.json();
-            timeSpentArray = await Promise.all(allIssues.map(async function(index){
+            var issuesTimeSpentArray = await Promise.all(allIssues.map(async function(index){
                 const issueTimeResponse = await fetch("http://localhost:5220/issuemodel/" + index.id + "/timespent");
                 const issueTime = await issueTimeResponse.json();
-                return issueTime.totaltimespent;
+                const data = {
+                    totalTimeSpent: issueTime.totaltimespent,
+                    issueName: index.issueName,
+                }
+                return data;
             }));
-            issueNames = allIssues.map(function(index){
+            issuesTimeSpentArray.sort(function(a, b){
+               return b.totalTimeSpent - a.totalTimeSpent;
+            });
+            issueNames = issuesTimeSpentArray.map(function(index){
                     return index.issueName.substring(0, 25) + "...";
             });
+            timeSpentArray = issuesTimeSpentArray.map(function(index){
+                return index.totalTimeSpent;
+            });
+            var numRecords = 5;
+            if (issueNames.length > numRecords)
+            {
+                issueNames = issueNames.slice(0, numRecords);
+            }
+            if (timeSpentArray.length > numRecords)
+            {
+                timeSpentArray = timeSpentArray.slice(0, numRecords);
+            }
         }
         async function DrawIssueTimeSpentGraph() 
         {
