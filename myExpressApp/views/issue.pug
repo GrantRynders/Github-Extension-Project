@@ -64,12 +64,24 @@ block content
                 };
                 return data;
             }));
+            timesWithUsersArray.sort(function(a, b){
+               return b.totalTimeSpent - a.totalTimeSpent;
+            });
             userNames = timesWithUsersArray.map(function(index){
                 return index.UserName;
             });
             timeSpentByUserArray = timesWithUsersArray.map(function(index){
                 return index.totalTimeSpent;
             });
+            const numRecords = 10;
+            if (userNames.length > numRecords)
+            {
+                userNames = userNames.slice(0, numRecords);
+            }
+            if (timeSpentByUserArray.length > numRecords)
+            {
+                timeSpentByUserArray = timeSpentByUserArray.slice(0, numRecords);
+            }
         }
         async function IssueTimeSpentByUserGraph()
         {

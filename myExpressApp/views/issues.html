@@ -162,7 +162,7 @@
             border: 1px solid;
             background-color: #252c36;
         }
-        @media only screen and (max-width: 900px) {
+        @media only screen and (max-width: 1200px) {
             *{
                 font-family:Segoe UI, SegoeUI, Arial, sans-serif;
                 margin: 0;
@@ -184,7 +184,7 @@
             nav{
                 
                 display:inline-block;
-                background-color: red;
+                background-color: black;
                 width: 100%;
             }
             ul{
@@ -412,12 +412,24 @@
                 };
                 return data;
             }));
+            timesWithUsersArray.sort(function(a, b){
+               return b.totalTimeSpent - a.totalTimeSpent;
+            });
             userNames = timesWithUsersArray.map(function(index){
                 return index.UserName;
             });
             timeSpentByUserArray = timesWithUsersArray.map(function(index){
                 return index.totalTimeSpent;
             });
+            const numRecords = 10;
+            if (userNames.length > numRecords)
+            {
+                userNames = userNames.slice(0, numRecords);
+            }
+            if (timeSpentByUserArray.length > numRecords)
+            {
+                timeSpentByUserArray = timeSpentByUserArray.slice(0, numRecords);
+            }
         }
         async function IssueTimeSpentByUserGraph()
         {

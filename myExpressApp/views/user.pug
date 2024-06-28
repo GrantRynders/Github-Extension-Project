@@ -10,9 +10,9 @@ block content
         div.CanvasWrapper
             h1.CanvasHeader Time Spent By Issue
             canvas#myChart
-        h1 Logged Issues:
         p#idhidden #{id}
         p#Hidden #{JSON.stringify(issues)}
+        h1#referenceListHeader Logged Issues:
         div#referenceList
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
         button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
@@ -50,15 +50,34 @@ block content
             var userid = await document.getElementById("idhidden").textContent;
             var relatedIssuesResponse = await fetch("http://localhost:5220/usermodel/" + userid + "/issues")
             const relatedIssues = await relatedIssuesResponse.json();
-            timeSpentArray = await Promise.all(relatedIssues.map(async function(index){
+            var timesWithIssuesArray = await Promise.all(relatedIssues.map(async function(index){
                 const issueTimeResponse = await fetch("http://localhost:5220/issuemodel/" + index.id + "/timespent");
                 const issueTime = await issueTimeResponse.json();
-                return issueTime.totaltimespent;
+                const data = {
+                    totalTimeSpent: issueTime.totaltimespent,
+                    issueName: index.issueName,
+                }
+                console.log(data);
+                return data;
             }));
-            issueNames = relatedIssues.map(function(index){
+            timesWithIssuesArray.sort(function(a, b){
+               return b.totalTimeSpent - a.totalTimeSpent;
+            });
+            timeSpentArray = timesWithIssuesArray.map(function(index){
+                return index.totalTimeSpent;
+            });
+            issueNames = timesWithIssuesArray.map(function(index){
                 return index.issueName;
             });
-            
+            const numRecords = 10;
+            if (issueNames.length > numRecords)
+            {
+                issueNames = issueNames.slice(0, numRecords);
+            }
+            if (timeSpentArray.length > numRecords)
+            {
+                timeSpentArray = timeSpentArray.slice(0, numRecords);
+            }
         }
         async function IssueTimeSpentByUserGraph()
         {
