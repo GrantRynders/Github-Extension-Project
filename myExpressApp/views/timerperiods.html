@@ -326,7 +326,6 @@
                 }
                 return data;
             }));
-            console.log(newPeriods);
             newPeriods.sort(function(a, b){
                 return b.endTime - a.endTime;
             });
@@ -348,6 +347,15 @@
             periodsTimeElapsed = await Promise.all(newPeriods.map(async function(index){
                 return index.totalTimeElapsed;
             }));
+            var numRecords = 5;
+            if (compoundNameDates.length > numRecords)
+            {
+                compoundNameDates = compoundNameDates.slice(0, numRecords);
+            }
+            if (periodsTimeElapsed.length > numRecords)
+            {
+                periodsTimeElapsed = periodsTimeElapsed.slice(0, numRecords);
+            }
         }
         async function DisplayTimerPeriodGraph()
         {
