@@ -8,6 +8,7 @@ block content
             h3 Total Time Spent Working On GitHub Issues: #{TotalTimeElapsed}
             h3 Total Issues Logged: #{issues.length}
         div.CanvasWrapper
+            h1.CanvasHeader Time Spent By Issue
             canvas#myChart
         h1 Logged Issues:
         p#idhidden #{id}
@@ -19,9 +20,12 @@ block content
     script.
         var timeSpentArray;
         var issueName;
+        var index;
+        const interval = 1;
         Main();
         async function Main()
         {
+            index = 0;
             await ListIssues();
             await GetIssuesTimeSpentData();
             await IssueTimeSpentByUserGraph();
@@ -81,4 +85,36 @@ block content
                     }
                 }
             }});
+        }
+        async function TabUp()
+        {
+            console.log("index: " + index);
+            const allReferencesResponse = await fetch("http://localhost:5220/user");
+            const allReferences = await allReferencesResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (allReferences.length > (Number(index) + interval))
+            {
+                console.log("Tabbing up sire");
+                index += interval;
+                DisplayAllUsers(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            console.log("index: " + index);
+            const allReferencesResponse = await fetch("http://localhost:5220/user");
+            const allReferences = await allReferencesResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                console.log("Tabbing down milord");
+                index -= interval;
+                DisplayAllUsers(Number(index));
+            }
         }

@@ -6,7 +6,7 @@
 
 ###
 //add a user
-POST {{WebApiHost}}/user/SteveBrown
+POST {{WebApiHost}}/user/AgentEleven
 
 ###
 

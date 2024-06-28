@@ -7,7 +7,9 @@ block content
             h1 UserId: #{userId}
             h1 IssueId: #{issueId}
             h3 Total Time Spent: #{TotalTimeElapsed}
-        canvas#myChart
+        div.CanvasWrapper
+            h1.CanvasHeader Time Elapsed Per Timer Period
+            canvas#myChart
         h1 Related Records:
         p#idhidden #{id}
         p#Hidden #{JSON.stringify(timerperiods)}

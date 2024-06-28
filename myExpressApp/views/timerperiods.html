@@ -67,8 +67,9 @@
         .CanvasWrapper{
             background-color: #FFFFFF;
             padding:2em 2em 2em 2em;
-            margin: 3em 3em 3em 3em;
+            margin: 3em 10% 3em 10%;
             border-radius:3em;
+            text-align:center;
         }
         footer{
             background-color:#000000;
@@ -126,6 +127,16 @@
             border-radius: 0.5em;
             display: inline-block;
             width:100%;
+            font-size: 1em;
+            padding: 1em 1em 1em 1em;
+            border: 1px solid;
+            background-color: #252c36;
+        }
+        .CanvasHeader{
+            color: #FFFFFF;
+            border: 1px solid;
+            border-color: #57606a;
+            border-radius: 0.5em;
             font-size: 1em;
             padding: 1em 1em 1em 1em;
             border: 1px solid;
@@ -247,6 +258,7 @@
     <div id="content">
         <h1 id="ContentHeader">Timer Periods</h1>
         <div class="CanvasWrapper">
+            <h1 class="CanvasHeader">Most Recent Timer Periods with Their User and Time Spent</h1>
             <canvas id="timeSpent">
 
             </canvas>
@@ -330,7 +342,6 @@
             newPeriods.sort(function(a, b){
                 return b.endTime - a.endTime;
             });
-            console.log(newPeriods);
             endDates = await Promise.all(newPeriods.map(async function(index){
                 var endDate = new Date(index.endDate);
                 return endDate;
