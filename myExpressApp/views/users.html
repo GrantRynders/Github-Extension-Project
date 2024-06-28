@@ -294,7 +294,7 @@
         var alllength = 0;
         var issueCounts;
         var timeSpentArray;
-        const interval = 1;
+        const interval = 2;
         //import Chart from 'chart.js/auto';
         Main();
         document.getElementById("backbtn").classList.toggle("show");
@@ -507,7 +507,7 @@
             {
                 index = 0;
             }
-            if (allUsers.length > (Number(index) + interval))
+            if ((allUsers.length) >= (Number(index) + interval))
             {
                 console.log("Tabbing up sire");
                 index += interval;
