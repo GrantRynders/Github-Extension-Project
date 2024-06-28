@@ -246,7 +246,7 @@
         <H1 id="ContentHeader"> TIMERS DATA </H1>
         <div class="CanvasWrapper">
             <h1 class="CanvasHeader"></h1>
-            <canvas id="timeSpent">
+            <canvas id="myChart">
 
             </canvas>
         </div>
@@ -269,10 +269,14 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        var names;
+        var periodCounts;
         Main();
         async function Main()
         {
             await ListTimers();
+            await GetTimersWithPeriodCounts();
+            await GraphTimersWithPeriodCounts();
         }
         async function ListTimers()
         {
@@ -288,6 +292,68 @@
                 destinationDiv.appendChild(timerLink);
 
             }
+        }
+        async function GetTimersWithPeriodCounts()
+        {
+            const allTimersResponse = await fetch("http://localhost:5220/timer");
+            const allTimers = await allTimersResponse.json();
+            var timersWithPeriodsArray = await Promise.all(allTimers.map(async function(index){
+                const periodsResponse = await fetch("http://localhost:5220/timermodel/" + index.id + "/timerperiods");
+                const periods = await periodsResponse.json();
+                const periodCount = periods.length;
+                const userAndIssueResponse = await fetch("http://localhost:5220/timermodel/" + index.id + "/userandissue")
+                const userAndIssue = await userAndIssueResponse.json();
+                const userName = userAndIssue[0].UserName;
+                const issueUrl = userAndIssue[0].url;
+                const compoundName = userName + " : " + issueUrl
+                const data = {
+                    periodCount: periodCount,
+                    compoundName: compoundName,
+                }
+                return data;
+            }));
+            timersWithPeriodsArray.sort(function(a, b){
+               return b.periodCount - a.periodCount;
+            });
+            periodCounts = timersWithPeriodsArray.map(function(index){
+                return index.periodCount;
+            });
+            names = timersWithPeriodsArray.map(function(index){
+                return index.compoundName;
+            });
+            const numRecords = 10;
+            if (periodCounts.length > numRecords)
+            {
+                periodCounts = periodCounts.slice(0, numRecords);
+            }
+            if (names.length > numRecords)
+            {
+                names = names.slice(0, numRecords);
+            }
+        }
+        async function GraphTimersWithPeriodCounts() 
+        {
+            var myChart = document.getElementById("myChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'Number of Periods Per Timer',
+                    data: periodCounts,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+            
         }
     </script>
 </body>
