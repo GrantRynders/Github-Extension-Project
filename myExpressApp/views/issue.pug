@@ -13,6 +13,8 @@ block content
         p#idhidden #{id}
         p#Hidden #{JSON.stringify(users)}
         div#referenceList
+        button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
+        button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
         var userNames;

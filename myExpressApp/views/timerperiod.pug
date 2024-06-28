@@ -13,14 +13,19 @@ block content
         p#idhidden #{timerId}
         p#Hidden #{JSON.stringify(timerperiods)}
         div#referenceList
+        button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
+        button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
+        var adjacentNames;
+        var adjacentTimes;
         Main();
         async function Main()
         {
             await ListUserAndIssue();
             await ListTimerPeriods();
-           
+            await GetAdjacentPeriodsData();
+            await GraphAdjacentPeriods();
         }
         async function ListTimerPeriods()
         {
@@ -62,4 +67,42 @@ block content
             issuelink.href = "http://localhost:5220/views/issuemodel/issue/" + issue[0].id;
             issuelink.textContent = "Id: " + issue[0].id + ", URL: " + issue[0].url + ", Name: " + issue[0].issueName + "\n";
             destinationDiv.appendChild(issuelink);
+        }
+        async function GetAdjacentPeriodsData()
+        {
+            var idElement = await document.getElementById("idhidden");
+            var id = Number(idElement.textContent);
+            var adjacentPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + id + "/adjacenttimerperiods");
+            var adjacentPeriods = await adjacentPeriodsResponse.json();
+            adjacentTimes = await Promise.all(adjacentPeriods.map(async function(index){
+                return index.totalTimeElapsed;
+            }));
+            adjacentNames = await Promise.all(adjacentPeriods.map(async function(index){
+                var period = index.startDate + " - " + index.endDate;
+                console.log(period);
+                return period;
+            }));
+        }
+        async function GraphAdjacentPeriods()
+        {
+            var myChart = document.getElementById("myChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: adjacentNames,
+                datasets: [{
+                    label: 'Time spent on period',
+                    data: adjacentTimes,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
         }

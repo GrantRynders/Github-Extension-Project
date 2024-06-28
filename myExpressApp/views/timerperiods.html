@@ -87,15 +87,21 @@
             border-color: #57606a;
             border-radius: 0.5em;
             background-color: #252c36;
+            margin: 0.5em 0em 0.5em 0em;
         }
         #TimerListHeader{
             width: 100%;
             text-align:center;
+            padding: 1em 0em 0em 0em;
         }
         #TimerList{
             padding: 1em 0em 1em 0em;
             width: 100%;
             text-align: center;
+            border: 1px solid;
+            border-color: #57606a;
+            border-radius: 0.5em;
+            margin: 1em 0em 0em 0em;
         }
         #searchLink{
             display: inline-block;
@@ -113,6 +119,17 @@
             padding: 1em;
             color: #000000;
             border-radius: 1em;
+        }
+        #generalStats{
+            border: 1px solid;
+            border-color: #57606a;
+            border-radius: 0.5em;
+            display: inline-block;
+            width:100%;
+            font-size: 1em;
+            padding: 1em 1em 1em 1em;
+            border: 1px solid;
+            background-color: #252c36;
         }
         @media only screen and (max-width: 900px) {
             *{
@@ -234,9 +251,12 @@
 
             </canvas>
         </div>
-        <h1>
-            Average Time Spent Per Period: <h1 id="average"></h1>
-        </h1>
+        <div id="generalStats">
+            <h1>
+                Average Time Spent Per Period: <h1 id="average"></h1>
+            </h1>
+        </div>
+        
         
         <h1 id ="TimerListHeader">
             Tracked Timer Periods
@@ -244,7 +264,8 @@
         <div id="TimerList">
                 
         </div>
-        
+        <button id="nextbtn" class="tabbtn" onclick="TabUp()">Next</button>
+        <button id="backbtn" class="tabbtn" onclick="TabDown()">Previous</button>
     </div>
     <div id="searchLink">
         <a href="http://localhost:5220/views/search">Not what you're looking for? Do a search!</a>
@@ -306,7 +327,6 @@
                 }
                 return data;
             }));
-            console.log(newPeriods);
             newPeriods.sort(function(a, b){
                 return b.endTime - a.endTime;
             });
@@ -328,6 +348,15 @@
             periodsTimeElapsed = await Promise.all(newPeriods.map(async function(index){
                 return index.totalTimeElapsed;
             }));
+            var numRecords = 5;
+            if (compoundNameDates.length > numRecords)
+            {
+                compoundNameDates = compoundNameDates.slice(0, numRecords);
+            }
+            if (periodsTimeElapsed.length > numRecords)
+            {
+                periodsTimeElapsed = periodsTimeElapsed.slice(0, numRecords);
+            }
         }
         async function DisplayTimerPeriodGraph()
         {

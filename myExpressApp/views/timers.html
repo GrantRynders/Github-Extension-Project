@@ -86,6 +86,7 @@
             border: 1px solid;
             border-color: #57606a;
             border-radius: 0.5em;
+            margin: 0.5em 0em 0.5em 0em;
             background-color: #252c36;
         }
         #TimerListHeader{
@@ -96,6 +97,10 @@
             padding: 1em 0em 1em 0em;
             width: 100%;
             text-align: center;
+            border: 1px solid;
+            border-color: #57606a;
+            border-radius: 0.5em;
+            margin: 1em 0em 0em 0em;
         }
         #searchLink{
             display: inline-block;
@@ -240,7 +245,8 @@
         <div id="TimerList">
                 
         </div>
-        
+        <button id="nextbtn" class="tabbtn" onclick="TabUp()">Next</button>
+        <button id="backbtn" class="tabbtn" onclick="TabDown()">Previous</button>
     </div>
     <div id="searchLink">
         <a href="http://localhost:5220/views/search">Not what you're looking for? Do a search!</a>

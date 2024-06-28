@@ -77,6 +77,7 @@
                 border-color: #57606a;
                 border-radius: 0.5em;
                 background-color: #252c36;
+                margin: 0.5em 0em 0.5em 0em;
         }
         #UserListHeader{
             width: 100%;
@@ -85,6 +86,10 @@
         #UserList{
             text-align:center;
             padding: 1em 1em 1em 1em;
+            border: 1px solid;
+            border-color: #57606a;
+            border-radius: 0.5em;
+            margin: 1em 0em 0em 0em;
         }
         .CanvasWrapper{
             background-color: #FFFFFF;
@@ -114,7 +119,7 @@
             padding: 1em;
             color: #000000;
             border-radius: 1em;
-            display:none;
+            
         }
         .show{
             display:block;
@@ -260,8 +265,8 @@
         <div id="UserList">
 
         </div>
-        <button id="nextbtn" class="tabbtn" onclick="Tab(1)">Next</button>
-        <button id="backbtn" class="tabbtn" onclick="Tab(-1)">Previous</button>
+        <button id="nextbtn" class="tabbtn" onclick="TabUp()">Next</button>
+        <button id="backbtn" class="tabbtn" onclick="TabDown()">Previous</button>
         
     </div>
     <div id="searchLink">
@@ -289,6 +294,7 @@
         var alllength = 0;
         var issueCounts;
         var timeSpentArray;
+        const interval = 1;
         //import Chart from 'chart.js/auto';
         Main();
         document.getElementById("backbtn").classList.toggle("show");
@@ -300,15 +306,33 @@
             await DrawUserIssuesInvolvedGraph();
             await UserTimeSpentDataGet();
             await DrawUserTimeSpentGraph();
-            await DisplayAllUsers();
-            await DisplayButtonsToggle(10);
+            await DisplayAllUsers(0);
+            //await DisplayButtonsToggle(10);
         }
-        async function DisplayAllUsers()
+        async function DisplayAllUsers(index)
         {
+            
             const allUsersResponse = await fetch("http://localhost:5220/user");
-            const allUsers = await allUsersResponse.json();
+            var allUsers = await allUsersResponse.json();
             alllength = allUsers.length;
             var destinationDiv = document.getElementById("UserList");
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("UserLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            if (allUsers.length > Number(index + interval))
+            {
+                console.log(index);
+                allUsers = allUsers.slice(index, index + interval);
+                console.log(allUsers);
+            }
+            
             for (var i = 0; i < allUsers.length; i++)
             {
                 var userLink = document.createElement('A');
@@ -322,28 +346,66 @@
         {
             const allUsersResponse = await fetch("http://localhost:5220/user");
             const allUsers = await allUsersResponse.json();
-            issueCounts = await Promise.all(allUsers.map(async function(index){
+            var usersWithIssueCounts = await Promise.all(allUsers.map(async function(index){
                 const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
                 const userIssues = await userIssuesResponse.json();
                 const count = userIssues.length;
-                return count;
+                const data = {
+                    count: count,
+                    userName: index.UserName,
+                }
+                return data;
             }));
-            names = allUsers.map(function(index){
-                    return index.UserName;
+            usersWithIssueCounts.sort(function(a, b){
+               return b.count - a.count;
             });
+            names = usersWithIssueCounts.map(function(index){
+                    return index.userName;
+            });
+            issueCounts = usersWithIssueCounts.map(function(index){
+                    return index.count;
+            });
+            const numRecords = 5;
+            if (issueCounts.length > numRecords)
+            {
+                issueCounts = issueCounts.slice(0, numRecords);
+            }
+            if (names.length > numRecords)
+            {
+                names = names.slice(0, numRecords);
+            }
         }
         async function UserTimeSpentDataGet()
         {
             const allUsersResponse = await fetch("http://localhost:5220/user");
             const allUsers = await allUsersResponse.json();
-            timeSpentArray = await Promise.all(allUsers.map(async function(index){
+            usersWithTimesSpentArray = await Promise.all(allUsers.map(async function(index){
                 const userTimeResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/timespent");
                 const userTime = await userTimeResponse.json();
-                return userTime.totaltimespent;
+                const data = {
+                    totalTimeSpent: userTime.totaltimespent,
+                    userName: index.UserName,
+                }
+                return data;
             }));
-            names = allUsers.map(function(index){
-                    return index.UserName;
+            usersWithTimesSpentArray.sort(function(a, b){
+               return b.totalTimeSpent - a.totalTimeSpent;
             });
+            timeSpentArray = usersWithTimesSpentArray.map(function(index){
+                return index.totalTimeSpent;
+            });
+            names = usersWithTimesSpentArray.map(function(index){
+                return index.userName;
+            });
+            const numRecords = 5;
+            if (timeSpentArray.length > numRecords)
+            {
+                timeSpentArray = timeSpentArray.slice(0, numRecords);
+            }
+            if (names.length > numRecords)
+            {
+                names = names.slice(0, numRecords);
+            }
         }
         async function DrawUserIssuesInvolvedGraph() 
         {
@@ -417,7 +479,7 @@
                 }
                 else
                 {
-                    
+
                 } 
             }
             await DisplayButtonsToggle(difference);
@@ -434,6 +496,38 @@
                 {
                     document.getElementById("nextbtn").classList.toggle("show");
                 }
+            }
+        }
+        async function TabUp()
+        {
+            console.log("index: " + index);
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (allUsers.length > (Number(index) + interval))
+            {
+                console.log("Tabbing up sire");
+                index += interval;
+                DisplayAllUsers(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            console.log("index: " + index);
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                console.log("Tabbing down milord");
+                index -= interval;
+                DisplayAllUsers(Number(index));
             }
         }
     </script>
