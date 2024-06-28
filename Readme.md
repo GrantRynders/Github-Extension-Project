@@ -1,7 +1,7 @@
 
 # ITSC SUMMER 2024 - Extension Project
 
-An extension for Github issues that allows users to manage the amount of timer spent on a given issue through a built in timer. Timer data will be written to a unique log comment for the user, and recorded in a sqlite or postgres database on our node.js server.
+An extension for Github issues that allows users to manage the amount of timer spent on a given issue through a built in timer. Timer data will be written to a unique log comment for the user, and recorded in a sqlite or postgres database on our node.js server. The data is visualized via chart.js and pug pages on the server.
 
 ```mermaid
 ---
