@@ -12,7 +12,7 @@ block content
             h1.CanvasHeader Periods from the Same Date and Their Sizes
             canvas#myChart
         h1 Related Records:
-        p#idhidden #{timerId}
+        p#idhidden #{id}
         p#Hidden #{JSON.stringify(timerperiods)}
         div#referenceList
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
@@ -76,6 +76,7 @@ block content
             var id = Number(idElement.textContent);
             var adjacentPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + id + "/adjacenttimerperiods");
             var adjacentPeriods = await adjacentPeriodsResponse.json();
+
             adjacentTimes = await Promise.all(adjacentPeriods.map(async function(index){
                 return index.totalTimeElapsed;
             }));

@@ -501,6 +501,7 @@ app.get("/timermodel/:id/adjacenttimerperiods", async (req, res) => { //returns 
   var targetDate = targetDateObject.getDate();
   var targetMonth = targetDateObject.getMonth();
   var targetYear = targetDateObject.getFullYear();
+  console.log("Target: " + targetMonth + "-" + targetDate + "-" + targetYear);
   var allPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.startDate, TimerPeriod.endDate, TimerPeriod.TimerId FROM TimerPeriod;`;
   var adjacentPeriods = await Promise.all(allPeriods.map(async function(index){
     if (index.id != req.params.id)
@@ -509,8 +510,10 @@ app.get("/timermodel/:id/adjacenttimerperiods", async (req, res) => { //returns 
       var indexDate = indexDateObject.getDate();
       var indexMonth = indexDateObject.getMonth();
       var indexYear = indexDateObject.getFullYear();
+      
       if ((indexDate == targetDate) && (indexMonth == targetMonth) && (indexYear == targetYear))
       {
+        console.log("IndexDate: " + indexMonth + "-" + indexDate + "-" + indexYear);
         const data = {
           timerPeriodId: index.id,
           startDate: index.startDate,
@@ -522,6 +525,7 @@ app.get("/timermodel/:id/adjacenttimerperiods", async (req, res) => { //returns 
     }
     else
     {
+      console.log("RATS");
       return null;
     }
   }));
