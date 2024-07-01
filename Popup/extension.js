@@ -52,10 +52,10 @@ async function CheckIfInitialized()
         console.log("Ping");
         destinationDiv.append(createTimerButton);
         var createTimerButtonInstance = document.getElementById("createTimerButton");
-        createTimerButtonInstance.addEventListener('click',function ()
+        createTimerButtonInstance.addEventListener('click', async function ()
         {
             console.log("CREATE TIMER Button Clicked");
-            CreateTimerDisplay();
+            await CreateTimerDisplay();
             createTimerButtonInstance.remove();
             InitializeTimer();
             //window.location.reload();
@@ -63,12 +63,12 @@ async function CheckIfInitialized()
     }
     if (results == 1)
     {
-        CreateTimerDisplay();
+        await CreateTimerDisplay();
         InitializeTimer();
     }
 }
 
-function CreateTimerDisplay()
+async function CreateTimerDisplay()
 {
     startButton = document.createElement('button');
     startButton.textContent = "\u25B6"; //Unicode play button
@@ -98,7 +98,7 @@ function CreateTimerDisplay()
     pauseButtonInstance = document.getElementById("pauseButton");
     stopButtonInstance = document.getElementById("stopButton");
     timerDisplayInstance = document.getElementById("timerDisplay");
-    startButtonInstance.addEventListener('click',function ()
+    startButtonInstance.addEventListener('click',async function ()
     {
         console.log("Start Button Clicked");
         if (isTimerActive == 0) //Can't start a timer that is already started
@@ -107,11 +107,11 @@ function CreateTimerDisplay()
             startDate = Date();
             SaveData();
             startTimer();
-            LogTime();
+            await LogTime();
         }
         
     });
-    pauseButtonInstance.addEventListener('click',function ()
+    pauseButtonInstance.addEventListener('click',async function ()
     {
         console.log("PAUSE Button Clicked");
         if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
@@ -119,13 +119,13 @@ function CreateTimerDisplay()
             isTimerPaused = 1;
             StopTimer();
             SaveData();
-            LogEndOfTimer();
+            await LogEndOfTimer();
         }
     });
-    stopButtonInstance.addEventListener('click',function ()
+    stopButtonInstance.addEventListener('click',async function ()
     {
         console.log("STOP Button Clicked");
-        LogEndOfTimer(); //Create a comment detailing end timer stats
+        await LogEndOfTimer(); //Create a comment detailing end timer stats
         StopTimer();
         ResetTimerValues();//Reset the timer
     });
@@ -136,8 +136,16 @@ async function InitializeTimer()
     // if (window.location.href.includes("\\issues\\"))
     // {
         var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
-        await CreateNewUser(userName);
-        await CreateNewIssue(encodeURIComponent(window.location.href), issueHeader.textContent);
+        var serverStatus = await CheckServer();
+        if (serverStatus <= 304)
+        {
+            await CreateNewUser(userName);
+            await CreateNewIssue(encodeURIComponent(window.location.href), issueHeader.textContent);
+        }
+        else
+        {
+            console.log("Server is down on initialize");
+        }
         console.log(userName);
         if (localStorage.getItem(userName + window.location.href) == null)
         {
@@ -270,17 +278,75 @@ function AppendAdditions() //Append new elements to the destination for the exte
         console.log("Destination div is null");
     }
 }
-function LogTime()
+async function DoesLogContainIncompleteRecord(queryString)
+{
+        var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
+        if (optionBtn != null)
+        {
+            optionBtn.click();
+            var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
+        }
+        else
+        {
+            console.log("Option panel was found null in incomplete record check")
+        }
+        setTimeout(() => {
+        var editBtn = document.getElementsByClassName("dropdown-item btn-link js-comment-edit-button")[0];//the button that literally says "edit"
+        if (editBtn != null)
+        {
+            editBtn.click();
+            var commentBlock = document.getElementById(commentId);
+            var commentTextArea = commentBlock.getElementsByClassName("js-comment-field js-paste-markdown js-task-list-field js-quick-submit js-size-to-fit js-session-resumable CommentBox-input FormControl-textarea js-saved-reply-shortcut-comment-field")[0];
+            var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
+            var log = commentTextArea.textContent;
+            var records = log.split("\n");
+            var length = records.length;
+            var finalRecord = records[length - 1];
+            console.log("Final Record: " + finalRecord);
+            if (finalRecord.includes(queryString))
+            {
+                submitEditButton.click();
+                //window.location.reload();//reload the page to submit the comment
+                startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
+                console.log("record was found to be incomplete");
+                return 1;
+            }
+            else
+            {
+                submitEditButton.click();
+                //window.location.reload();//reload the page to submit the comment
+                startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
+                console.log("Record was found to be complete");
+                return 0;
+            }
+        }
+        else
+        {
+            console.log("Edit button was found null in incomplete record check, whoops");
+        }
+    }, "1000");
+   console.log("Func is over");
+   return 0;
+}
+async function LogTime()
 {
     
     FindUserTimerLog(userName);
-    var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
-    optionBtn.click();
-    var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
-    setTimeout(() => {
-        EditComment( ". . . . \n", "start", "");
-    }, "1000");
-
+    var isRecordIncomplete = await DoesLogContainIncompleteRecord("start");
+    console.log("IsRecordIncomplete: " + isRecordIncomplete);
+    if (isRecordIncomplete == 0)
+    {
+        var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
+        optionBtn.click();
+        var optionsPanel = document.getElementsByClassName("dropdown-menu dropdown-menu-sw show-more-popover color-fg-default")[0];//popup menu with edit/hide/delete/etc.
+        setTimeout(() => {
+            EditComment( ". . . . \n", "start", "");
+        }, "1000");
+    }
+    else
+    {
+        console.log("Timer contains incomplete log");
+    }
 }
 function EditComment(value1, value2, value3)
 {
@@ -300,15 +366,14 @@ function EditComment(value1, value2, value3)
             commentTextArea.textContent += "\n. . . .\nTotal Time Spent So Far: " + formattedTimeElapsed;
         }
         submitEditButton.click();
-        //window.location.reload();//reload the page to submit the comment
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else
     {
-        console.log("Edit button is null, whoops");
+        console.log("Edit button was found null in editcomment, whoops");
     }
 }
-function LogEndOfTimer()
+async function LogEndOfTimer()
 {
     FindUserTimerLog(userName);
     var optionBtn = document.getElementsByClassName("timeline-comment-action Link--secondary Button--link Button--medium Button")[commentNum - 1]; //the three dots
@@ -321,7 +386,7 @@ function LogEndOfTimer()
 
 
     var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
-    LogDataToSQLite(userName, window.location.href, issueHeader.textContent, startDate, endDate);
+    await LogDataToSQLite(userName, window.location.href, issueHeader.textContent, startDate, endDate);
 }
 function ResetTimerValues()
 {
@@ -558,21 +623,20 @@ async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inp
         console.log("New Timer Period was unable to save");
     });
 }
-function CheckServer(url, timeout)
+async function CheckServer()
 {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const options = { mode: 'no-cors', signal };
-    var returnValue = fetch(url, options)
-      .then(setTimeout(() => { controller.abort() }, timeout))
-      .then(response => console.log('Check server response:', response.statusText))
-      .catch(error => console.error('Check server error:', error.message));
-    return returnValue;
+    var returnedResponse
+    await fetch("/awake")
+    .then(function (){
+        returnedResponse = Response.status;
+    });
+    return returnedResponse;
 }
 async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
 {
-    // if (CheckServer("http://localhost:5220", 100) != null)
-    // {
+    var serverStatus = await CheckServer();
+    if (serverStatus <= 304)
+    {
         console.log("SAVING DATA TO DATABASE");
         var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
         var time = Number(Math.round(difference /1000));
@@ -580,8 +644,11 @@ async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
         await CreateNewIssue(encodeURIComponent(url), issuename);
         await CreateNewTimer(username, encodeURIComponent(url), issuename);
         await CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, Number(time));
-    //}
-    
+    }
+    else
+    {
+        console.log("Uh oh server isn't awake");
+    }
 }
 
 

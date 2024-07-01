@@ -18,7 +18,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({ origin: '*' }));
-
+app.get("/awake", async (req, res) => {
+  res.json({
+    awake: "true",
+  });
+});
 app.get("/views/usermodel/user/:id", async (req, res) => {
   const user = await prisma.user.findFirst({
     where: {
@@ -457,14 +461,14 @@ app.get("/timermodel/:id/timer", async (req, res) => { //get timer by ID
   var timer = await prisma.$queryRaw`SELECT Timer.id, Timer.userId, Timer.issueId FROM Timer WHERE Timer.id = ${Number(req.params.id)};`;
   res.json(timer);
 });
-app.get("/timermodel/:id/userandissue", async (req, res) => { //get user and issue names for a timer
-  var userAndIssue = await prisma.$queryRaw`SELECT User.UserName, Issue.url FROM ((Timer INNER JOIN User ON Timer.userId = User.id) INNER JOIN ISSUE ON Timer.issueId = Issue.id) WHERE Timer.id = ${Number(req.params.id)};`;
+app.get("/timermodel/:id/userandtimer", async (req, res) => { //get user and issue names for a timer
+  var userAndIssue = await prisma.$queryRaw`SELECT User.UserName, Timer.id AS TimerId FROM ((Timer INNER JOIN User ON Timer.userId = User.id) INNER JOIN ISSUE ON Timer.issueId = Issue.id) WHERE Timer.id = ${Number(req.params.id)};`;
   res.json(userAndIssue);
 });
 app.get("/timerperiodmodel/average", async (req, res) => { //Average time spent on all timer periods
   var TimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.totalTimeElapsed FROM TimerPeriod`;
   var TimeSpent = 0;
-  for (var j = 0; j < TimeSpentArray.length; j++) 
+  for (var j = 0; j < TimeSpentArray.length; j++)
   {
     TimeSpent += Number(TimeSpentArray[j].totalTimeElapsed);
   }
@@ -567,14 +571,7 @@ app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 
 async function main() {
-  // const allUsers = await prisma.user.findMany();
-  // const allIssues = await prisma.issue.findMany();
-  // const allTimers = await prisma.timer.findMany();
-  // const allTimerPeriods = await prisma.timerPeriod.findMany();
-  // console.log(allUsers);
-  // console.log(allIssues);
-  // console.log(allTimers);
-  // console.log(allTimerPeriods);
+  
 }
 
 async function ConvertSeconds(seconds)
