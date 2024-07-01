@@ -626,10 +626,11 @@ async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inp
 async function CheckServer()
 {
     var returnedResponse
-    await fetch("/awake")
-    .then(function (){
-        returnedResponse = Response.status;
-    });
+    console.log("Before call");
+    const response = await fetch("http://localhost:5220/awake");
+    console.log("After Call");
+    returnedResponse = response.status;
+    console.log(returnedResponse);
     return returnedResponse;
 }
 async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
