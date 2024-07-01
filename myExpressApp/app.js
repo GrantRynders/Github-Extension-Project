@@ -464,7 +464,7 @@ app.get("/timermodel/:id/userandissue", async (req, res) => { //get user and iss
 app.get("/timerperiodmodel/average", async (req, res) => { //Average time spent on all timer periods
   var TimeSpentArray = await prisma.$queryRaw`SELECT TimerPeriod.totalTimeElapsed FROM TimerPeriod`;
   var TimeSpent = 0;
-  for (var j = 0; j < TimeSpentArray.length; j++) 
+  for (var j = 0; j < TimeSpentArray.length; j++)
   {
     TimeSpent += Number(TimeSpentArray[j].totalTimeElapsed);
   }
@@ -567,14 +567,7 @@ app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 
 async function main() {
-  // const allUsers = await prisma.user.findMany();
-  // const allIssues = await prisma.issue.findMany();
-  // const allTimers = await prisma.timer.findMany();
-  // const allTimerPeriods = await prisma.timerPeriod.findMany();
-  // console.log(allUsers);
-  // console.log(allIssues);
-  // console.log(allTimers);
-  // console.log(allTimerPeriods);
+  
 }
 
 async function ConvertSeconds(seconds)
