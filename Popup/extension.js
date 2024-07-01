@@ -105,13 +105,13 @@ async function CreateTimerDisplay()
         {
             isTimerActive = 1;
             startDate = Date();
-            SaveData();
+            //SaveData();
             startTimer();
             await LogTime();
         }
         
     });
-    pauseButtonInstance.addEventListener('click',async function ()
+    pauseButtonInstance.addEventListener('click',function ()
     {
         console.log("PAUSE Button Clicked");
         if (isTimerActive == 1 && isTimerPaused == 0) //You should not be able to pause when it is already paused
@@ -119,14 +119,14 @@ async function CreateTimerDisplay()
             isTimerPaused = 1;
             StopTimer();
             SaveData();
-            await LogEndOfTimer();
+            LogEndOfTimer();
         }
     });
     stopButtonInstance.addEventListener('click',async function ()
     {
         console.log("STOP Button Clicked");
-        await LogEndOfTimer(); //Create a comment detailing end timer stats
         StopTimer();
+        LogEndOfTimer(); //Create a comment detailing end timer stats
         ResetTimerValues();//Reset the timer
     });
 }
@@ -173,27 +173,24 @@ async function InitializeTimer()
         timerDisplayInstance.textContent = totalTimeString; //sets the timer display
         if (isTimerActive == 1) //If the timer was still going when the page was reloaded then restart it
         {
-            if (timerCount == 0)
+            console.log("Timer was active before reset");
+            if (lastDate != null)
             {
-                console.log("Timer was active before reset");
-                if (lastDate != null)
+                currentDate = Date();//gets current date
+                var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
+                console.log("Difference: " + (Number(difference) / 1000));
+                sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
+                console.log("New seconds after difference: " + sec)
+                if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
                 {
-                    currentDate = Date();//gets current date
-                    var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
-                    console.log("Difference: " + (Number(difference) / 1000));
-                    sec = Number(sec) + Number(Math.round(difference /1000)); //We need to find how long this timer has been on for between when the user closed/reloaded the browser and now and add it to the timer
-                    console.log("New seconds after difference: " + sec)
-                    if (Number(sec) < 0 || Number(sec) == null) //make sure the seconds variable is good
-                    {
-                        sec = 0;
-                    }
+                    sec = 0;
                 }
-                else
-                {
-                    console.log("Last logged time for continuing timer is null")
-                }
-                startTimer();
             }
+            else
+            {
+                console.log("Last logged time for continuing timer is null")
+            }
+            startTimer();
         }
     //}
 }
@@ -434,7 +431,7 @@ async function FindUserTimerLog(user)
         }
         commentNum = Number(commentNum) + 1;
     }
-    SaveData();
+    //SaveData();
     return isLogFound;
 }
 async function CreateUserTimerLog(user)
@@ -626,10 +623,11 @@ async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inp
 async function CheckServer()
 {
     var returnedResponse
-    await fetch("/awake")
-    .then(function (){
-        returnedResponse = Response.status;
-    });
+    console.log("Before call");
+    const response = await fetch("http://localhost:5220/awake");
+    console.log("After Call");
+    returnedResponse = response.status;
+    console.log(returnedResponse);
     return returnedResponse;
 }
 async function LogDataToSQLite(username, url, issuename, startdate, stopdate)

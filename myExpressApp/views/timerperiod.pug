@@ -8,11 +8,17 @@ block content
             h3 Start Date: #{startDate}
             h3 End Date: #{endDate}
             h3 Total Time Elapsed #{TotalTimeElapsed}
-        div.CanvasWrapper
-            h1.CanvasHeader Periods from the Same Date and Their Sizes
-            canvas#myChart
+            div.desktop
+                div.CanvasWrapper
+                    h1.CanvasHeader Periods from the Same Date and Their Sizes
+                    canvas#myChart
+            div.mobile
+                div.CanvasWrapper
+                    h1.CanvasHeader Periods from the Same Date and Their Sizes
+                    canvas#myChartMobile
         h1 Related Records:
-        p#idhidden #{timerId}
+        p#idhidden #{id}
+        p#timerIdHidden #{timerId}
         p#Hidden #{JSON.stringify(timerperiods)}
         div#referenceList
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
@@ -28,6 +34,7 @@ block content
             await ListTimerPeriods();
             await GetAdjacentPeriodsData();
             await GraphAdjacentPeriods();
+            await GraphAdjacentPeriodsMobile();
         }
         async function ListTimerPeriods()
         {
@@ -45,7 +52,7 @@ block content
         }
         async function ListUserAndIssue()
         {
-            var idElement = await document.getElementById("idhidden");
+            var idElement = await document.getElementById("timerIdHidden");
             var id = Number(idElement.textContent);
             var timerResponse = await fetch("http://localhost:5220/timermodel/" + id + "/timer");
             var timer = await timerResponse.json();
@@ -76,11 +83,12 @@ block content
             var id = Number(idElement.textContent);
             var adjacentPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + id + "/adjacenttimerperiods");
             var adjacentPeriods = await adjacentPeriodsResponse.json();
+
             adjacentTimes = await Promise.all(adjacentPeriods.map(async function(index){
                 return index.totalTimeElapsed;
             }));
             adjacentNames = await Promise.all(adjacentPeriods.map(async function(index){
-                var period = index.startDate + " - " + index.endDate;
+                var period = index.startDate.slice(0, 25) + " - " + index.endDate;
                 console.log(period);
                 return period;
             }));
@@ -101,6 +109,35 @@ block content
                 },
                 options: {
                 scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+        }
+        async function GraphAdjacentPeriodsMobile()
+        {
+            var myChart = document.getElementById("myChartMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: adjacentNames,
+                datasets: [{
+                    label: 'Time spent on period',
+                    data: adjacentTimes,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    x: {
+                        ticks: {
+                        //option 2, use callback to change labels to empty string
+                        callback: () => ('')
+                        }
+                    },
                     y: {
                     beginAtZero: true
                     }

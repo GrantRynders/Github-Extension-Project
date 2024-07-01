@@ -68,14 +68,26 @@ block content
             var idElement = await document.getElementById("idhidden");
             var id = Number(idElement.textContent);
             var timerPeriodsResponse = await fetch("/timermodel/" + id + "/timerperiods");
-            var timerPeriods = await timerPeriodsResponse.json()
+            var timerPeriods = await timerPeriodsResponse.json();
+            timerPeriods.sort(function(a, b){
+                return b.totalTimeElapsed - a.totalTimeElapsed;
+            });
             periods = await Promise.all(timerPeriods.map(async function(index){
-                var period = index.startDate + " - " + index.endDate;
+                var period = index.startDate.slice(0, 25) + " - " + index.endDate;
                 return period;
             }));
             timerPeriodsTimes = await Promise.all(timerPeriods.map(async function(index){
                 return index.totalTimeElapsed;
             }));
+            var numRecords = 6;
+            if (periods.length > numRecords)
+            {
+                periods = periods.slice(0, numRecords);
+            }
+            if (timerPeriodsTimes.length > numRecords)
+            {
+                timerPeriodsTimes = timerPeriodsTimes.slice(0, numRecords);
+            }
 
         }
         async function DrawTimerPeriodsGraph()

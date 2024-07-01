@@ -162,6 +162,12 @@
             border: 1px solid;
             background-color: #252c36;
         }
+        .desktop{
+            display:block;
+        }
+        .mobile{
+            display:none;
+        }
         @media only screen and (max-width: 1200px) {
             *{
                 font-family:Segoe UI, SegoeUI, Arial, sans-serif;
@@ -248,6 +254,12 @@
             #ContentHeader{
                 padding: 5% 0 0 5%
             }
+            .desktop{
+                display:none;
+            }
+            .mobile{
+                display:block;
+            }
         }
     </style>
 </head>
@@ -269,7 +281,7 @@
                     <a href="http://localhost:5220/views/timers">Timers</a>
                 </li>
                 <li class="navLi">
-                    <a href="http://localhost:5220/views/timerperiods">Timer Periods</a>
+                    <a href="http://localhost:5220/views/timerperiods">Periods</a>
                 </li>
             </ul>
         </nav>
@@ -277,11 +289,21 @@
     
     <div id="content">
         <H1 id="ContentHeader"> ISSUES DATA</H1>
-        <div class="CanvasWrapper">
-            <h1 class="CanvasHeader">Issues Sorted by Time Spent</h1>
-            <canvas id="timeSpent">
+        <div class="desktop">
+            <div class="CanvasWrapper">
+                <h1 class="CanvasHeader">Issues Sorted by Time Spent</h1>
+                <canvas id="timeSpent">
 
-            </canvas>
+                </canvas>
+            </div>
+        </div>
+        <div class="mobile">
+            <div class="CanvasWrapper">
+                <h1 class="CanvasHeader">Issues Sorted by Time Spent</h1>
+                <canvas id="timeSpentMobile">
+
+                </canvas>
+            </div>
         </div>
         <div class="CanvasWrapper">
             <h1 class="CanvasHeader">Contributions by User on Selected Issue</h1>
@@ -329,6 +351,7 @@
         {
             await IssueTimeSpentDataGet();
             await DrawIssueTimeSpentGraph();
+            await DrawIssueTimeSpentGraphMobile();
 
             await PopulateDropdown();
             await IssueTimeSpentByUserDataGet(1);
@@ -383,6 +406,35 @@
                 },
                 options: {
                 scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+                }
+            });
+        }
+        async function DrawIssueTimeSpentGraphMobile()
+        {
+            const xValues = [100,200,300,400,500,600,700,800,900,1000];
+            var myChart = document.getElementById("timeSpentMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: issueNames,
+                datasets: [{
+                    label: 'TIME SPENT BY ALL USERS ON ISSUE (SEC)',
+                    data: timeSpentArray,
+                    borderWidth: 1
+                }]
+                },
+                options: {
+                scales: {
+                    x: {
+                        ticks: {
+                        //option 2, use callback to change labels to empty string
+                        callback: () => ('')
+                        }
+                    },
                     y: {
                         beginAtZero: true
                     }
