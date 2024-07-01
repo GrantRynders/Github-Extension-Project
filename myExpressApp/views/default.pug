@@ -22,7 +22,7 @@ html
             top: 0;
         }
         #content{
-            padding:10em;
+            padding:7em;
         }
         nav{
             
@@ -204,6 +204,15 @@ html
             border: 1px solid;
             background-color: #252c36;
         }
+        #timerIdHidden{
+            display:none;
+        }
+        .desktop{
+            display:block;
+        }
+        .mobile{
+            display:none;
+        }
         @media only screen and (max-width: 1200px) {
             *{
                 font-family:Segoe UI, SegoeUI, Arial, sans-serif;
@@ -289,6 +298,12 @@ html
             }
             #ContentHeader{
                 padding: 5% 0 0 5%
+            }
+             .desktop{
+                display:none;
+            }
+            .mobile{
+                display:block;
             }
         }
     body
