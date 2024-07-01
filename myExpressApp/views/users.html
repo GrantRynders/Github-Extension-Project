@@ -134,6 +134,12 @@
             border: 1px solid;
             background-color: #252c36;
         }
+        .desktop{
+            display:block;
+        }
+        .mobile{
+            display:none;
+        }
         @media only screen and (max-width: 1200px) {
             *{
                 font-family:Segoe UI, SegoeUI, Arial, sans-serif;
@@ -230,6 +236,12 @@
             #ContentHeader{
                 padding: 5% 0 0 5%
             }
+            .desktop{
+                display:none;
+            }
+            .mobile{
+                display:block;
+            }
         }
     </style>
 </head>
@@ -251,25 +263,34 @@
                     <a href="http://localhost:5220/views/timers">Timers</a>
                 </li>
                 <li class="navLi">
-                    <a href="http://localhost:5220/views/timerperiods">Timer Periods</a>
+                    <a href="http://localhost:5220/views/timerperiods">Periods</a>
                 </li>
             </ul>
         </nav>
     </header>
     <div id="content">
         <h1 id="ContentHeader"> USERS DATA</h1>
-        <div class="CanvasWrapper">
-            <h1 class="CanvasHeader">Users Sorted by Issues Worked on</h1>
-            <canvas id="issuesChart">
-
-            </canvas>
+        <div class="desktop">
+            <div class="CanvasWrapper">
+                <h1 class="CanvasHeader">Users Sorted by Issues Worked on</h1>
+                <canvas id="issuesChart"></canvas>
+            </div>
+            
+            <div class="CanvasWrapper">
+                <h1 class="CanvasHeader">Users Sorted by Total Time Spent on Our Extension</h1>
+                <canvas id="timespentChart"></canvas>
+            </div>
         </div>
-        
-        <div class="CanvasWrapper">
-            <h1 class="CanvasHeader">Users Sorted by Total Time Spent on Our Extension</h1>
-            <canvas id="timespentChart">
-
-            </canvas>
+        <div class="mobile">
+            <div class="CanvasWrapper">
+                <h1 class="CanvasHeader">Users Sorted by Issues Worked on</h1>
+                <canvas id="issuesChartMobile"></canvas>
+            </div>
+            
+            <div class="CanvasWrapper">
+                <h1 class="CanvasHeader">Users Sorted by Total Time Spent on Our Extension</h1>
+                <canvas id="timespentChartMobile"></canvas>
+            </div>
         </div>
         <h1 id="UserListHeader">
             Tracked Users
@@ -316,8 +337,10 @@
             index = 0;
             await UserIssuesDataGet();
             await DrawUserIssuesInvolvedGraph();
+            await DrawUserIssuesInvolvedGraphMobile();
             await UserTimeSpentDataGet();
             await DrawUserTimeSpentGraph();
+            await DrawUserTimeSpentGraphMobile();
             await DisplayAllUsers(0);
             //await DisplayButtonsToggle(10);
         }
@@ -458,6 +481,64 @@
                 },
                 options: {
                 scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+        }
+        async function DrawUserIssuesInvolvedGraphMobile() 
+        {
+            var myChart = document.getElementById("issuesChartMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'ISSUE COUNT FOR EACH USER',
+                    data: issueCounts,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    x: {
+                        ticks: {
+                        //option 2, use callback to change labels to empty string
+                        callback: () => ('')
+                        }
+                    },
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+            
+        }
+        async function DrawUserTimeSpentGraphMobile() 
+        {
+            var myChart = document.getElementById("timespentChartMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'TOTAL TIME SPENT WORKING ON GITHUB ISSUES IN SECONDS',
+                    data: timeSpentArray,
+                    borderWidth: 1,
+                }]
+                },
+                options: {
+                scales: {
+                    x: {
+                        ticks: {
+                        //option 2, use callback to change labels to empty string
+                        callback: () => ('')
+                        }
+                    },
                     y: {
                     beginAtZero: true
                     }
