@@ -142,6 +142,12 @@
             border: 1px solid;
             background-color: #252c36;
         }
+        .desktop{
+            display:block;
+        }
+        .mobile{
+            display:none;
+        }
         @media only screen and (max-width: 1200px) {
             *{
                 font-family:Segoe UI, SegoeUI, Arial, sans-serif;
@@ -229,6 +235,12 @@
             #ContentHeader{
                 padding: 5% 0 0 5%
             }
+            .desktop{
+                display:none;
+            }
+            .mobile{
+                display:block;
+            }
         }
     </style>
 </head>
@@ -257,12 +269,23 @@
     </header>
     <div id="content">
         <h1 id="ContentHeader">Timer Periods</h1>
-        <div class="CanvasWrapper">
+         <div class = "desktop">
+            <div class="CanvasWrapper">
             <h1 class="CanvasHeader">Most Recent Timer Periods with Their User and Time Spent</h1>
             <canvas id="timeSpent">
 
             </canvas>
+         </div>
         </div>
+        
+        <div class="mobile">
+            <div class="CanvasWrapper">
+                <canvas id="timeSpentMobile">
+
+                </canvas>
+            </div>
+        </div>
+        
         <div id="generalStats">
             <h1>
                 Average Time Spent Per Period: <h1 id="average"></h1>
@@ -301,6 +324,7 @@
             await GetAverageTimerPeriod();
             await GetTimerPeriodGraphData();
             await DisplayTimerPeriodGraph();
+            await DisplayTimerPeriodGraphMobile();
         }
         async function ListTimers()
         {
@@ -386,6 +410,40 @@
                 {
                     scales: 
                     {
+                        y: 
+                        {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        async function DisplayTimerPeriodGraphMobile()
+        {
+            var myChart = document.getElementById("timeSpentMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: 
+                {
+                    labels: compoundNameDates,
+                    datasets: 
+                    [{
+                        label: 'Time spent on period',
+                        data: periodsTimeElapsed,
+                        borderWidth: 1,
+                        backgroundColor: '#9BD0F5'
+                    }]
+                },
+                options: 
+                {
+                    scales: 
+                    {
+                        x: {
+                            ticks: {
+                            //option 2, use callback to change labels to empty string
+                            callback: () => ('')
+                            }
+                        },
                         y: 
                         {
                             beginAtZero: true
