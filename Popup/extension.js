@@ -56,7 +56,6 @@ async function CheckIfInitialized()
             await CreateTimerDisplay();
             createTimerButtonInstance.remove();
             InitializeTimer();
-            //window.location.reload();
         });
     }
     if (results == 1)
@@ -103,7 +102,6 @@ async function CreateTimerDisplay()
         {
             isTimerActive = 1;
             startDate = Date();
-            //SaveData();
             startTimer();
             await LogTime();
         }
