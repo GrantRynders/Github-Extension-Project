@@ -18,7 +18,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({ origin: '*' }));
-
+app.get("/awake", async (req, res) => {
+  res.json({
+    awake: "true",
+  });
+});
 app.get("/views/usermodel/user/:id", async (req, res) => {
   const user = await prisma.user.findFirst({
     where: {
@@ -457,8 +461,8 @@ app.get("/timermodel/:id/timer", async (req, res) => { //get timer by ID
   var timer = await prisma.$queryRaw`SELECT Timer.id, Timer.userId, Timer.issueId FROM Timer WHERE Timer.id = ${Number(req.params.id)};`;
   res.json(timer);
 });
-app.get("/timermodel/:id/userandissue", async (req, res) => { //get user and issue names for a timer
-  var userAndIssue = await prisma.$queryRaw`SELECT User.UserName, Issue.url FROM ((Timer INNER JOIN User ON Timer.userId = User.id) INNER JOIN ISSUE ON Timer.issueId = Issue.id) WHERE Timer.id = ${Number(req.params.id)};`;
+app.get("/timermodel/:id/userandtimer", async (req, res) => { //get user and issue names for a timer
+  var userAndIssue = await prisma.$queryRaw`SELECT User.UserName, Timer.id AS TimerId FROM ((Timer INNER JOIN User ON Timer.userId = User.id) INNER JOIN ISSUE ON Timer.issueId = Issue.id) WHERE Timer.id = ${Number(req.params.id)};`;
   res.json(userAndIssue);
 });
 app.get("/timerperiodmodel/average", async (req, res) => { //Average time spent on all timer periods

@@ -342,17 +342,14 @@
             newPeriods.sort(function(a, b){
                 return b.endTime - a.endTime;
             });
-            endDates = await Promise.all(newPeriods.map(async function(index){
-                var endDate = new Date(index.endDate);
-                return endDate;
-            }));
             userNames = await Promise.all(newPeriods.map(async function(index){
                 var username = index.UserName;
                 return username;
             }));
             compoundNameDates = await Promise.all(newPeriods.map(async function(index){
                 var username = index.UserName;
-                var endDate = new Date(index.endDate);
+                var endDate = index.endDate;
+                endDate = String(endDate).slice(0, 25);
                 var compound = username + ": " + endDate;
                 return compound;
             }));
@@ -374,21 +371,26 @@
             var myChart = document.getElementById("timeSpent");
             new Chart(myChart, {
                 type: 'bar',
-                data: {
-                labels: compoundNameDates,
-                datasets: [{
-                    label: 'Time spent on period',
-                    data: periodsTimeElapsed,
-                    borderWidth: 1,
-                    backgroundColor: '#9BD0F5'
-                }]
+                data: 
+                {
+                    labels: compoundNameDates,
+                    datasets: 
+                    [{
+                        label: 'Time spent on period',
+                        data: periodsTimeElapsed,
+                        borderWidth: 1,
+                        backgroundColor: '#9BD0F5'
+                    }]
                 },
-                options: {
-                scales: {
-                    y: {
-                    beginAtZero: true
+                options: 
+                {
+                    scales: 
+                    {
+                        y: 
+                        {
+                            beginAtZero: true
+                        }
                     }
-                }
                 }
             });
         }

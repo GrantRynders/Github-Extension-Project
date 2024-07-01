@@ -301,11 +301,11 @@
                 const periodsResponse = await fetch("http://localhost:5220/timermodel/" + index.id + "/timerperiods");
                 const periods = await periodsResponse.json();
                 const periodCount = periods.length;
-                const userAndIssueResponse = await fetch("http://localhost:5220/timermodel/" + index.id + "/userandissue")
-                const userAndIssue = await userAndIssueResponse.json();
-                const userName = userAndIssue[0].UserName;
-                const issueUrl = userAndIssue[0].url;
-                const compoundName = userName + " : " + issueUrl
+                const userAndTimerResponse = await fetch("http://localhost:5220/timermodel/" + index.id + "/userandtimer")
+                const userAndTimer = await userAndTimerResponse.json();
+                const userName = userAndTimer[0].UserName;
+                const timerId = userAndTimer[0].TimerId;
+                const compoundName = userName + ", TimerId: " + timerId
                 const data = {
                     periodCount: periodCount,
                     compoundName: compoundName,
@@ -321,7 +321,7 @@
             names = timersWithPeriodsArray.map(function(index){
                 return index.compoundName;
             });
-            const numRecords = 10;
+            const numRecords = 5;
             if (periodCounts.length > numRecords)
             {
                 periodCounts = periodCounts.slice(0, numRecords);
