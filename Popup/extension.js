@@ -46,10 +46,8 @@ CheckIfInitialized();
 async function CheckIfInitialized()
 {
     results = await FindUserTimerLog(userName);
-    console.log(results);
     if (results == 0)
     {
-        console.log("Ping");
         destinationDiv.append(createTimerButton);
         var createTimerButtonInstance = document.getElementById("createTimerButton");
         createTimerButtonInstance.addEventListener('click', async function ()
