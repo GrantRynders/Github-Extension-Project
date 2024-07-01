@@ -83,7 +83,6 @@ block content
             var id = Number(idElement.textContent);
             var adjacentPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + id + "/adjacenttimerperiods");
             var adjacentPeriods = await adjacentPeriodsResponse.json();
-
             adjacentTimes = await Promise.all(adjacentPeriods.map(async function(index){
                 return index.totalTimeElapsed;
             }));
@@ -92,6 +91,15 @@ block content
                 console.log(period);
                 return period;
             }));
+            const numRecords = 10;
+            if (adjacentTimes.length > numRecords)
+            {
+                adjacentTimes = adjacentTimes.slice(0, numRecords);
+            }
+            if (adjacentNames.length > numRecords)
+            {
+                adjacentNames = adjacentNames.slice(0, numRecords);
+            }
         }
         async function GraphAdjacentPeriods()
         {
