@@ -104,6 +104,8 @@
         .dropdownElement {
             background-color:#161b22;
             color:#FFFFFF;
+            width:100%;
+            padding: 0.5em 0em 0.5em 0em;
         }
         #myInput{
             width: 100%;
@@ -544,11 +546,11 @@
                 var dropElement = document.createElement("button");
                 dropElement.className = "dropdownElement";
                 dropElement.textContent = allIssues[i].issueName;
-                dropElement.addEventListener('click',function ()
+                dropElement.addEventListener('click', async function ()
                 {
-                    timeSpentByUserChart.destroy();
-                    IssueTimeSpentByUserDataGet(allIssues[i].id);
-                    IssueTimeSpentByUserGraph();
+                    await timeSpentByUserChart.destroy();
+                    await IssueTimeSpentByUserDataGet(allIssues[i].id);
+                    await IssueTimeSpentByUserGraph();
                 });
                 dropdown.appendChild(dropElement);
             }
@@ -565,7 +567,6 @@
                 issueLink.href = "http://localhost:5220/views/issuemodel/issue/" + allIssues[i].id;
                 issueLink.textContent = "Id: " + allIssues[i].id + ", URL: " + allIssues[i].url + ", IssueName: " + allIssues[i].issueName;
                 destinationDiv.appendChild(issueLink);
-
             }
         }
     </script>
