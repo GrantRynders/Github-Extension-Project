@@ -66,21 +66,28 @@ block content
                         if (issueResponse.status < 400 && issueResponse != null)
                         {
                             const issue = await issueResponse.json();
-                            const pageurl = "http://localhost:5220/views/issuemodel/issue/" + issue.id;
-                            await fetch(pageurl)
-                            .then((response) => {
-                                if (response.status < 400)
-                                {
-                                    window.location.replace(pageurl);
-                                }
-                                else
-                                {
-                                    results.textContent = "No Valid Record to Return";
-                                }
-                            })
-                            .catch(function() {
-                                console.log("Something really bad happened when searching uh oh");
-                            });
+                            if (issue != null)
+                            {
+                                const pageurl = "http://localhost:5220/views/issuemodel/issue/" + issue.id;
+                                await fetch(pageurl)
+                                .then((response) => {
+                                    if (response.status < 400)
+                                    {
+                                        window.location.replace(pageurl);
+                                    }
+                                    else
+                                    {
+                                        results.textContent = "No Valid Record to Return";
+                                    }
+                                })
+                                .catch(function() {
+                                    console.log("Something really bad happened when searching uh oh");
+                                });
+                            }
+                            else
+                            {
+                                results.textContent = "No Valid Record to Return";
+                            }
                         }
                         else
                         {
@@ -93,21 +100,29 @@ block content
                         var timerResponse = await fetch(url);
                         if (timerResponse.status < 400 && timerResponse != null)
                         {
-                            const pageurl = "http://localhost:5220/views/timermodel/timer/" + query;
-                            await fetch(pageurl)
-                            .then((response) => {
-                                if (response.status < 400)
-                                {
-                                    window.location.replace(pageurl);
-                                }
-                                else
-                                {
-                                    results.textContent = "No Valid Record to Return";
-                                }
-                            })
-                            .catch(function() {
-                                console.log("Something really bad happened when searching uh oh");
-                            });
+                            const timer = await timerResponse.json();
+                            if (timer != null)
+                            {
+                                const pageurl = "http://localhost:5220/views/timermodel/timer/" + query;
+                                await fetch(pageurl)
+                                .then((response) => {
+                                    if (response.status < 400)
+                                    {
+                                        window.location.replace(pageurl);
+                                    }
+                                    else
+                                    {
+                                        results.textContent = "No Valid Record to Return";
+                                    }
+                                })
+                                .catch(function() {
+                                    console.log("Something really bad happened when searching uh oh");
+                                });
+                            }
+                            else
+                            {
+                                results.textContent = "No Valid Record to Return";
+                            }
                         }
                         else
                         {
@@ -120,21 +135,29 @@ block content
                         timerPeriodResponse = await fetch(url);
                         if (timerPeriodResponse.status < 400 && timerPeriodResponse != null)
                         {
-                            const pageurl = "http://localhost:5220/views/timerperiodmodel/timerperiod/" + query;
-                            await fetch(pageurl)
-                            .then((response) => {
-                                if (response.status < 400)
-                                {
-                                    window.location.replace(pageurl);
-                                }
-                                else
-                                {
-                                    results.textContent = "No Valid Record to Return";
-                                }
-                            })
-                            .catch(function() {
-                                console.log("Something really bad happened when searching uh oh");
-                            });
+                            const timerPeriod = await timerPeriodResponse.json();
+                            if (timerPeriod != null)
+                            {
+                                const pageurl = "http://localhost:5220/views/timerperiodmodel/timerperiod/" + query;
+                                await fetch(pageurl)
+                                .then((response) => {
+                                    if (response.status < 400)
+                                    {
+                                        window.location.replace(pageurl);
+                                    }
+                                    else
+                                    {
+                                        results.textContent = "No Valid Record to Return";
+                                    }
+                                })
+                                .catch(function() {
+                                    console.log("Something really bad happened when searching uh oh");
+                                });
+                            }
+                            else
+                            {
+                                results.textContent = "No Valid Record to Return";
+                            }
                         }
                         else
                         {
