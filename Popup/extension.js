@@ -299,6 +299,7 @@ async function DoesLogContainIncompleteRecord(queryString)
             if (finalRecord.includes(queryString))
             {
                 submitEditButton.click();
+                console.log("incompletecheck submit button click");
                 //window.location.reload();//reload the page to submit the comment
                 startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
                 console.log("record was found to be incomplete");
@@ -358,7 +359,11 @@ function EditComment(value1, value2, value3)
             var formattedTimeElapsed = ConvertTimeToFormat(secondsElapsed);
             commentTextArea.textContent += "\n. . . .\nTotal Time Spent So Far: " + formattedTimeElapsed;
         }
-        submitEditButton.click();
+        setTimeout(() => {
+            submitEditButton.click();
+        }, "500");
+        console.log("Edit comment button click");
+        //window.location.reload();
         startButtonInstance.scrollIntoView({behavior: 'instant'});//Manually move the user back to the timer to give the illusion that this app isn't coded like crap
     }
     else
@@ -423,11 +428,11 @@ async function FindUserTimerLog(user)
                 var commentIdInstance = document.getElementsByClassName("js-comment-update")[commentNum].id;
                 commentId = commentIdInstance;
                 console.log("LOG FOUND AT COMMENT NUM: " + commentNum + " WITH ID: " + commentId);
+                document.getElementsByClassName("js-comment-update")[commentNum].style.color = "#000000";
             }
         }
         commentNum = Number(commentNum) + 1;
     }
-    //SaveData();
     return isLogFound;
 }
 async function CreateUserTimerLog(user)
@@ -618,10 +623,8 @@ async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inp
 }
 async function CheckServer()
 {
-    var returnedResponse
-    console.log("Before call");
+    var returnedResponse;
     const response = await fetch("http://localhost:5220/awake");
-    console.log("After Call");
     returnedResponse = response.status;
     console.log(returnedResponse);
     return returnedResponse;
