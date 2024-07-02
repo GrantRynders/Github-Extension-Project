@@ -541,20 +541,10 @@
                 }
             });
         }
-        // async function DisplayButtonsToggle(difference)
-        // {
-        //     console.log("Total User Length: " + alllength);
-        //     console.log("Index: " + index);
-        //     console.log("Difference: " + difference);
-        //     if (index >= Number(-difference))
-        //     {
-        //         document.getElementById("backbtn").classList.toggle("show");
-        //         if (alllength <= (Number(index) + Number(difference)))
-        //         {
-        //             document.getElementById("nextbtn").classList.toggle("show");
-        //         }
-        //     }
-        // }
+        async function DisplayButtonsToggle()
+        {
+            document.getElementById("backbtn").style.backgroundColor = "#000000";
+        }
         async function TabUp()
         {
             console.log("index: " + index);
