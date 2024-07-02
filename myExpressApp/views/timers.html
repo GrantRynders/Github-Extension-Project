@@ -269,20 +269,33 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        var index;
+        const interval = 2;
         var names;
         var periodCounts;
         Main();
         async function Main()
         {
-            await ListTimers();
+            await ListTimers(0);
             await GetTimersWithPeriodCounts();
             await GraphTimersWithPeriodCounts();
         }
-        async function ListTimers()
+        async function ListTimers(index)
         {
             const destinationDiv = document.getElementById("TimerList");
             const allTimersResponse = await fetch("http://localhost:5220/timer");
-            const allTimers = await allTimersResponse.json();
+            var allTimers = await allTimersResponse.json();
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("TimerLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allTimers = allTimers.slice(index, index + interval);
             for (let i = 0; i < allTimers.length; i++) 
             {
                 var timerLink = document.createElement('a');
@@ -353,7 +366,34 @@
                 }
                 }
             });
-            
+        }
+        async function TabUp()
+        {
+            const allRecordsResponse = await fetch("http://localhost:5220/timer");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((allRecords.length) >= (Number(index) + interval))
+            {
+                index += interval;
+                ListTimers(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            const allRecordsResponse = await fetch("http://localhost:5220/timer");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListTimers(Number(index));
+            }
         }
     </script>
 </body>

@@ -21,21 +21,31 @@ block content
         var timeSpentArray;
         var issueName;
         var index;
-        const interval = 1;
+        const interval = 2;
         Main();
         async function Main()
         {
             index = 0;
-            await ListIssues();
+            await ListIssues(0);
             await GetIssuesTimeSpentData();
             await IssueTimeSpentByUserGraph();
         }
-        async function ListIssues()
+        async function ListIssues(index)
         {
-          
             const issuesReference = await document.getElementById("Hidden");
-            const issues = await JSON.parse(issuesReference.textContent);
+            var issues = await JSON.parse(issuesReference.textContent);
             const destinationDiv = document.getElementById("referenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("referenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            issues = issues.slice(index, index + interval);
             for (let i = 0; i < issues.length; i++)
             {
                 var link = document.createElement('a');
@@ -107,33 +117,29 @@ block content
         }
         async function TabUp()
         {
-            console.log("index: " + index);
-            const allReferencesResponse = await fetch("http://localhost:5220/user");
-            const allReferences = await allReferencesResponse.json();
+            const allRecordsResponse = await fetch("http://localhost:5220/issue");
+            const allRecords = await allRecordsResponse.json();
             if (index == null)
             {
                 index = 0;
             }
-            if (allReferences.length > (Number(index) + interval))
+            if ((allRecords.length) >= (Number(index) + interval))
             {
-                console.log("Tabbing up sire");
                 index += interval;
-                DisplayAllUsers(Number(index));
+                ListIssues(Number(index));
             }
         }
         async function TabDown()
         {
-            console.log("index: " + index);
-            const allReferencesResponse = await fetch("http://localhost:5220/user");
-            const allReferences = await allReferencesResponse.json();
+            const allRecordsResponse = await fetch("http://localhost:5220/issue");
+            const allRecords = await allRecordsResponse.json();
             if (index == null)
             {
                 index = 0;
             }
             if (Number(index - interval) >= 0)
             {
-                console.log("Tabbing down milord");
                 index -= interval;
-                DisplayAllUsers(Number(index));
+                ListIssues(Number(index));
             }
         }

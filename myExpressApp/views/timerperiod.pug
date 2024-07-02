@@ -20,27 +20,40 @@ block content
         p#idhidden #{id}
         p#timerIdHidden #{timerId}
         p#Hidden #{JSON.stringify(timerperiods)}
-        div#referenceList
+        div(id="referenceListUserAndIssue" class="referenceList")
+        div(id="referenceList" class="referenceList")
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
         button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
         var adjacentNames;
         var adjacentTimes;
+        var index;
+        const interval = 10;
         Main();
         async function Main()
         {
             await ListUserAndIssue();
-            await ListTimerPeriods();
+            await ListTimerPeriods(0);
             await GetAdjacentPeriodsData();
             await GraphAdjacentPeriods();
             await GraphAdjacentPeriodsMobile();
         }
-        async function ListTimerPeriods()
+        async function ListTimerPeriods(index)
         {
             const timerperiodsReference = await document.getElementById("Hidden");
-            const timerperiods = await JSON.parse(timerperiodsReference.textContent);
+            var timerperiods = await JSON.parse(timerperiodsReference.textContent);
             const destinationDiv = document.getElementById("referenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                destinationDiv.removeChild(child);
+            }
+            var links = destinationDiv.getElementsByClassName("referenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            timerperiods = timerperiods.slice(index, index + interval);
             for (let i = 0; i < timerperiods.length; i++)
             {
                 var link = document.createElement('a');
@@ -60,7 +73,7 @@ block content
             var user = await userResponse.json();
             var issueResponse = await fetch("http://localhost:5220/timermodel/" + id + "/issue");
             var issue = await issueResponse.json();
-            var destinationDiv = await document.getElementById("referenceList");
+            var destinationDiv = await document.getElementById("referenceListUserAndIssue");
             var timerlink = await document.createElement('a');
             timerlink.className = "referenceLink";
             timerlink.href = "http://localhost:5220/views/timermodel/timer/" + id;
@@ -152,4 +165,30 @@ block content
                 }
                 }
             });
+        }
+        async function TabUp()
+        {
+            const timerperiodsReference = await document.getElementById("Hidden");
+            var timerperiods = await JSON.parse(timerperiodsReference.textContent);
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((timerperiods.length) >= (Number(index) + interval))
+            {
+                index += interval;
+                ListTimerPeriods(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListTimerPeriods(Number(index));
+            }
         }

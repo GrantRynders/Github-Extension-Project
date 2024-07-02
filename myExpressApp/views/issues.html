@@ -341,7 +341,8 @@
         //IssueTimeSpent
         var timeSpentArray;
         var issueNames;
-        
+        const interval = 2;
+        var index;
 
         //IssueTimeSpentByUser
         var issueName;
@@ -358,7 +359,7 @@
             await PopulateDropdown();
             await IssueTimeSpentByUserDataGet(1);
             await IssueTimeSpentByUserGraph();
-            await ListIssues();
+            await ListIssues(0);
         }
         async function IssueTimeSpentDataGet()
         {
@@ -555,11 +556,22 @@
                 dropdown.appendChild(dropElement);
             }
         }
-        async function ListIssues()
+        async function ListIssues(index)
         {
             const destinationDiv = document.getElementById("issuesList");
             const allIssuesResponse = await fetch("http://localhost:5220/issue");
-            const allIssues = await allIssuesResponse.json();
+            var allIssues = await allIssuesResponse.json();
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("IssueLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allIssues = allIssues.slice(index, index + interval);
             for (let i = 0; i < allIssues.length; i++) 
             {
                 var issueLink = document.createElement('a');
@@ -567,6 +579,71 @@
                 issueLink.href = "http://localhost:5220/views/issuemodel/issue/" + allIssues[i].id;
                 issueLink.textContent = "Id: " + allIssues[i].id + ", URL: " + allIssues[i].url + ", IssueName: " + allIssues[i].issueName;
                 destinationDiv.appendChild(issueLink);
+            }
+        }
+        async function Tab(difference)
+        {
+            if (index >= Number(-difference))
+            {
+                index += Number(difference);
+                const allUsersResponse = await fetch("http://localhost:5220/user");
+                const allUsers = await allUsersResponse.json();
+                if (allUsers.length >= (Number(index)))
+                {
+                    var lessUsers = allUsers.slice(index, Number(index + difference));
+                    var destinationDiv = document.getElementById("UserList");
+                    for (var child of destinationDiv.childNodes)
+                    {
+                        destinationDiv.removeChild(child);
+                    }
+                    for (var i = 0; i < lessUsers.length; i++)
+                    {
+                        var userLink = document.createElement('A');
+                        userLink.className = "UserLink";
+                        userLink.href = "http://localhost:5220/views/usermodel/user/" + lessUsers[i].id;
+                        userLink.textContent = "Id: " + lessUsers[i].id + ", UserName: " + lessUsers[i].UserName + "\n";
+                        destinationDiv.appendChild(userLink);
+                    }
+                }
+                else
+                {
+
+                } 
+            }
+            await DisplayButtonsToggle(difference);
+        }
+        async function TabUp()
+        {
+            console.log("index: " + index);
+            const allRecordsResponse = await fetch("http://localhost:5220/issue");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((allRecords.length) >= (Number(index) + interval))
+            {
+                console.log("Index: " + index);
+                console.log("Tabbing up sire");
+                index += interval;
+                console.log("Index + Interval: " + index);
+                ListIssues(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            console.log("index: " + index);
+            const allRecordsResponse = await fetch("http://localhost:5220/issue");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                console.log("Tabbing down milord");
+                index -= interval;
+                ListIssues(Number(index));
             }
         }
     </script>

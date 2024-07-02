@@ -128,9 +128,11 @@
             display: inline-block;
             width:100%;
             font-size: 1em;
-            padding: 1em 1em 1em 1em;
             border: 1px solid;
             background-color: #252c36;
+        }
+        #generalStats h1{
+            padding: 1em 1em 1em 1em;
         }
         .CanvasHeader{
             color: #FFFFFF;
@@ -289,7 +291,7 @@
         
         <div id="generalStats">
             <h1>
-                Average Time Spent Per Period: <h1 id="average"></h1>
+                Average Time Spent Per Period: <text id="average"></text>
             </h1>
         </div>
         
@@ -318,20 +320,34 @@
         var periodsTimeElapsed;
         var compoundNameDates;
         var usernames
+
+        var index;
+        const interval = 2;
         Main();
         async function Main()
         {
-            await ListTimers();
+            await ListTimers(0);
             await GetAverageTimerPeriod();
             await GetTimerPeriodGraphData();
             await DisplayTimerPeriodGraph();
             await DisplayTimerPeriodGraphMobile();
         }
-        async function ListTimers()
+        async function ListTimers(index)
         {
             const destinationDiv = document.getElementById("TimerList");
             const allTimersResponse = await fetch("http://localhost:5220/timerperiod");
-            const allTimers = await allTimersResponse.json();
+            var allTimers = await allTimersResponse.json();
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("TimerLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allTimers = allTimers.slice(index, index + interval);
             for (let i = 0; i < allTimers.length; i++) 
             {
                 var timerLink = document.createElement('a');
@@ -452,6 +468,34 @@
                     }
                 }
             });
+        }
+        async function TabUp()
+        {
+            const allRecordsResponse = await fetch("http://localhost:5220/timerPeriod");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((allRecords.length) >= (Number(index) + interval))
+            {
+                index += interval;
+                ListTimers(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            const allRecordsResponse = await fetch("http://localhost:5220/timerPeriod");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListTimers(Number(index));
+            }
         }
     </script>
 </body>
