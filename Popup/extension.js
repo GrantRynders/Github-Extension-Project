@@ -359,7 +359,6 @@ function EditComment(value1, value2, value3)
             var formattedTimeElapsed = ConvertTimeToFormat(secondsElapsed);
             commentTextArea.textContent += "\n. . . .\nTotal Time Spent So Far: " + formattedTimeElapsed;
         }
-        console.log(commentTextArea.textContent)
         setTimeout(() => {
             submitEditButton.click();
         }, "500");
