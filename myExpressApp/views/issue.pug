@@ -110,9 +110,10 @@ block content
                     options: {
                     plugins: {
                     datalabels: {
-                        formatter: (value) => {
-                        if (value < 15) return '';
-                        return value + '%';
+                        formatter: (value) => 
+                        {
+                            if (value < 15) return '';
+                            return value + '%';
                         },
                     },
                     }
