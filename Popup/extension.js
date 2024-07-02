@@ -129,14 +129,12 @@ async function CreateTimerDisplay()
 //On initialize
 async function InitializeTimer()
 {
-    // if (window.location.href.includes("\\issues\\"))
-    // {
         var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
         var serverStatus = await CheckServer();
         if (serverStatus <= 304)
         {
-            await CreateNewUser(userName);
-            await CreateNewIssue(encodeURIComponent(window.location.href), issueHeader.textContent);
+            await CreateNewUser(userName.toLowerCase());
+            await CreateNewIssue(encodeURIComponent(window.location.href), issueHeader.textContent.toLowerCase().replace("?", ""));
         }
         else
         {
@@ -637,8 +635,8 @@ async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
         console.log("SAVING DATA TO DATABASE");
         var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
         var time = Number(Math.round(difference /1000));
-        await CreateNewUser(username);
-        await CreateNewIssue(encodeURIComponent(url), issuename);
+        await CreateNewUser(username.toLowerCase());
+        await CreateNewIssue(encodeURIComponent(url), issuename.toLowerCase().replace("?", ""));
         await CreateNewTimer(username, encodeURIComponent(url), issuename);
         await CreateNewTimerPeriod(username, encodeURIComponent(url), issuename, startdate, stopdate, Number(time));
     }
