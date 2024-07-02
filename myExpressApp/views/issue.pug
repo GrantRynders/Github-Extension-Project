@@ -20,19 +20,31 @@ block content
     script.
         var userNames;
         var timeSpentByUserArray;
+        var index;
+        const interval = 2;
         Main();
         async function Main()
         {
-            await ListUsers();
+            await ListUsers(0);
             const issueId = await document.getElementById("idhidden").textContent;
             await IssueTimeSpentByUserDataGet(issueId);
             await IssueTimeSpentByUserGraph();
         }
-        async function ListUsers()
+        async function ListUsers(index)
         {
             const reference = await document.getElementById("Hidden");
-            const users = await JSON.parse(reference.textContent);
+            var users = await JSON.parse(reference.textContent);
             const destinationDiv = document.getElementById("referenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                destinationDiv.removeChild(child);
+            }
+            var links = destinationDiv.getElementsByClassName("referenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            users = users.slice(index, index + interval);
             for (let i = 0; i < users.length; i++) 
             {
                 var userLink = document.createElement('a');
@@ -106,4 +118,30 @@ block content
                     }
                 }
             }});
+        }
+        async function TabUp()
+        {
+            const reference = await document.getElementById("Hidden");
+            const users = await JSON.parse(reference.textContent);
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((users.length) > (Number(index) + interval))
+            {
+                index += interval;
+                ListUsers(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListUsers(Number(index));
+            }
         }

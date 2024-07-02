@@ -4,12 +4,13 @@ block content
     #content
         div.searchdiv
             h1#searchtitle Search the Database
-            div.dropdown
-                button(onclick="ToggleDropdown()" class="dropbtn") Choose a table to query
-                div(id="myDropdown" class="dropdown-content")
-            input(type="text" class="SearchField" id="queryInput" placeholder="Query")
-            button(class="SearchField" onclick="Search()") Search
-            h1#results
+            div#searchDiv
+                div.dropdown
+                    button(onclick="ToggleDropdown()" class="dropbtn") Choose a table to query
+                    div(id="myDropdown" class="dropdown-content")
+                input(type="text" class="SearchField" id="queryInput" placeholder="Query")
+                button(class="SearchField" onclick="Search()") Search
+                h1#results
             
 
 

@@ -140,7 +140,112 @@
         .mobile{
             display:none;
         }
-        @media only screen and (max-width: 1200px) {
+        @media only screen and (max-width: 1200px) and (min-width: 600px) {
+            *{
+                font-family:Segoe UI, SegoeUI, Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                color: white;
+            }
+            body{
+                background-color: #161b22;
+            }
+            header{
+                display:inline-block;
+                width: 100%;
+                position: fixed;
+                top: 0;
+            }
+            #content{
+                padding:10em 0em 0em 0em;;
+            }
+            nav{
+                
+                display:inline-block;
+                background-color: black;
+                width: 100%;
+            }
+            ul{
+                
+                width: 100%;
+            }
+            .navLi{
+                width: 20%;
+                padding: 0.5em 0em 0.5em 0em;
+                background-color: #57606a;
+                list-style-type: none;
+                display:block; 
+                text-align: center;
+                float:left;
+            }
+            .navLi:hover{
+                background-color: #383c40;
+            }
+            .navLi a{
+                width: 100%;
+            
+                color: #FFFFFF;
+                text-decoration:none;
+            }
+            #SiteHeader{
+                text-align: center;
+                background-color: #000000;
+                color: #FFFFFF;
+                padding: 0.5em;
+            }
+            #CurrentTab{
+                border-bottom-width: 1px;
+                border-bottom: solid;
+                border-color: #fa7a18;
+            }
+            canvas{
+                margin: 3em 0em 3em 0em;
+                background-color: #FFFFFF;
+            }
+            .UserLink{
+                color: white;
+                font-size: 1em;
+                width: 90%;
+                padding: 1em 0 1em 0;
+                display: inline-block;
+                text-align:center;
+                border: 1px solid;
+                border-color: #57606a;
+                border-radius: 0.5em;
+                background-color: #252c36;
+            }
+            #UserListHeader{
+                width: 100%;
+                text-align:center;
+            }
+            #UserList{
+                padding: 1em 0em 1em 0em;
+                text-align: center;
+            }
+            .CanvasWrapper{
+                background-color: #FFFFFF;
+                padding:2em 2em 2em 2em;
+                margin: 3em 10% 3em 10%;
+                border-radius:3em;
+
+            }
+            footer{
+                background-color:#000000;
+                text-align:center;
+                padding: 1em 1em 1em 1em;
+                font-size:1em;
+            }
+            #ContentHeader{
+                padding: 5% 0 0 5%
+            }
+            .desktop{
+                display:block;
+            }
+            .mobile{
+                display:none;
+            }
+        }
+        @media only screen and (max-width: 600px) {
             *{
                 font-family:Segoe UI, SegoeUI, Arial, sans-serif;
                 margin: 0;
@@ -344,14 +449,12 @@
             await DrawUserTimeSpentGraph();
             await DrawUserTimeSpentGraphMobile();
             await DisplayAllUsers(0);
-            //await DisplayButtonsToggle(10);
         }
         async function DisplayAllUsers(index)
         {
             
             const allUsersResponse = await fetch("http://localhost:5220/user");
             var allUsers = await allUsersResponse.json();
-            alllength = allUsers.length;
             var destinationDiv = document.getElementById("UserList");
             for (var child of destinationDiv.childNodes)
             {
@@ -363,13 +466,7 @@
             {
                 child.remove();
             }
-            if (allUsers.length > Number(index + interval))
-            {
-                console.log(index);
-                allUsers = allUsers.slice(index, index + interval);
-                console.log(allUsers);
-            }
-            
+            allUsers = allUsers.slice(index, index + interval);
             for (var i = 0; i < allUsers.length; i++)
             {
                 var userLink = document.createElement('A');
@@ -548,50 +645,9 @@
                 }
             });
         }
-        async function Tab(difference)
+        async function DisplayButtonsToggle()
         {
-            if (index >= Number(-difference))
-            {
-                index += Number(difference);
-                const allUsersResponse = await fetch("http://localhost:5220/user");
-                const allUsers = await allUsersResponse.json();
-                if (allUsers.length >= (Number(index)))
-                {
-                    var lessUsers = allUsers.slice(index, Number(index + difference));
-                    var destinationDiv = document.getElementById("UserList");
-                    for (var child of destinationDiv.childNodes)
-                    {
-                        destinationDiv.removeChild(child);
-                    }
-                    for (var i = 0; i < lessUsers.length; i++)
-                    {
-                        var userLink = document.createElement('A');
-                        userLink.className = "UserLink";
-                        userLink.href = "http://localhost:5220/views/usermodel/user/" + lessUsers[i].id;
-                        userLink.textContent = "Id: " + lessUsers[i].id + ", UserName: " + lessUsers[i].UserName + "\n";
-                        destinationDiv.appendChild(userLink);
-                    }
-                }
-                else
-                {
-
-                } 
-            }
-            await DisplayButtonsToggle(difference);
-        }
-        async function DisplayButtonsToggle(difference)
-        {
-            console.log("Total User Length: " + alllength);
-            console.log("Index: " + index);
-            console.log("Difference: " + difference);
-            if (index >= Number(-difference))
-            {
-                document.getElementById("backbtn").classList.toggle("show");
-                if (alllength <= (Number(index) + Number(difference)))
-                {
-                    document.getElementById("nextbtn").classList.toggle("show");
-                }
-            }
+            document.getElementById("backbtn").style.backgroundColor = "#000000";
         }
         async function TabUp()
         {
@@ -602,16 +658,14 @@
             {
                 index = 0;
             }
-            if ((allUsers.length) >= (Number(index) + interval))
+            if ((allUsers.length) > (Number(index) + interval))
             {
-                console.log("Tabbing up sire");
                 index += interval;
                 DisplayAllUsers(Number(index));
             }
         }
         async function TabDown()
         {
-            console.log("index: " + index);
             const allUsersResponse = await fetch("http://localhost:5220/user");
             const allUsers = await allUsersResponse.json();
             if (index == null)
@@ -620,7 +674,6 @@
             }
             if (Number(index - interval) >= 0)
             {
-                console.log("Tabbing down milord");
                 index -= interval;
                 DisplayAllUsers(Number(index));
             }
