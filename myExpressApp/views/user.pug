@@ -117,13 +117,13 @@ block content
         }
         async function TabUp()
         {
-            const allRecordsResponse = await fetch("http://localhost:5220/issue");
-            const allRecords = await allRecordsResponse.json();
+            const issuesReference = await document.getElementById("Hidden");
+            var issues = await JSON.parse(issuesReference.textContent);
             if (index == null)
             {
                 index = 0;
             }
-            if ((allRecords.length) >= (Number(index) + interval))
+            if ((issues.length) >= (Number(index) + interval))
             {
                 index += interval;
                 ListIssues(Number(index));
@@ -131,8 +131,6 @@ block content
         }
         async function TabDown()
         {
-            const allRecordsResponse = await fetch("http://localhost:5220/issue");
-            const allRecords = await allRecordsResponse.json();
             if (index == null)
             {
                 index = 0;

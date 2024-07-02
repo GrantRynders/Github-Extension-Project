@@ -13,26 +13,40 @@ block content
         h1 Related Records:
         p#idhidden #{id}
         p#Hidden #{JSON.stringify(timerperiods)}
-        div#referenceList
+        div(id="referenceListUserAndIssue" class="referenceList")
+        div(id="referenceList" class="referenceList")
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
         button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
         var timerPeriodsTimes;
         var periods;
+        var index;
+        const interval = 2;
         Main();
         async function Main()
         {
             await ListUserAndIssue();
-            await ListTimerPeriods();
+            await ListTimerPeriods(0);
             await GetTimerPeriodsGraphData();
             await DrawTimerPeriodsGraph();
         }
-        async function ListTimerPeriods()
+        async function ListTimerPeriods(index)
         {
             const timerperiodsReference = await document.getElementById("Hidden");
-            const timerperiods = await JSON.parse(timerperiodsReference.textContent);
+            var timerperiods = await JSON.parse(timerperiodsReference.textContent);
             const destinationDiv = document.getElementById("referenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = destinationDiv.getElementsByClassName("referenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            timerperiods = timerperiods.slice(index, index + interval);
             for (let i = 0; i < timerperiods.length; i++)
             {
                 var link = document.createElement('a');
@@ -50,7 +64,7 @@ block content
             var user = await userResponse.json();
             var issueResponse = await fetch("http://localhost:5220/timermodel/" + id + "/issue");
             var issue = await issueResponse.json();
-            destinationDiv = await document.getElementById("referenceList");
+            destinationDiv = await document.getElementById("referenceListUserAndIssue");
             var userlink = await document.createElement('a');
             userlink.className = "referenceLink";
             userlink.href = "http://localhost:5220/views/usermodel/user/" + user[0].id;
@@ -117,4 +131,30 @@ block content
                         }
                     }
             }});
+        }
+        async function TabUp()
+        {
+            const timerperiodsReference = await document.getElementById("Hidden");
+            const timerperiods = await JSON.parse(timerperiodsReference.textContent);
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((timerperiods.length) >= (Number(index) + interval))
+            {
+                index += interval;
+                ListTimerPeriods(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListTimerPeriods(Number(index));
+            }
         }
