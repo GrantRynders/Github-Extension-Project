@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({ origin: '*' }));
 app.get("/awake", async (req, res) => {
-res.json({
+  res.json({
     awake: "true",
   });
 });
