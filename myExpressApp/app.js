@@ -35,7 +35,6 @@ app.get("/views/usermodel/user/:id", async (req, res) => {
   const issuesResponse = await fetch("http://localhost:5220/usermodel/" + req.params.id + "/issues");
   const issues = await issuesResponse.json();
   const formattedTimes = await ConvertSeconds(timeElapsed);
-  console.log(formattedTimes)
   if (user != null)
   {
     res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues, formattedTimes: formattedTimes});
@@ -50,8 +49,10 @@ app.get("/views/timermodel/timer/:id", async (req, res) => {
   const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timerperiods")
   const timerPeriods = await timerPeriodsResponse.json();
   const totalTimeResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timespent");
-  const totalTime = totalTimeResponse.json();
-  res.render('timer', { id: req.params.id, issueId: timer.issueId, userId: timer.userId, timerperiods: timerPeriods, totalTimeElapsed: totalTime.totaltimespent });
+  const totalTimeJson = await totalTimeResponse.json();
+  const totalTime = totalTimeJson.totaltimespent;
+  const formattedTimes = await ConvertSeconds(totalTime);
+  res.render('timer', { id: req.params.id, issueId: timer.issueId, userId: timer.userId, timerperiods: timerPeriods, totalTimeElapsed: totalTime, formattedTimes: formattedTimes });
 });
 app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
   const timerperiod = await prisma.timerPeriod.findFirst({
@@ -61,7 +62,9 @@ app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
   });
   const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + timerperiod.timerId + "/timerperiods")
   const timerPeriods = await timerPeriodsResponse.json();
-  res.render('timerperiod', { id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timerperiod.totalTimeElapsed, timerperiods: timerPeriods });
+  const timeElapsed = timerperiod.totalTimeElapsed
+  const formattedTimes = await ConvertSeconds(timeElapsed);
+  res.render('timerperiod', { id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timeElapsed, timerperiods: timerPeriods, formattedTimes: formattedTimes });
 });
 app.get("/views/search", async (req, res) => {
   res.render('search', { title: "Search" });
@@ -75,8 +78,10 @@ app.get("/views/issuemodel/issue/:id", async (req, res) => {
   const usersResponse = await fetch("http://localhost:5220/issuemodel/" + req.params.id + "/users");
   const users = await usersResponse.json();
   const timeElapsedResponse = await fetch("http://localhost:5220/issuemodel/" + req.params.id + "/timespent");
-  const timeElapsed = await timeElapsedResponse.json();
-  res.render('issue', { id: req.params.id, issueUrl: issue.url, issueName: issue.issueName, users: users, TotalTimeElapsed: timeElapsed.totaltimespent });
+  const timeElapsedJson = await timeElapsedResponse.json();
+  const timeElapsed = timeElapsedJson.totaltimespent;
+  const formattedTimes = await ConvertSeconds(timeElapsed);
+  res.render('issue', { id: req.params.id, issueUrl: issue.url, issueName: issue.issueName, users: users, TotalTimeElapsed: timeElapsed, formattedTimes: formattedTimes });
 });
 
 

@@ -6,7 +6,7 @@ block content
             h1 TimerId: #{id}
             h1 UserId: #{userId}
             h1 IssueId: #{issueId}
-            h3 Total Time Spent: #{TotalTimeElapsed}
+            h3 Total Time Spent:  Days: #{formattedTimes.days}, Hours: #{formattedTimes.hours}, Minutes: #{formattedTimes.minutes}, Seconds: #{formattedTimes.seconds}
         div.CanvasWrapper
             h1.CanvasHeader Time Elapsed Per Timer Period
             canvas#myChart

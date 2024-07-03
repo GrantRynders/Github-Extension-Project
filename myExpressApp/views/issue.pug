@@ -6,7 +6,7 @@ block content
             h1 Issue Name: #{issueName}
             h1 ID: #{id}
             h1 URL: #{issueUrl}
-            h3 Total time users spent on this issue: #{TotalTimeElapsed}
+            h3 Total time users spent on this issue:  Days: #{formattedTimes.days}, Hours: #{formattedTimes.hours}, Minutes: #{formattedTimes.minutes}, Seconds: #{formattedTimes.seconds}
         div.CanvasWrapper
             h1.CanvasHeader Time Spent By User on Selected Issue
             canvas#timeSpentByUser
