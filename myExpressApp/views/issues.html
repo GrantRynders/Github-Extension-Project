@@ -171,6 +171,11 @@
         .mobile{
             display:none;
         }
+        #dropdownList{
+            overflow-y: auto;
+            height: 200px;
+            scrollbar-color: #FFFFFF;
+        }
         @media only screen and (max-width: 1200px) and (min-width: 600px) {
             *{
                 font-family:Segoe UI, SegoeUI, Arial, sans-serif;
@@ -423,6 +428,9 @@
             <button onclick="ToggleDropdown()" class="dropbtn">Choose A Different Issue</button>
             <div id="myDropdown" class="dropdown-content">
                 <input type="text" placeholder="Search.." id="myInput" onkeyup="FilterDropdown()">
+                <div id="dropdownList">
+
+                </div>
             </div>
         </div>
     </div>
@@ -645,7 +653,7 @@
         }
         async function PopulateDropdown()
         {
-            const dropdown = document.getElementById("myDropdown");
+            const dropdown = document.getElementById("dropdownList");
             const allIssuesResponse = await fetch("http://localhost:5220/issue");
             const allIssues = await allIssuesResponse.json();
             for (let i = 0; i < allIssues.length; i++) 
