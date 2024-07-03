@@ -666,6 +666,7 @@
                     await timeSpentByUserChart.destroy();
                     await IssueTimeSpentByUserDataGet(allIssues[i].id);
                     await IssueTimeSpentByUserGraph();
+                    ToggleDropdown();
                 });
                 dropdown.appendChild(dropElement);
             }
