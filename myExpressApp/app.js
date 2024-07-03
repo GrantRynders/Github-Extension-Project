@@ -223,7 +223,6 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
 //GENERAL ENDPOINTS
 app.get("/user", async (req, res) => {
   const returnedUsers = await prisma.user.findMany();
-  console.log(returnedUsers);
   res.json(returnedUsers);
 });
 app.get("/issue", async (req, res) => {
