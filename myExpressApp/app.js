@@ -34,9 +34,11 @@ app.get("/views/usermodel/user/:id", async (req, res) => {
   const timeElapsed = timeElapsedJson.totaltimespent;
   const issuesResponse = await fetch("http://localhost:5220/usermodel/" + req.params.id + "/issues");
   const issues = await issuesResponse.json();
+  const formattedTimes = await ConvertSeconds(timeElapsed);
+  console.log(formattedTimes)
   if (user != null)
   {
-    res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues});
+    res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues, formattedTimes: formattedTimes});
   }
 });
 app.get("/views/timermodel/timer/:id", async (req, res) => {
@@ -599,6 +601,8 @@ async function ConvertSeconds(seconds)
     hours,
     days,
   }
+  console.log(data);
+  return data;
 }
 
 main().then(async () => {

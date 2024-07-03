@@ -5,7 +5,7 @@ block content
         div.recordHeader
             h1 Username: #{username}
             h1 User ID: #{id}
-            h3 Total Time Spent Working On GitHub Issues: #{TotalTimeElapsed}
+            h3 Total Time Spent Working On GitHub Issues:  Days: #{formattedTimes.days}, Hours: #{formattedTimes.hours}, Minutes: #{formattedTimes.minutes}, Seconds: #{formattedTimes.seconds}
             h3 Total Issues Logged: #{issues.length}
         div.CanvasWrapper
             h1.CanvasHeader Time Spent By Issue
