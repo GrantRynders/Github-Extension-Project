@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({ origin: '*' }));
 app.get("/awake", async (req, res) => {
-  res.json({
+res.json({
     awake: "true",
   });
 });
@@ -35,9 +35,9 @@ app.get("/views/usermodel/user/:id", async (req, res) => {
   const issuesResponse = await fetch("http://localhost:5220/usermodel/" + req.params.id + "/issues");
   const issues = await issuesResponse.json();
   if (user != null)
-    {
-      res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues});
-    }
+  {
+    res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues});
+  }
 });
 app.get("/views/timermodel/timer/:id", async (req, res) => {
   const timer = await prisma.timer.findFirst({
