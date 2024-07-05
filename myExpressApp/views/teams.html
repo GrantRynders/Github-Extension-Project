@@ -66,24 +66,24 @@
             margin: 3em 0em 3em 0em;
             background-color: #FFFFFF;
         }
-        .UserLink{
-                color: white;
-                font-size: 2em;
-                width: 90%;
-                padding: 1em 0em 1em 0em;
-                display: inline-block;
-                text-align:center;
-                border: 1px solid;
-                border-color: #57606a;
-                border-radius: 0.5em;
-                background-color: #252c36;
-                margin: 0.5em 0em 0.5em 0em;
+        .ReferenceLink{
+            color: white;
+            font-size: 2em;
+            width: 90%;
+            padding: 1em 0em 1em 0em;
+            display: inline-block;
+            text-align:center;
+            border: 1px solid;
+            border-color: #57606a;
+            border-radius: 0.5em;
+            background-color: #252c36;
+            margin: 0.5em 0em 0.5em 0em;
         }
-        #UserListHeader{
+        #ReferenceListHeader{
             width: 100%;
             text-align:center;
         }
-        #UserList{
+        #ReferenceList{
             text-align:center;
             padding: 1em 1em 1em 1em;
             border: 1px solid;
@@ -134,12 +134,21 @@
             border: 1px solid;
             background-color: #252c36;
         }
+        input{
+            padding: 1em;
+            background-color: #383c40;
+        }
+        .createBtn{
+            padding: 1em;
+            background-color:#383c40;
+        }
         .desktop{
             display:block;
         }
         .mobile{
             display:none;
         }
+        
         @media only screen and (max-width: 1200px) and (min-width: 600px) {
             *{
                 font-family:Segoe UI, SegoeUI, Arial, sans-serif;
@@ -202,7 +211,7 @@
                 margin: 3em 0em 3em 0em;
                 background-color: #FFFFFF;
             }
-            .UserLink{
+            .ReferenceLink{
                 color: white;
                 font-size: 1em;
                 width: 90%;
@@ -214,11 +223,11 @@
                 border-radius: 0.5em;
                 background-color: #252c36;
             }
-            #UserListHeader{
+            #ReferenceListHeader{
                 width: 100%;
                 text-align:center;
             }
-            #UserList{
+            #ReferenceList{
                 padding: 1em 0em 1em 0em;
                 text-align: center;
             }
@@ -307,7 +316,7 @@
                 margin: 3em 0em 3em 0em;
                 background-color: #FFFFFF;
             }
-            .UserLink{
+            .ReferenceLink{
                 color: white;
                 font-size: 1em;
                 width: 90%;
@@ -319,11 +328,11 @@
                 border-radius: 0.5em;
                 background-color: #252c36;
             }
-            #UserListHeader{
+            #ReferenceListHeader{
                 width: 100%;
                 text-align:center;
             }
-            #UserList{
+            #ReferenceList{
                 padding: 1em 0em 1em 0em;
                 text-align: center;
             }
@@ -360,7 +369,7 @@
                 <li class="navLi">
                     <a href="http://localhost:5220/views/main">Home</a>
                 </li>
-                <li class="navLi" id="CurrentTab">
+                <li class="navLi">
                     <a href="http://localhost:5220/views/users">Users</a>
                 </li>
                 <li class="navLi">
@@ -376,33 +385,25 @@
         </nav>
     </header>
     <div id="content">
-        <h1 id="ContentHeader"> USERS DATA</h1>
+        <h1 id="ContentHeader"> TEAMS DATA</h1>
         <div class="desktop">
             <div class="CanvasWrapper">
-                <h1 class="CanvasHeader">Users Sorted by Issues Worked on</h1>
-                <canvas id="issuesChart"></canvas>
-            </div>
-            
-            <div class="CanvasWrapper">
-                <h1 class="CanvasHeader">Users Sorted by Total Time Spent on Our Extension</h1>
-                <canvas id="timespentChart"></canvas>
+                <h1 class="CanvasHeader">Teams by Number of Users</h1>
+                <canvas id="teamsChart"></canvas>
             </div>
         </div>
         <div class="mobile">
             <div class="CanvasWrapper">
-                <h1 class="CanvasHeader">Users Sorted by Issues Worked on</h1>
-                <canvas id="issuesChartMobile"></canvas>
-            </div>
-            
-            <div class="CanvasWrapper">
-                <h1 class="CanvasHeader">Users Sorted by Total Time Spent on Our Extension</h1>
-                <canvas id="timespentChartMobile"></canvas>
+                <h1 class="CanvasHeader">Teams by Number of Users</h1>
+                <canvas id="teamsChartMobile"></canvas>
             </div>
         </div>
-        <h1 id="UserListHeader">
-            Tracked Users
+        <input type="text" id="nameInput" placeholder="Enter Team Name">
+        <button onclick="CreateNewTeam()" class="createBtn">Create Team</button>
+        <h1 id="ReferenceListHeader">
+            Tracked Teams
         </h1>
-        <div id="UserList">
+        <div id="ReferenceList">
 
         </div>
         <button id="nextbtn" class="tabbtn" onclick="TabUp()">Next</button>
@@ -417,5 +418,107 @@
         <br>Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a>
         <br>Author: Grant Rynders
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var index;
+        const interval = 2;
+        index = 0;
+        Main();
+        async function Main()
+        {
+            ListReferences(index);
+        }
+        async function CreateNewTeam()
+        {
+            const input = await document.getElementById("nameInput");
+            if (input != null)
+            {
+                const inputName = input.value.toLowerCase();
+                if (inputName != null && inputName != "")
+                {
+                    fetch("http://localhost:5220/team/" + inputName, 
+                    {
+                        method: "POST", // *GET, POST, PUT, DELETE, etc.
+                        mode: "cors", // no-cors, *cors, same-origin
+                        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: "same-origin", // include, *same-origin, omit
+                        headers: {
+                            "Content-Type": "application/json",
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: "follow", // manual, *follow, error
+                        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                    })
+                    .then(function (){
+                        console.log(Response);
+                    })
+                    .catch( function() {
+                        console.log("New team was unable to save");
+                    });
+                    document.location.reload();
+                }
+                else
+                {
+                    console.log("Invalid team name");
+                }
+            }
+            else
+            {
+                console.log("Input element is null")
+            }
+        }
+        async function ListReferences(index)
+        {
+            
+            const allTeamsResponse = await fetch("http://localhost:5220/team");
+            var allTeams = await allTeamsResponse.json();
+            var destinationDiv = document.getElementById("ReferenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("ReferenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allTeams = allTeams.slice(index, index + interval);
+            for (var i = 0; i < allTeams.length; i++)
+            {
+                var referenceLink = document.createElement('A');
+                referenceLink.className = "ReferenceLink";
+                referenceLink.href = "http://localhost:5220/views/teammodel/team/" + allTeams[i].id;
+                referenceLink.textContent = "Id: " + allTeams[i].id + ", teamName: " + allTeams[i].teamName + "\n";
+                destinationDiv.appendChild(referenceLink);
+            }
+        }
+        async function TabUp()
+        {
+            const allTeamsResponse = await fetch("http://localhost:5220/team");
+            const teams = await allTeamsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((teams.length) > (Number(index) + interval))
+            {
+                index += interval;
+                ListReferences(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListReferences(Number(index));
+            }
+        }
+    </script>
 </body>
 </html>

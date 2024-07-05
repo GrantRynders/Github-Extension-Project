@@ -651,6 +651,9 @@ app.get('^/$|/views/timers(.html)?', (req, res) => {
 app.get('^/$|/views/timerperiods(.html)?', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
 });
+app.get('^/$|/views/teams(.html)?', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'teams.html'));
+});
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'main.html'));
 });
