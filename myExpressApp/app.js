@@ -230,7 +230,7 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
     console.log("User was found null when creating timer period")
   }
 });
-app.post("/team/:userId/:teamId", async (req, res) => {
+app.post("/usersTeams/:userId/:teamId", async (req, res) => {
   if (await prisma.usersTeams.findUnique({
     where: {
       userId: req.params.userId,
@@ -275,6 +275,14 @@ app.get("/timer", async (req, res) => {
 app.get("/timerPeriod", async (req, res) => {
   const returnedTimerPeriods = await prisma.timerPeriod.findMany();
   res.json(returnedTimerPeriods);
+});
+app.get("/team", async (req, res) => {
+  const returnedTeams = await prisma.team.findMany();
+  res.json(returnedTeams);
+});
+app.get("/usersTeams", async (req, res) => {
+  const returnedUsersTeams = await prisma.usersTeams.findMany();
+  res.json(returnedUsersTeams);
 });
 //SPECIFIC ENDPOINTS
 app.get("/user/:username", async (req, res) => {
@@ -454,6 +462,37 @@ app.get("/timerPeriod/:id", async (req, res) => {
   catch (error) 
   {
     console.log("Error getting user " + error);
+  }
+});
+app.get("/team/:id", async (req, res) => {
+  try
+  {
+    const team = await prisma.team.findFirst({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.json(team);
+  }
+  catch (error) 
+  {
+    console.log("Error getting team " + error);
+  }
+});
+app.get("/usersTeams/:userId/:teamId/", async (req, res) => {
+  try
+  {
+    const usersTeam = await prisma.usersTeams.findFirst({
+      where: {
+        userId: Number(req.params.userId),
+        teamId: Number(req.params.teamId),
+      },
+    });
+    res.json(usersTeam);
+  }
+  catch (error) 
+  {
+    console.log("Error getting usersTeams " + error);
   }
 });
 app.get("/timermodel/timerperiod", async (req, res) => {
