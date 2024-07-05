@@ -83,7 +83,17 @@ app.get("/views/issuemodel/issue/:id", async (req, res) => {
   const formattedTimes = await ConvertSeconds(timeElapsed);
   res.render('issue', { id: req.params.id, issueUrl: issue.url, issueName: issue.issueName, users: users, TotalTimeElapsed: timeElapsed, formattedTimes: formattedTimes });
 });
-
+app.get("/views/teammodel/team/:id", async (req, res) => {
+  const team = await prisma.team.findFirst({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+  if (team != null)
+  {
+    res.render('team', { id: req.params.id, teamName: team.teamName });
+  }
+});
 
 app.post("/user/:username", async (req, res) => {
   if (await prisma.user.findFirst({
@@ -219,6 +229,35 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
   {
     console.log("User was found null when creating timer period")
   }
+});
+app.post("/team/:userId/:teamId", async (req, res) => {
+  if (await prisma.usersTeams.findUnique({
+    where: {
+      userId: req.params.userId,
+      teamId: req.params.teamId,
+    },
+  }) == null)
+  {
+    const userTeam = await prisma.usersTeams.create({
+    data: 
+    {
+      userId: req.params.userId,
+      teamId: req.params.teamId,
+    },
+    });
+  }
+  else
+  {
+    console.log("User already is part of team with id: " + req.params.teamId);
+  }
+});
+app.post("/team/:teamName", async (req, res) => {
+  const team = await prisma.team.create({
+    data: 
+    {
+      teamName: req.params.teamName
+    },
+  });
 });
 //GENERAL ENDPOINTS
 app.get("/user", async (req, res) => {
