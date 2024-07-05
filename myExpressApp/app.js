@@ -91,7 +91,10 @@ app.get("/views/teammodel/team/:id", async (req, res) => {
   });
   if (team != null)
   {
-    res.render('team', { id: req.params.id, teamName: team.teamName });
+    const usersResponse = await fetch("http://localhost:5220/teammodel/" + team.id + "/users");
+    const users = await usersResponse.json();
+    const usersCount = users.length;
+    res.render('team', {teamId: req.params.id, teamName: team.teamName, usersCount: usersCount });
   }
 });
 

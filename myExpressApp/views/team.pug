@@ -2,6 +2,53 @@ extends default
 
 block content
     #content
-
+        div.recordHeader
+            h1 TeamId: #{teamId}
+            h1 Team Name: #{teamName}
+            h3 Total Users: #{usersCount}
+        div.CanvasWrapper
+            h1.CanvasHeader Team record graph
+            canvas#myChart
+        h1 Related Records:
+        p#idhidden #{teamId}
+        div(id="referenceList" class="referenceList")
+        button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
+        button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.
+        var index;
+        const interval = 2;
+        Main();
+        async function Main()
+        {
+            index = 0;
+            ListReferences();
+
+        }
+        async function ListReferences()
+        {
+            var idReference = await document.getElementById("idhidden");
+            const id = idReference.textContent;
+            const allUsersResponse = await fetch("http://localhost:5220/teammodel/" + id + "/users");
+            var allUsers = await allUsersResponse.json();
+            var destinationDiv = document.getElementById("referenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("referenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allUsers = allUsers.slice(index, index + interval);
+            for (var i = 0; i < allUsers.length; i++)
+            {
+                var userLink = document.createElement('A');
+                userLink.className = "referenceLink";
+                userLink.href = "http://localhost:5220/views/usermodel/user/" + allUsers[i].id;
+                userLink.textContent = "Id: " + allUsers[i].id + ", UserName: " + allUsers[i].UserName + "\n";
+                destinationDiv.appendChild(userLink);
+            }
+        }
