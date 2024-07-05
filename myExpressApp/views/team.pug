@@ -7,7 +7,7 @@ block content
             h1 Team Name: #{teamName}
             h3 Total Users: #{usersCount}
         div.CanvasWrapper
-            h1.CanvasHeader Team record graph
+            h1.CanvasHeader Time Spent by Users in the Team in Seconds
             canvas#myChart
         div.dropdown
             button(onclick="ToggleDropdown()" class="dropbtn") Select a User to Add
@@ -25,12 +25,16 @@ block content
     script.
         var index;
         const interval = 2;
+        var userNames;
+        var timeSpentArray;
         Main();
         async function Main()
         {
             index = 0;
-            ListReferences();
-            PopulateDropdown();
+            await ListReferences();
+            await PopulateDropdown();
+            await GetTeamsByUserTimeSpentData();
+            await GraphUsersByTimeSpent();
         }
         async function ListReferences()
         {
@@ -55,7 +59,7 @@ block content
                 var userLink = document.createElement('A');
                 userLink.className = "referenceLink";
                 userLink.href = "http://localhost:5220/views/usermodel/user/" + allUsers[i].id;
-                userLink.textContent = "Id: " + allUsers[i].id + ", UserName: " + allUsers[i].UserName + "\n";
+                userLink.textContent = "Id: " + allUsers[i].userId + ", UserName: " + allUsers[i].UserName + "\n";
                 destinationDiv.appendChild(userLink);
             }
         }
@@ -151,4 +155,73 @@ block content
             {
                 console.log("Input element is null")
             }
+        }
+        async function GetTeamsByUserTimeSpentData()
+        {
+            var idReference = await document.getElementById("idhidden");
+            const id = idReference.textContent;
+            const allUsersResponse = await fetch("http://localhost:5220/teammodel/" + id + "/users");
+            const allUsers = await allUsersResponse.json();
+            var UsersWithTimesArray = await Promise.all(allUsers.map(async function(index){
+                const timeSpentResponse = await fetch("/usermodel/" + index.userId + "/timespent");
+                const timeSpent = await timeSpentResponse.json();
+                const data = {
+                    totaltimespent: timeSpent.totaltimespent,
+                    UserName: index.UserName,
+                }
+                console.log(data);
+                return data;
+            }));
+            UsersWithTimesArray.sort(function(a, b){
+               return b.totaltimespent - a.totaltimespent;
+            });
+            userNames = UsersWithTimesArray.map(function(index){
+                return index.UserName;
+            });
+            timeSpentArray = UsersWithTimesArray.map(function(index){
+                return index.totaltimespent;
+            });
+            var numRecords = 5;
+            if (userNames.length > numRecords)
+            {
+                userNames = userNames.slice(0, numRecords);
+            }
+            if (timeSpentArray.length > numRecords)
+            {
+                timeSpentArray = timeSpentArray.slice(0, numRecords);
+            }
+        }
+        async function GraphUsersByTimeSpent()
+        {
+            console.log(userNames);
+            console.log(timeSpentArray);
+            var myChart = document.getElementById("myChart");
+            timeSpentByUserChart = new Chart(myChart, 
+            {
+                type: 'pie',
+                data: 
+                {
+                    labels: userNames,
+                    datasets: 
+                    [{
+                        label: "Time Spent by Users in the Team",
+                        data: timeSpentArray,
+                        hoverOffset: 4
+                    }],
+                    options: 
+                    {
+                        plugins: 
+                        {
+                            datalabels: 
+                            {
+                                formatter: (value) => 
+                                {
+                                    if (value < 15) return '';
+                                    return value + '%';
+                                },
+                            },
+                        }
+                    }
+                }
+            });
         }
