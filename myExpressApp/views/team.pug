@@ -10,12 +10,12 @@ block content
             h1.CanvasHeader Team record graph
             canvas#myChart
         div.dropdown
-            button(onclick="ToggleDropdown()" class="dropbtn">) Select a User to Add
+            button(onclick="ToggleDropdown()" class="dropbtn") Select a User to Add
             div(id="myDropdown" class="dropdown-content")
                 input(type="text" placeholder="Search.." id="myInput" onkeyup="FilterDropdown()")
                 div#dropdownList
         input(type="text" placeholder="Enter User Name" id="nameInput")
-        button(onclick="AddUserToTeam()" class="inputBtn">) Add User to Team
+        button(onclick="AddUserToTeam()" class="inputBtn") Add User to Team
         h1 Related Records:
         p#idhidden #{teamId}
         div(id="referenceList" class="referenceList")
@@ -30,7 +30,7 @@ block content
         {
             index = 0;
             ListReferences();
-
+            PopulateDropdown();
         }
         async function ListReferences()
         {
@@ -86,7 +86,7 @@ block content
             var idReference = await document.getElementById("idhidden");
             const id = idReference.textContent;
             const dropdown = document.getElementById("dropdownList");
-            const allUsersResponse = await fetch("http://localhost:5220/teammodel/" + id + "/users");
+            const allUsersResponse = await fetch("http://localhost:5220/user");
             const allUsers = await allUsersResponse.json();
             for (let i = 0; i < allUsers.length; i++) 
             {
@@ -109,14 +109,15 @@ block content
             const input = await document.getElementById("nameInput");
             if (input != null)
             {
-                const inputName = input.value.toLowerCase();
+                const inputName = input.value;
+                //.toLowerCase();
                 if (inputName != null && inputName != "")
                 {
                     var userResponse = await fetch("http://localhost:5220/user/" + inputName);
                     const user = await userResponse.json();
                     if (user != null)
                     {
-                        fetch("http://localhost:5220//usersTeams/" + user.id + "/" + teamId, 
+                        fetch("http://localhost:5220/usersTeams/" + user.id + "/" + teamId, 
                         {
                             method: "POST", // *GET, POST, PUT, DELETE, etc.
                             mode: "cors", // no-cors, *cors, same-origin

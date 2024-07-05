@@ -90,13 +90,16 @@ app.get("/views/teammodel/team/:id", async (req, res) => {
     },
   });
   console.log(team);
+  var teamName;
+  var usersCount;
   if (team != null)
   {
     const usersResponse = await fetch("http://localhost:5220/teammodel/" + team.id + "/users");
     const users = await usersResponse.json();
-    const usersCount = users.length;
-    res.render('team', {teamId: req.params.id, teamName: team.teamName, usersCount: usersCount });
+    usersCount = users.length;
+    teamName = team.teamName
   }
+  res.render('team', { teamId: req.params.id, teamName: teamName, usersCount: usersCount });
 });
 
 app.post("/user/:username", async (req, res) => {
@@ -235,18 +238,18 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
   }
 });
 app.post("/usersTeams/:userId/:teamId", async (req, res) => {
-  if (await prisma.usersTeams.findUnique({
+  if (await prisma.usersTeams.findFirst({
     where: {
-      userId: req.params.userId,
-      teamId: req.params.teamId,
+      userId: Number(req.params.userId),
+      teamId: Number(req.params.teamId),
     },
   }) == null)
   {
     const userTeam = await prisma.usersTeams.create({
     data: 
     {
-      userId: req.params.userId,
-      teamId: req.params.teamId,
+      userId: Number(req.params.userId),
+      teamId: Number(req.params.teamId),
     },
     });
   }
@@ -717,7 +720,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
   res.status(err.status || 500);
-  res.render('userFriendlyError');
+  res.render('error');
+  //res.render('userFriendlyError');
 });
 
 module.exports = app;
