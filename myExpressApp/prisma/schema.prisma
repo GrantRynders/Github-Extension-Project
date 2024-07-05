@@ -10,6 +10,7 @@ model User {
   id    Int     @id @default(autoincrement())
   UserName String  @unique
   timers Timer[]
+  usersTeams UsersTeams[]
 }
 model Issue {
   id    Int     @id @default(autoincrement())
@@ -32,5 +33,17 @@ model Timer {
   issue Issue    @relation(fields: [issueId], references: [id])
   user User    @relation(fields: [userId], references: [id])
   timerPeriods TimerPeriod[]
+}
+model UsersTeams {
+  id    Int     @id @default(autoincrement())
+  userId Int
+  teamId Int
+  user User    @relation(fields: [userId], references: [id])
+  team Team    @relation(fields: [teamId], references: [id])
+}
+model Team {
+  id    Int     @id @default(autoincrement())
+  teamName String
+  usersTeams UsersTeams[]
 }
 //npx prisma migrate dev
