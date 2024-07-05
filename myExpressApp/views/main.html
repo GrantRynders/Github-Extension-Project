@@ -41,6 +41,23 @@
             text-align: center;
             float:left;
         }
+        .navLiMobile{
+            width:100%;
+            text-align:center;
+            display: inline-block;
+            padding:0.5em 0em 0.5em 0em;
+        }
+        #navButton{
+            background-color: #57606a;
+            width:100%;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        .show{
+            display:block;
+        }
+        .displayNone{
+            display:none;
+        }
         .navLi:hover{
             background-color: #383c40;
         }
@@ -254,25 +271,53 @@
 <body>
     <header>
         <h1 id="SiteHeader">Visualization for GitHub Issues Timer Data</h1>
-        <nav>
-            <ul>
-                <li class="navLi" id="CurrentTab">
-                    <a href="http://localhost:5220/views/main">Home</a>
-                </li>
-                <li class="navLi">
-                    <a href="http://localhost:5220/views/users">Users</a>
-                </li>
-                <li class="navLi">
-                    <a href="http://localhost:5220/views/issues">Issues</a>
-                </li>
-                <li class="navLi">
-                    <a href="http://localhost:5220/views/timers">Timers</a>
-                </li>
-                <li class="navLi">
-                    <a href="http://localhost:5220/views/timerperiods">Periods</a>
-                </li>
-            </ul>
-        </nav>
+        <div class="desktop">
+            <nav>
+                <ul>
+                    <li class="navLi" id="CurrentTab">
+                        <a href="http://localhost:5220/views/main">Home</a>
+                    </li>
+                    <li class="navLi">
+                        <a href="http://localhost:5220/views/users">Users</a>
+                    </li>
+                    <li class="navLi">
+                        <a href="http://localhost:5220/views/issues">Issues</a>
+                    </li>
+                    <li class="navLi">
+                        <a href="http://localhost:5220/views/timers">Timers</a>
+                    </li>
+                    <li class="navLi">
+                        <a href="http://localhost:5220/views/timerperiods">Periods</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="mobile">
+            <button id="navButton" onclick="ToggleNav()">| | |</button>
+                <nav id="mobileNav" class="displayNone">
+                    <ul>
+                        <li class="navLiMobile">
+                            <a href="http://localhost:5220/views/main">Home</a>
+                        </li>
+                        <li class="navLiMobile">
+                            <a href="http://localhost:5220/views/users">Users</a>
+                        </li>
+                        <li class="navLiMobile">
+                            <a href="http://localhost:5220/views/issues">Issues</a>
+                        </li>
+                        <li class="navLiMobile">
+                            <a href="http://localhost:5220/views/timers">Timers</a>
+                        </li>
+                        <li class="navLiMobile">
+                            <a href="http://localhost:5220/views/timerperiods">Periods</a>
+                        </li>
+                        <li class="navLiMobile">
+                            <a href="http://localhost:5220/views/teams">Teams</a>
+                        </li>
+                    </ul>
+                </nav>            
+        </div>
+        
     </header>
     <div id="content">
         <div class="infoDiv">
@@ -317,5 +362,11 @@
         <br>Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a>
         <br>Author: Grant Rynders
     </footer>
+    <script>
+        async function ToggleNav()
+        {
+            document.getElementById("mobileNav").classList.toggle("show");
+        }
+    </script>
 </body>
 </html>
