@@ -562,7 +562,10 @@ app.get("/timerperiodmodel/average", async (req, res) => { //Average time spent 
     'average': roundedAverage,
   });
 });
-
+app.get("/teammodel/:id/users", async (req, res) => { //Get all the users for a team
+  var users = await prisma.$queryRaw`SELECT User.UserName, User.id AS userId, Team.Id AS teamId FROM ((Team INNER JOIN UsersTeams ON UsersTeams.teamId = Team.id) INNER JOIN User ON UsersTeams.userId = User.id);`;
+  res.json(users);
+});
 app.get("/timerperiodmodel/users", async (req, res) => { //All timer periods with associated users
   var periodsWithUsers = await prisma.$queryRaw`SELECT User.UserName, TimerPeriod.totalTimeElapsed, TimerPeriod.endDate FROM ((TimerPeriod INNER JOIN Timer ON TimerPeriod.timerId = Timer.id) INNER JOIN User ON Timer.userId = User.id);`;
   res.json(periodsWithUsers);

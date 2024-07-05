@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="http://localhost:5220/favicon.ico">
-    <title>Users</title>
+    <title>
+        Teams
+    </title>
     <style>
         *{
             font-family:Segoe UI, SegoeUI, Arial, sans-serif;
@@ -422,11 +424,17 @@
     <script>
         var index;
         const interval = 2;
+        var teamNames;
+        var userCounts;
+
         index = 0;
         Main();
         async function Main()
         {
-            ListReferences(index);
+            await ListReferences(index);
+            await GetTeamsByUserCountData();
+            await GraphTeamsByUserCount();
+            await GraphTeamsByUserCountMobile();
         }
         async function CreateNewTeam()
         {
@@ -467,9 +475,101 @@
                 console.log("Input element is null")
             }
         }
-        async function ListReferences(index)
+        async function GetTeamsByUserCountData()
         {
-            
+            const allTeamsResponse = await fetch("http://localhost:5220/team");
+            const allTeams = await allTeamsResponse.json();
+            var teamsWithUsersArray = await Promise.all(allTeams.map(async function(index){
+                const usersResponse = await fetch("http://localhost:5220/teammodel/" + index.id + "/users");
+                const users = await usersResponse.json();
+                const data = {
+                    teamId: index.id,
+                    teamName: index.teamName,
+                    userCount: users.length,
+                }
+                return data;
+            }));
+            teamsWithUsersArray.sort(function(a, b){
+               return b.userCount - a.userCount;
+            });
+            teamNames = teamsWithUsersArray.map(function(index){
+                return index.teamName;
+            });
+            userCounts = teamsWithUsersArray.map(function(index){
+                return index.userCount;
+            });
+            var numRecords = 5;
+            if (teamNames.length > numRecords)
+            {
+                teamNames = teamNames.slice(0, numRecords);
+            }
+            if (userCounts.length > numRecords)
+            {
+                userCounts = userCounts.slice(0, numRecords);
+            }
+        }
+        async function GraphTeamsByUserCount()
+        {
+            var myChart = document.getElementById("teamsChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: 
+                {
+                    labels: teamNames,
+                    datasets: [{
+                        label: 'Number of Users per Team',
+                        data: userCounts,
+                        borderWidth: 1
+                    }]
+                },
+                options: 
+                {
+                    scales: 
+                    {
+                        y: 
+                        {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        async function GraphTeamsByUserCountMobile()
+        {
+            var myChart = document.getElementById("teamsChartMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: 
+                {
+                    labels: teamNames,
+                    datasets: [{
+                        label: 'Number of Users per Team',
+                        data: userCounts,
+                        borderWidth: 1
+                    }]
+                },
+                options: 
+                {
+                    scales: 
+                    {
+                        x: 
+                        {
+                            ticks: 
+                            {
+                                //option 2, use callback to change labels to empty string
+                                callback: () => ('')
+                            }
+                        },
+                        y: 
+                        {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        async function ListReferences(index)
+        {   
             const allTeamsResponse = await fetch("http://localhost:5220/team");
             var allTeams = await allTeamsResponse.json();
             var destinationDiv = document.getElementById("ReferenceList");
