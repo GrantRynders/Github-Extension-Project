@@ -89,6 +89,7 @@ app.get("/views/teammodel/team/:id", async (req, res) => {
       id: Number(req.params.id),
     },
   });
+  console.log(team);
   if (team != null)
   {
     const usersResponse = await fetch("http://localhost:5220/teammodel/" + team.id + "/users");
