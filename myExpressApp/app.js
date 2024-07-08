@@ -285,6 +285,35 @@ app.post("/team/:teamName", async (req, res) => {
     },
   });
 });
+app.post("/issuesProjects/:issueId/:projectId", async (req, res) => {
+  if (await prisma.issuesProjects.findFirst({
+    where: {
+      issueId: Number(req.params.issueId),
+      projectId: Number(req.params.projectId),
+    },
+  }) == null)
+  {
+    const issueProject = await prisma.issuesProjects.create({
+    data: 
+    {
+      issueId: Number(req.params.issueId),
+      projectId: Number(req.params.projectId),
+    },
+    });
+  }
+  else
+  {
+    console.log("Issue already is part of project with id: " + req.params.projectId);
+  }
+});
+app.post("/project/:projectName", async (req, res) => {
+  const project = await prisma.project.create({
+    data: 
+    {
+      projectName: req.params.projectName
+    },
+  });
+});
 //GENERAL ENDPOINTS
 app.get("/user", async (req, res) => {
   const returnedUsers = await prisma.user.findMany();
@@ -309,6 +338,14 @@ app.get("/team", async (req, res) => {
 app.get("/usersTeams", async (req, res) => {
   const returnedUsersTeams = await prisma.usersTeams.findMany();
   res.json(returnedUsersTeams);
+});
+app.get("/project", async (req, res) => {
+  const returnedProjects = await prisma.project.findMany();
+  res.json(returnedProjects);
+});
+app.get("/issuesProjects", async (req, res) => {
+  const returnedIssuesProjects = await prisma.issuesProjects.findMany();
+  res.json(returnedIssuesProjects);
 });
 //SPECIFIC ENDPOINTS
 app.get("/user/:username", async (req, res) => {
@@ -565,7 +602,6 @@ app.get("/issuemodel/:id/timespent", async (req, res) => { //total amount of tim
   }
   res.json({
     'totaltimespent': issueTimeSpent,
-    'url': issueTimeSpentArray[0].url,
   });
 });
 app.get("/timermodel/:id/timer", async (req, res) => { //get timer by ID
@@ -687,6 +723,9 @@ app.get('^/$|/views/timerperiods(.html)?', (req, res) => {
 });
 app.get('^/$|/views/teams(.html)?', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'teams.html'));
+});
+app.get('^/$|/views/projects(.html)?', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'projects.html'));
 });
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'main.html'));

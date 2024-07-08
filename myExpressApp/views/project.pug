@@ -14,8 +14,8 @@ block content
             div(id="myDropdown" class="dropdown-content")
                 input(type="text" placeholder="Search.." id="myInput" onkeyup="FilterDropdown()")
                 div#dropdownList
-        input(type="text" placeholder="Enter User Name" id="nameInput")
-        button(onclick="AddUserToTeam()" class="inputBtn") Add Issue to Project
+        input(type="text" placeholder="Enter Issue Url" id="nameInput")
+        button(onclick="AddIssueToProject()" class="inputBtn") Add Issue to Project
         h1 Related Records:
         p#idhidden #{projectId}
         div(id="referenceList" class="referenceList")
@@ -59,7 +59,7 @@ block content
                 var referenceLink = document.createElement('A');
                 referenceLink.className = "referenceLink";
                 referenceLink.href = "http://localhost:5220/views/issuemodel/issue/" + allIssues[i].id;
-                referenceLink.textContent = "Id: " + allIssues[i].issueId + ", UserName: " + allIssues[i].issueName + "\n";
+                referenceLink.textContent = "Id: " + allIssues[i].issueId + ", IssueName: " + allIssues[i].issueName + "\n";
                 destinationDiv.appendChild(referenceLink);
             }
         }
@@ -113,7 +113,7 @@ block content
             const input = await document.getElementById("nameInput");
             if (input != null)
             {
-                const inputUrl = input.value;
+                const inputUrl = encodeURIComponent(input.value);
                 //.toLowerCase();
                 if (inputUrl!= null && inputUrl != "")
                 {
@@ -191,7 +191,7 @@ block content
                 timeSpentArray = timeSpentArray.slice(0, numRecords);
             }
         }
-        async function GraphUsersByTimeSpent()
+        async function GraphIssuesByTimeSpent()
         {
             var myChart = document.getElementById("myChart");
             timeSpentByUserChart = new Chart(myChart, 
