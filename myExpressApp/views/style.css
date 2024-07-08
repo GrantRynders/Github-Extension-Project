@@ -57,6 +57,13 @@ ul{
 .infoBite{
     padding: 1em 1em 1em 1em;
 }
+.infoDiv{
+    border: 1px solid;
+    border-color: #57606a;
+    border-radius: 0.5em;
+    margin: 0em 0em 2em 0em;
+    padding: 1em 1em 1em 1em;
+}
 canvas{
     margin: 3em 0em 3em 0em;
     background-color: #FFFFFF;
@@ -124,13 +131,10 @@ footer{
     border: none;
     cursor: pointer;
 }
-/* The container <div> - needed to position the dropdown content */
 .dropdown {
     display: inline-block;
     width: 20%;
 }
-
-/* Dropdown Content (Hidden by Default) */
 .dropdown-content {
     display: none;
     position: absolute;
