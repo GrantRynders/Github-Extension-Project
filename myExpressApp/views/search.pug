@@ -166,7 +166,7 @@ block content
                     }
                     else if (selectedTable == "team")
                     {
-                        const url = "http://localhost:5220/team/teamname/" + query;
+                        const url = "http://localhost:5220/team/teamname/" + query.toLowerCase();
                         var teamResponse = await fetch(url);
                         if (teamResponse.status < 400 && teamResponse != null)
                         {
@@ -201,7 +201,7 @@ block content
                     }
                     else if (selectedTable == "project")
                     {
-                        const url = "http://localhost:5220/project/projectname/" + query;
+                        const url = "http://localhost:5220/project/projectname/" + query.toLowerCase();
                         var projectResponse = await fetch(url);
                         if (projectResponse.status < 400 && projectResponse != null)
                         {

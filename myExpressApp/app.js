@@ -710,7 +710,6 @@ app.get("/timermodel/:id/adjacenttimerperiods", async (req, res) => { //returns 
       return element;
     }
   }); 
-  console.log(adjacentPeriods);
   res.json(adjacentPeriods);
 });
 app.get("/timerperiodmodel/endtimes", async (req, res) => { //returns the end dates in milliseconds of all time periods
