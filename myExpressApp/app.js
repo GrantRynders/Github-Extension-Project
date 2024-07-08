@@ -705,6 +705,14 @@ app.get("/timermodel/:id/issue", async (req, res) => { //returns the issue for a
   const issue = await prisma.$queryRaw`SELECT Issue.id, Issue.issueName, Issue.url FROM Timer INNER JOIN Issue ON Timer.issueId = Issue.id WHERE Timer.id = ${req.params.id};`;
   res.json(issue);
 });
+app.get("/teamModel/:teamId/projects", async (req, res) => { //returns the issue for a timer
+  const projects = await prisma.$queryRaw`SELECT Project.id AS projectId, Team.id AS teamId, Project.projectName ((FROM Team INNER JOIN TeamsProjects ON Team.id = TeamsProjects.teamId) INNER JOIN Project ON TeamsProjects.projectId = Project.id) WHERE Team.id = ${req.params.id};`;
+  res.json(projects);
+});
+app.get("/projectModel/:projectId/teams", async (req, res) => { //returns the issue for a timer
+  const teams = await prisma.$queryRaw`SELECT Project.id AS projectId, Team.id AS teamId, Team.teamName ((FROM Project INNER JOIN TeamsProjects ON Project.id = TeamsProjects.projectId) INNER JOIN Team ON TeamsProjects.teamId = Team.id) WHERE Project.id = ${req.params.id};`;
+  res.json(teams);
+});
 //MODEL MAIN PAGES
 app.get('^/$|/main(.html)?', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'main.html'));
