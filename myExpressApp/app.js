@@ -306,6 +306,27 @@ app.post("/issuesProjects/:issueId/:projectId", async (req, res) => {
     console.log("Issue already is part of project with id: " + req.params.projectId);
   }
 });
+app.post("/teamsProjects/:teamId/:projectId", async (req, res) => {
+  if (await prisma.teamsProjects.findFirst({
+    where: {
+      teamId: Number(req.params.teamId),
+      projectId: Number(req.params.projectId),
+    },
+  }) == null)
+  {
+    const teamProject = await prisma.teamsProjects.create({
+    data: 
+    {
+      teamId: Number(req.params.teamId),
+      projectId: Number(req.params.projectId),
+    },
+    });
+  }
+  else
+  {
+    console.log("Team already is part of project with id: " + req.params.projectId);
+  }
+});
 app.post("/project/:projectName", async (req, res) => {
   const project = await prisma.project.create({
     data: 
