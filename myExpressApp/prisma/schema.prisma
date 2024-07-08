@@ -46,17 +46,26 @@ model Team {
   id    Int     @id @default(autoincrement())
   teamName String
   usersTeams UsersTeams[]
+  teamsProjects TeamsProjects[]
 }
 model Project {
   id    Int     @id @default(autoincrement())
   projectName String
   issuesProjects IssuesProjects[]
+  teamsProjects TeamsProjects[]
 }
 model IssuesProjects {
   id    Int     @id @default(autoincrement())
   issueId Int
   projectId Int
   issue Issue    @relation(fields: [issueId], references: [id])
+  project Project    @relation(fields: [projectId], references: [id])
+}
+model TeamsProjects {
+  id    Int     @id @default(autoincrement())
+  teamId Int
+  projectId Int
+  team Team    @relation(fields: [teamId], references: [id])
   project Project    @relation(fields: [projectId], references: [id])
 }
 //npx prisma migrate dev
