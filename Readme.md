@@ -11,6 +11,14 @@ classDiagram
 Issues --|> Timers : One-To-Many
 Users --|> Timers : One-To-Many
 Timers --|> TimerPeriods : One-To-Many
+Issues --|> IssuesProjects : One-To-Many
+Users --|> UsersTeams : One-To-Many
+Teams --|> UsersTeams : One-To-Many
+Projects --|> IssuesProjects : One-To-Many
+Teams --|> TeamsProjects : One-To-Many
+Projects --|> TeamsProjects : One-To-Many
+
+Issues
 class Issues{
     +int IssueId PK
     +VarChar(200) Url
@@ -32,7 +40,29 @@ class TimerPeriods{
     +Varchar(50) EndDate
     +int TotalTimeElapsed
 }
-
+class Teams{
+    +int TeamId PK
+    +Varchar(50) TeamName
+}
+class Projects{
+    +int ProjectId PK
+    +Varchar(50) ProjectName
+}
+class UsersTeams{
+    +int UsersTeamsId PK
+    +int UserId FK
+    +int TeamId FK
+}
+class IssuesProjects{
+    +int IssuesProjectsId PK
+    +int IssueId FK
+    +int ProjectId FK
+}
+class TeamsProjects{
+    +int TeamsProjectsId
+    +int TeamId
+    +int ProjectId
+}
 ```
 
 <br><br>
