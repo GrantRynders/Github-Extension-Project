@@ -25,7 +25,7 @@ block content
     script.
         var index;
         const interval = 2;
-        var userNames;
+        var issueUrls;
         var timeSpentArray;
         Main();
         async function Main()
@@ -167,24 +167,24 @@ block content
                 const timeSpent = await timeSpentResponse.json();
                 const data = {
                     totaltimespent: timeSpent.totaltimespent,
-                    UserName: index.UserName,
+                    url: index.url,
                 }
                 console.log(data);
                 return data;
             }));
-            UsersWithTimesArray.sort(function(a, b){
+            IssuesWithTimesArray.sort(function(a, b){
                return b.totaltimespent - a.totaltimespent;
             });
-            userNames = UsersWithTimesArray.map(function(index){
-                return index.UserName;
+            issueUrls = IssuesWithTimesArray.map(function(index){
+                return index.url;
             });
-            timeSpentArray = UsersWithTimesArray.map(function(index){
+            timeSpentArray = IssuesWithTimesArray.map(function(index){
                 return index.totaltimespent;
             });
             var numRecords = 5;
-            if (userNames.length > numRecords)
+            if (issueUrls.length > numRecords)
             {
-                userNames = userNames.slice(0, numRecords);
+                issueUrls = issueUrls.slice(0, numRecords);
             }
             if (timeSpentArray.length > numRecords)
             {
@@ -193,18 +193,16 @@ block content
         }
         async function GraphUsersByTimeSpent()
         {
-            console.log(userNames);
-            console.log(timeSpentArray);
             var myChart = document.getElementById("myChart");
             timeSpentByUserChart = new Chart(myChart, 
             {
                 type: 'pie',
                 data: 
                 {
-                    labels: userNames,
+                    labels: issueUrls,
                     datasets: 
                     [{
-                        label: "Time Spent by Users in the Team",
+                        label: "Time Spent on Issue",
                         data: timeSpentArray,
                         hoverOffset: 4
                     }],
