@@ -54,6 +54,9 @@ ul{
     border-bottom: solid;
     border-color: #fa7a18;
 }
+.infoBite{
+    padding: 1em 1em 1em 1em;
+}
 canvas{
     margin: 3em 0em 3em 0em;
     background-color: #FFFFFF;
