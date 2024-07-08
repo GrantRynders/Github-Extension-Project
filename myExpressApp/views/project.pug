@@ -1,0 +1,227 @@
+extends default
+
+block content
+    #content
+        div.recordHeader
+            h1 ProjectId: #{projectId}
+            h1 Project Name: #{projectName}
+            h3 Total Issues: #{issuesCount}
+        div.CanvasWrapper
+            h1.CanvasHeader Time Spent on each issue in project
+            canvas#myChart
+        div.dropdown
+            button(onclick="ToggleDropdown()" class="dropbtn") Select an Issue to Add
+            div(id="myDropdown" class="dropdown-content")
+                input(type="text" placeholder="Search.." id="myInput" onkeyup="FilterDropdown()")
+                div#dropdownList
+        input(type="text" placeholder="Enter User Name" id="nameInput")
+        button(onclick="AddUserToTeam()" class="inputBtn") Add Issue to Project
+        h1 Related Records:
+        p#idhidden #{projectId}
+        div(id="referenceList" class="referenceList")
+        button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
+        button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        var index;
+        const interval = 2;
+        var userNames;
+        var timeSpentArray;
+        Main();
+        async function Main()
+        {
+            index = 0;
+            await ListReferences();
+            await PopulateDropdown();
+            await GetIssuesByTimeSpentData();
+            await GraphIssuesByTimeSpent();
+        }
+        async function ListReferences()
+        {
+            var idReference = await document.getElementById("idhidden");
+            const id = idReference.textContent;
+            const allIssuesResponse = await fetch("http://localhost:5220/projectmodel/" + id + "/issues");
+            var allIssues = await allIssuesResponse.json();
+            var destinationDiv = document.getElementById("referenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("referenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allIssues = allIssues.slice(index, index + interval);
+            for (var i = 0; i < allIssues.length; i++)
+            {
+                var referenceLink = document.createElement('A');
+                referenceLink.className = "referenceLink";
+                referenceLink.href = "http://localhost:5220/views/issuemodel/issue/" + allIssues[i].id;
+                referenceLink.textContent = "Id: " + allIssues[i].issueId + ", UserName: " + allIssues[i].issueName + "\n";
+                destinationDiv.appendChild(referenceLink);
+            }
+        }
+        function ToggleDropdown() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+        function FilterDropdown() 
+        {
+            const input = document.getElementById("myInput");
+            const filter = input.value.toUpperCase();
+            const dropdown = document.getElementById("myDropdown");
+            const a = dropdown.getElementsByClassName("dropdownElement");
+            for (let i = 0; i < a.length; i++) 
+            {
+                txtValue = a[i].textContent || a[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) 
+                {
+                    a[i].style.display = "";
+                } 
+                else 
+                {
+                    a[i].style.display = "none";
+                }
+            }
+        }
+        async function PopulateDropdown()
+        {
+            var idReference = await document.getElementById("idhidden");
+            const id = idReference.textContent;
+            const dropdown = document.getElementById("dropdownList");
+            const allIssuesResponse = await fetch("http://localhost:5220/issue");
+            const allIssues = await allIssuesResponse.json();
+            for (let i = 0; i < allIssues.length; i++) 
+            {
+                var dropElement = document.createElement("button");
+                dropElement.className = "dropdownElement";
+                dropElement.textContent = allIssues[i].url;
+                dropElement.addEventListener('click', async function ()
+                {
+                    const input = await document.getElementById("nameInput");
+                    input.value = allIssues[i].url;
+                    ToggleDropdown();
+                });
+                dropdown.appendChild(dropElement);
+            }
+        }
+        async function AddIssueToProject()
+        {
+            var idReference = await document.getElementById("idhidden");
+            const projectId = idReference.textContent;
+            const input = await document.getElementById("nameInput");
+            if (input != null)
+            {
+                const inputUrl = input.value;
+                //.toLowerCase();
+                if (inputUrl!= null && inputUrl != "")
+                {
+                    var issueResponse = await fetch("http://localhost:5220/issue/url/" + inputUrl);
+                    const issue = await issueResponse.json();
+                    if (issue != null)
+                    {
+                        fetch("http://localhost:5220/issuesProjects/" + issue.id + "/" + projectId, 
+                        {
+                            method: "POST", // *GET, POST, PUT, DELETE, etc.
+                            mode: "cors", // no-cors, *cors, same-origin
+                            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                            credentials: "same-origin", // include, *same-origin, omit
+                            headers: {
+                                "Content-Type": "application/json",
+                                // 'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            redirect: "follow", // manual, *follow, error
+                            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                        })
+                        .then(function (){
+                            console.log(Response);
+                        })
+                        .catch( function() {
+                            console.log("New user was unable to be added to team");
+                        });
+                    }
+                    else
+                    {
+                        console.log("User with provided username does not exist");
+                    }
+                }
+                else
+                {
+                    console.log("Invalid user name");
+                }
+            }
+            else
+            {
+                console.log("Input element is null")
+            }
+        }
+        async function GetIssuesByTimeSpentData()
+        {
+            var idReference = await document.getElementById("idhidden");
+            const id = idReference.textContent;
+            const allIssuesResponse = await fetch("http://localhost:5220/projectmodel/" + id + "/issues");
+            const allIssues = await allIssuesResponse.json();
+            var IssuesWithTimesArray = await Promise.all(allIssues.map(async function(index){
+                const timeSpentResponse = await fetch("/issuemodel/" + index.issueId + "/timespent");
+                const timeSpent = await timeSpentResponse.json();
+                const data = {
+                    totaltimespent: timeSpent.totaltimespent,
+                    UserName: index.UserName,
+                }
+                console.log(data);
+                return data;
+            }));
+            UsersWithTimesArray.sort(function(a, b){
+               return b.totaltimespent - a.totaltimespent;
+            });
+            userNames = UsersWithTimesArray.map(function(index){
+                return index.UserName;
+            });
+            timeSpentArray = UsersWithTimesArray.map(function(index){
+                return index.totaltimespent;
+            });
+            var numRecords = 5;
+            if (userNames.length > numRecords)
+            {
+                userNames = userNames.slice(0, numRecords);
+            }
+            if (timeSpentArray.length > numRecords)
+            {
+                timeSpentArray = timeSpentArray.slice(0, numRecords);
+            }
+        }
+        async function GraphUsersByTimeSpent()
+        {
+            console.log(userNames);
+            console.log(timeSpentArray);
+            var myChart = document.getElementById("myChart");
+            timeSpentByUserChart = new Chart(myChart, 
+            {
+                type: 'pie',
+                data: 
+                {
+                    labels: userNames,
+                    datasets: 
+                    [{
+                        label: "Time Spent by Users in the Team",
+                        data: timeSpentArray,
+                        hoverOffset: 4
+                    }],
+                    options: 
+                    {
+                        plugins: 
+                        {
+                            datalabels: 
+                            {
+                                formatter: (value) => 
+                                {
+                                    if (value < 15) return '';
+                                    return value + '%';
+                                },
+                            },
+                        }
+                    }
+                }
+            });
+        }

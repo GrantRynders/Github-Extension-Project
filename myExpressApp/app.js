@@ -102,6 +102,24 @@ app.get("/views/teammodel/team/:id", async (req, res) => {
   res.render('team', { teamId: req.params.id, teamName: teamName, usersCount: usersCount });
 });
 
+app.get("/views/projectmodel/project/:id", async (req, res) => {
+  const project = await prisma.project.findFirst({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+  var projectName;
+  var issueCount;
+  if (project != null)
+  {
+    const issuesResponse = await fetch("http://localhost:5220/projectmodel/" + project.id + "/issues");
+    const issues = await issuesResponse.json();
+    issueCount = issues.length;
+    projectName = project.projectName;
+  }
+  res.render('project', { projectId: req.params.id, projectName: projectName, issueCount: issueCount });
+});
+
 app.post("/user/:username", async (req, res) => {
   if (await prisma.user.findFirst({
     where: {
@@ -572,6 +590,10 @@ app.get("/timerperiodmodel/average", async (req, res) => { //Average time spent 
 app.get("/teammodel/:id/users", async (req, res) => { //Get all the users for a team
   var users = await prisma.$queryRaw`SELECT User.UserName, User.id AS userId, Team.Id AS teamId FROM ((Team INNER JOIN UsersTeams ON UsersTeams.teamId = Team.id) INNER JOIN User ON UsersTeams.userId = User.id) WHERE Team.id = ${req.params.id};`;
   res.json(users);
+});
+app.get("/projectmodel/:id/issues", async (req, res) => { //Get all the issues for a project
+  var issues = await prisma.$queryRaw`SELECT Issue.issueName, Issue.url, Issue.id AS issueId, Project.Id AS projectId FROM ((Project INNER JOIN IssuesProjects ON IssuesProjects.projectId = Project.id) INNER JOIN Issue ON IssuesProjects.issueId = Issue.id) WHERE Project.id = ${req.params.id};`;
+  res.json(issues);
 });
 app.get("/timerperiodmodel/users", async (req, res) => { //All timer periods with associated users
   var periodsWithUsers = await prisma.$queryRaw`SELECT User.UserName, TimerPeriod.totalTimeElapsed, TimerPeriod.endDate FROM ((TimerPeriod INNER JOIN Timer ON TimerPeriod.timerId = Timer.id) INNER JOIN User ON Timer.userId = User.id);`;
