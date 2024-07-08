@@ -9,9 +9,10 @@ title: Relational Database Diagram
 ---
 classDiagram
 Issues --|> Timers : One-To-Many
-Users --|> Timers : One-To-Many
+
 Timers --|> TimerPeriods : One-To-Many
 Issues --|> IssuesProjects : One-To-Many
+Users --|> Timers : One-To-Many
 Users --|> UsersTeams : One-To-Many
 Teams --|> UsersTeams : One-To-Many
 Projects --|> IssuesProjects : One-To-Many
@@ -74,7 +75,7 @@ class TeamsProjects{
     "user_name": "John Smith",
     "issue": "https://github.com/GrantRynders/Github-Extension-Project/issues/32",
     "issue_name":"Example Issue",
-    "timer_periods" [
+    "timer_periods": [
         {
             "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
             "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
@@ -84,7 +85,6 @@ class TeamsProjects{
             "start_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)",
             "end_date": "Fri Jun 07 2024 08:54:07 GMT-0400 (Eastern Daylight Time)"
         }
-
     ]
 }
 ```
