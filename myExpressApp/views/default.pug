@@ -25,7 +25,7 @@ html
             padding:7em;
         }
         nav{
-            padding: 0 2% 0 2%;
+            padding: 0 1% 0 1%;
             background-color: #57606a;
             display:inline-block;
             width: 100%;
@@ -34,7 +34,7 @@ html
             width: 100%;
         }
         .navLi{
-            width: 16%;
+            width: 14%;
             padding: 0.5em 0em 0.5em 0em;
             background-color: #57606a;
             list-style-type: none;
@@ -406,6 +406,8 @@ html
                         a(href="http://localhost:5220/views/timerperiods") Periods
                     li.navLi
                         a(href="http://localhost:5220/views/teams") Teams
+                    li.navLi
+                        a(href="http://localhost:5220/views/projects") Projects
         div.mobile
             button(id="navButton" onclick="ToggleNav()") | | |
             nav(id="mobileNav" class="displayNone")
@@ -422,6 +424,8 @@ html
                         a(href="http://localhost:5220/views/timerperiods") Periods
                     li.navLiMobile
                         a(href="http://localhost:5220/views/teams") Teams
+                    li.navLiMobile
+                        a(href="http://localhost:5220/views/projects") Projects
       block content
     div(id="searchLink")
       a(href="http://localhost:5220/views/search") Not what you're looking for? Do a search!
