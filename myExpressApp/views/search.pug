@@ -164,6 +164,76 @@ block content
                             results.textContent = "No Valid Record to Return";
                         }
                     }
+                    else if (selectedTable == "team")
+                    {
+                        const url = "http://localhost:5220/team/teamname/" + query;
+                        var teamResponse = await fetch(url);
+                        if (teamResponse.status < 400 && teamResponse != null)
+                        {
+                            const team = await teamResponse.json();
+                            if (team != null)
+                            {
+                                const pageurl = "http://localhost:5220/views/teammodel/team/" + team[0].id;
+                                await fetch(pageurl)
+                                .then((response) => {
+                                    if (response.status < 400)
+                                    {
+                                        window.location.replace(pageurl);
+                                    }
+                                    else
+                                    {
+                                        results.textContent = "No Valid Record to Return";
+                                    }
+                                })
+                                .catch(function() {
+                                    console.log("Something really bad happened when searching uh oh");
+                                });
+                            }
+                            else
+                            {
+                                results.textContent = "No Valid Record to Return";
+                            }
+                        }
+                        else
+                        {
+                            results.textContent = "No Valid Record to Return";
+                        }
+                    }
+                    else if (selectedTable == "project")
+                    {
+                        const url = "http://localhost:5220/project/projectname/" + query;
+                        var projectResponse = await fetch(url);
+                        if (projectResponse.status < 400 && projectResponse != null)
+                        {
+                            const project = await projectResponse.json();
+                            if (project != null)
+                            {
+                                const pageurl = "http://localhost:5220/views/projectmodel/project/" + project[0].id;
+                                await fetch(pageurl)
+                                .then((response) => {
+                                    if (response.status < 400)
+                                    {
+                                        window.location.replace(pageurl);
+                                    }
+                                    else
+                                    {
+                                        results.textContent = "No Valid Record to Return";
+                                    }
+                                })
+                                .catch(function() {
+                                    console.log("Something really bad happened when searching uh oh");
+                                });
+                            }
+                            else
+                            {
+                                results.textContent = "No Valid Record to Return";
+                            }
+                        }
+                        else
+                        {
+                            results.textContent = "No Valid Record to Return";
+                        }
+                    }
                     else
                     {
                         console.log("No valid table recognized");
@@ -186,7 +256,7 @@ block content
         async function PopulateDropdown()
         {
             const dropdown = document.getElementById("myDropdown");
-            const tables = ["Users", "Issues", "Timers", "Timer Periods"]
+            const tables = ["Users", "Issues", "Timers", "Timer Periods", "Teams", "Projects"]
             for (let i = 0; i < tables.length; i++) 
             {
                 var dropElement = document.createElement("button");
@@ -204,8 +274,8 @@ block content
         }
         async function SetField(index)
         {
-            const tables = ["user", "issue", "timer", "timerPeriod"];
-            const placeholders = ["Enter the username", "Enter the issue URL", "Enter the timer id", "Enter the timer period id"]
+            const tables = ["user", "issue", "timer", "timerPeriod", "team", "project"];
+            const placeholders = ["Enter the username", "Enter the issue URL", "Enter the timer id", "Enter the timer period id", "Enter the team name", "Enter the project name"]
             selectedTable = tables[index];
             placeholder = placeholders[index];
             var queryElement = await document.getElementById("queryInput");

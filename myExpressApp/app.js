@@ -734,6 +734,14 @@ app.get("/projectModel/:projectId/teams", async (req, res) => { //returns the is
   const teams = await prisma.$queryRaw`SELECT Project.id AS projectId, Team.id AS teamId, Team.teamName ((FROM Project INNER JOIN TeamsProjects ON Project.id = TeamsProjects.projectId) INNER JOIN Team ON TeamsProjects.teamId = Team.id) WHERE Project.id = ${req.params.id};`;
   res.json(teams);
 });
+app.get("/team/teamname/:teamName", async (req, res) => { //returns team with given name
+  const team = await prisma.$queryRaw`SELECT Team.id, Team.teamName FROM Team WHERE Team.teamName = ${req.params.teamName};`;
+  res.json(team);
+});
+app.get("/project/projectname/:projectName", async (req, res) => { //returns the project with given name
+  const project = await prisma.$queryRaw`SELECT Project.id, Project.projectName FROM Project WHERE Project.projectName = ${req.params.projectName};`;
+  res.json(project);
+});
 //MODEL MAIN PAGES
 app.get('^/$|/main(.html)?', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'main.html'));
