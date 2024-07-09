@@ -763,6 +763,9 @@ app.get('^/$|/views/teams(.html)?', (req, res) => {
 app.get('^/$|/views/projects(.html)?', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'projects.html'));
 });
+app.get('^/$|/views/records(.html)?', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'records.html'));
+});
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'main.html'));
 });
