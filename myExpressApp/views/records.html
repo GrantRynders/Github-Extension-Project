@@ -12,6 +12,13 @@
         <h2 id="userTimeSpentRecord"></h2>
         <h1>Highest Issue Count By User</h1>
         <h2 id="userIssueCountRecord"></h2>
+        <h1>Longest Time Spent on an Issue</h1>
+        <h2 id="issueTimeSpentRecord"></h2>
+        <h1>Team with the Most Users</h1>
+        <h2 id="teamWithMostUsersRecord"></h2>
+        <h1>Project with the Most Issues</h1>
+        <h2 id="projectWithMostIssuesRecord"></h2>
+        
     </body>
     <script>
         Main()
@@ -19,6 +26,9 @@
         {
             await GetHighestTimeSpentByUser();
             await GetHighestIssueCountByUser();
+            await GetHighestIssueTimeSpent();
+            await GetHighestUserTeam();
+            await GetHighestIssueProject();
         }
         async function GetHighestTimeSpentByUser()
         {
@@ -66,7 +76,80 @@
                     return b.count - a.count;
                 });
                 const destination = await document.getElementById("userIssueCountRecord");
-                destination.textContent = "Username: " + usersWithIssueCounts[0].userName + ", Issue Count: " + usersWithIssueCounts[0].count;
+                destination.textContent = "Username: " + usersWithIssueCounts[0].userName + "Issue Count: " + usersWithIssueCounts[0].count;
+            }
+        }
+        async function GetHighestIssueTimeSpent()
+        {
+            const allIssuesResponse = await fetch("http://localhost:5220/issue");
+            const allIssues = await allIssuesResponse.json();
+            var issuesTimeSpentArray = await Promise.all(allIssues.map(async function(index){
+                const issueTimeResponse = await fetch("http://localhost:5220/issuemodel/" + index.id + "/timespent");
+                const issueTime = await issueTimeResponse.json();
+                const data = {
+                    totalTimeSpent: issueTime.totaltimespent,
+                    issueName: index.issueName,
+                }
+                return data;
+            }));
+            if (issuesTimeSpentArray != null)
+            {
+                issuesTimeSpentArray.sort(function(a, b)
+                {
+                    return b.totalTimeSpent - a.totalTimeSpent;
+                });
+                const timeStringData = ConvertSeconds(issuesTimeSpentArray[0].totalTimeSpent);
+                const destination = await document.getElementById("issueTimeSpentRecord");
+                destination.textContent = "Issue Name: " + issuesTimeSpentArray[0].issueName + ", Days: " + timeStringData.days + ", Hours: " + timeStringData.hours + ", Minutes: " + timeStringData.minutes + ", Seconds: " + timeStringData.seconds;
+            }
+            
+        }
+        async function GetHighestUserTeam()
+        {
+            const allTeamsResponse = await fetch("http://localhost:5220/team");
+            const allTeams = await allTeamsResponse.json();
+            var teamsWithUsersArray = await Promise.all(allTeams.map(async function(index){
+                const usersResponse = await fetch("http://localhost:5220/teammodel/" + index.id + "/users");
+                const users = await usersResponse.json();
+                const data = {
+                    teamId: index.id,
+                    teamName: index.teamName,
+                    userCount: users.length,
+                }
+                return data;
+            }));
+            if (teamsWithUsersArray != null)
+            {
+                teamsWithUsersArray.sort(function(a, b)
+                {
+                    return b.userCount - a.userCount;
+                });
+                const destination = await document.getElementById("teamWithMostUsersRecord");
+                destination.textContent = "Team Name: " + teamsWithUsersArray[0].teamName + ", User Count: " + teamsWithUsersArray[0].userCount;
+            }
+        }
+        async function GetHighestIssueProject()
+        {
+            const allProjectsResponse = await fetch("http://localhost:5220/project");
+            const allProjects = await allProjectsResponse.json();
+            var projectsWithIssuesArray = await Promise.all(allProjects.map(async function(index){
+                const issuesResponse = await fetch("http://localhost:5220/projectmodel/" + index.id + "/issues");
+                const issues = await issuesResponse.json();
+                const data = {
+                    projectId: index.id,
+                    projectName: index.projectName,
+                    issueCount: issues.length,
+                }
+                return data;
+            }));
+            if (projectsWithIssuesArray != null)
+            {
+                projectsWithIssuesArray.sort(function(a, b)
+                {
+                    return b.userCount - a.userCount;
+                });
+                const destination = await document.getElementById("projectsWithMostIssuesRecord");
+                destination.textContent = "Project Name: " + projectsWithIssuesArray[0].projectName + ", Issues Count: " + projectsWithIssuesArray[0].issueCount;
             }
             
         }
