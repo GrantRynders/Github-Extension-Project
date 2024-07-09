@@ -18,7 +18,9 @@
         <h2 id="teamWithMostUsersRecord"></h2>
         <h1>Project with the Most Issues</h1>
         <h2 id="projectWithMostIssuesRecord"></h2>
-        
+        <h1>Longest Timer Period</h1>
+        <h2 id="longestTimerPeriodRecord"></h2>
+
     </body>
     <script>
         Main()
@@ -29,6 +31,7 @@
             await GetHighestIssueTimeSpent();
             await GetHighestUserTeam();
             await GetHighestIssueProject();
+            await GetLongestTimerPeriod();
         }
         async function GetHighestTimeSpentByUser()
         {
@@ -152,6 +155,19 @@
                 destination.textContent = "Project Name: " + projectsWithIssuesArray[0].projectName + ", Issues Count: " + projectsWithIssuesArray[0].issueCount;
             }
             
+        }
+        async function GetLongestTimerPeriod()
+        {
+            const periods = await fetch("/timerperiodmodel/users");
+            periods.sort(function(a, b)
+            {
+                return b.totalTimeSpent - a.totalTimeSpent;
+            });
+            if (periods != null)
+            {
+                const destination = await document.getElementById("longestTimerPeriodRecord");
+                destination.textContent = "User Name: " + periods[0].UserName + ", End Date: " + periods[0].endDate + ", Total Time Elapsed: " + periods[0].totalTimeElapsed;
+            }
         }
         async function ConvertSeconds(seconds)
         {
