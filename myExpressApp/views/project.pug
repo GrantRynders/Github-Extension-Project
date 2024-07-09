@@ -9,22 +9,22 @@ block content
         div.CanvasWrapper
             h1.CanvasHeader Time Spent on each issue in project
             canvas#myChart
-        div.dropdown
-            button(onclick="ToggleDropdown()" class="dropbtn") Select an Issue to Add
-            div(id="myDropdown" class="dropdown-content")
-                input(type="text" placeholder="Search.." id="myInput" onkeyup="FilterDropdown()")
-                div#dropdownList
-        input(type="text" placeholder="Enter Issue Url" id="nameInput")
-        button(onclick="AddIssueToProject()" class="inputBtn") Add Issue to Project
-
-        div.dropdown
-            button(onclick="ToggleDropdown2()" class="dropbtn") Select a Team to Assign
-            div(id="myDropdown2" class="dropdown-content")
-                input(type="text" placeholder="Search.." id="myInput2" onkeyup="FilterDropdown2()")
-                div#dropdownList2
-        input(type="text" placeholder="Enter Project Name" id="nameInput2")
-        button(onclick="AddTeamToProject()" class="inputBtn") Assign Team to Project
-
+        div.dropdownContainer
+            div.dropdown
+                button(onclick="ToggleDropdown()" class="dropbtn") Select an Issue to Add
+                div(id="myDropdown" class="dropdown-content")
+                    input(type="text" placeholder="Search.." id="myInput" onkeyup="FilterDropdown()")
+                    div#dropdownList
+            input(type="text" placeholder="Enter Issue Url" id="nameInput")
+            button(onclick="AddIssueToProject()" class="inputBtn") Add Issue to Project
+        div.dropdownContainer
+            div.dropdown
+                button(onclick="ToggleDropdown2()" class="dropbtn") Select a Team to Assign
+                div(id="myDropdown2" class="dropdown-content")
+                    input(type="text" placeholder="Search.." id="myInput2" onkeyup="FilterDropdown2()")
+                    div#dropdownList2
+            input(type="text" placeholder="Enter Project Name" id="nameInput2")
+            button(onclick="AddTeamToProject()" class="inputBtn") Assign Team to Project
         h1 Related Records:
         p#idhidden #{projectId}
         div(id="referenceList" class="referenceList")

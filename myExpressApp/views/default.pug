@@ -154,29 +154,48 @@ html
         cursor: pointer;
         }
         /* The container <div> - needed to position the dropdown content */
-        .dropdown {
-        position: relative;
-        display: inline-block;
-        width: 20%;
+        .dropbtn {
+            background-color: #3498DB;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
         }
-
-        /* Dropdown Content (Hidden by Default) */
+        .dropdown {
+            display: inline-block;
+            width: 20%;
+        }
         .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #161b22;
-        z-index: 1;
-        width: 100%;
+            display: none;
+            position: absolute;
+            background-color: #161b22;
+            z-index: 1;
+            width: 100%;
         }
         input{
             background-color: #383c40;
         }
-        .show {display:block;}
+        .show {
+            display:block;
+        }
         .dropdownElement {
             background-color:#161b22;
             color:#FFFFFF;
+            width:100%;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        #myInput{
             width: 100%;
-            padding: 0.5em 0 0.5em 0;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        #myInput2{
+            width: 100%;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        .dropdownContainer{
+            display:inline-block;
+            width:100%;
         }
         #searchLink{
             display: inline-block;
