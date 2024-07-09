@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="http://localhost:5220/favicon.ico">
+        <link rel="stylesheet" href="http://localhost:5220/style.css">
+        <title>Records</title>
+    </head>
+    <body>
+        <h1>Highest Time Spent By User</h1>
+        <h2 id="userTimeSpentRecord"></h2>
+        <h1>Highest Issue Count By User</h1>
+        <h2 id="userIssueCountRecord"></h2>
+    </body>
+    <script>
+        Main()
+        async function Main()
+        {
+            await GetHighestTimeSpentByUser();
+            await GetHighestIssueCountByUser();
+        }
+        async function GetHighestTimeSpentByUser()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            usersWithTimesSpentArray = await Promise.all(allUsers.map(async function(index){
+                const userTimeResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/timespent");
+                const userTime = await userTimeResponse.json();
+                const data = {
+                    totalTimeSpent: userTime.totaltimespent,
+                    userName: index.UserName,
+                }
+                return data;
+            }));
+            if (usersWithTimesSpentArray != null)
+            {
+                usersWithTimesSpentArray.sort(function(a, b)
+                {
+                    return b.totalTimeSpent - a.totalTimeSpent;
+                });
+                const timeStringData = ConvertSeconds(usersWithTimesSpentArray[0].totalTimeSpent);
+                const destination = await document.getElementById("userTimeSpentRecord");
+                destination.textContent = "Username: " + usersWithTimesSpentArray[0].userName + ", Days: " + timeStringData.days + ", Hours: " + timeStringData.hours + ", Minutes: " + timeStringData.minutes + ", Seconds: " + timeStringData.seconds;
+            }
+            
+        }
+        async function GetHighestIssueCountByUser()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            var usersWithIssueCounts = await Promise.all(allUsers.map(async function(index){
+                const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
+                const userIssues = await userIssuesResponse.json();
+                const count = userIssues.length;
+                const data = {
+                    count: count,
+                    userName: index.UserName,
+                }
+                return data;
+            }));
+            if (usersWithIssueCounts != null)
+            {
+                usersWithIssueCounts.sort(function(a, b)
+                {
+                    return b.count - a.count;
+                });
+                const destination = await document.getElementById("userIssueCountRecord");
+                destination.textContent = "Username: " + usersWithIssueCounts[0].userName + ", Issue Count: " + usersWithIssueCounts[0].count;
+            }
+            
+        }
+        async function ConvertSeconds(seconds)
+        {
+            var minutes = 0;
+            var hours = 0;   
+            var days = 0;
+            if (seconds == NaN)
+            {
+                console.log("Seconds is null, resetting");
+                seconds = 0;
+            }
+            Number(seconds); //Input number of seconds to be converted
+            days = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
+            hours = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
+            minutes = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
+            seconds = Math.floor(Number(seconds) % 60);
+            const data = {
+                seconds,
+                minutes,
+                hours,
+                days,
+            }
+            console.log(data);
+            return data;
+        }
+    </script>
+</html>
