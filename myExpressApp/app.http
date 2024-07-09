@@ -39,6 +39,6 @@ GET {{WebApiHost}}/timermodel/6/adjacenttimerperiods
 
 ###
 
-GET {{WebApiHost}}/awake
+GET {{WebApiHost}}/team
 
 ###
