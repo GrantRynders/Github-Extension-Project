@@ -1,0 +1,208 @@
+extends default
+
+block content
+    <div id="content">
+        h1(id="ContentHeader") Timer Periods
+         div(class="desktop")
+            div(class="CanvasWrapper")
+            h1(class="CanvasHeader") Most Recent Timer Periods with Their User and Time Spent
+            canvas(id="timeSpent")
+        div(class="mobile")
+            <div class="CanvasWrapper">
+                h1(class="CanvasHeader") Most Recent Timer Periods with Their User and Time Spent
+                canvas(id="timeSpentMobile")
+        div(id="generalStats")
+            h1 Average Time Spent Per Period: 
+                text(id="average")
+        h1(id ="ReferenceListHeader") Tracked Timer Periods
+        div(id="ReferenceList")
+        button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
+        button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        var endDates;
+        var endTimes;
+        var periodsTimeElapsed;
+        var compoundNameDates;
+        var usernames
+
+        var index;
+        const interval = 2;
+        Main();
+        async function Main()
+        {
+            await ListTimers(0);
+            await GetAverageTimerPeriod();
+            await GetTimerPeriodGraphData();
+            await DisplayTimerPeriodGraph();
+            await DisplayTimerPeriodGraphMobile();
+        }
+        async function ListTimers(index)
+        {
+            const destinationDiv = document.getElementById("ReferenceList");
+            const allTimersResponse = await fetch("http://localhost:5220/timerperiod");
+            var allTimers = await allTimersResponse.json();
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("ReferenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allTimers = allTimers.slice(index, index + interval);
+            for (let i = 0; i < allTimers.length; i++) 
+            {
+                var timerLink = document.createElement('a');
+                timerLink.className = "ReferenceLink";
+                timerLink.href = "http://localhost:5220/views/timerperiodmodel/timerperiod/" + allTimers[i].id;
+                timerLink.textContent = "Id: " + allTimers[i].id + ", StartDate: " + allTimers[i].startDate + ", EndDate: " + allTimers[i].endDate + ", TimerId: " + allTimers[i].timerId + "\n";
+                destinationDiv.appendChild(timerLink);
+
+            }
+        }
+        async function GetAverageTimerPeriod()
+        {
+            var destination = document.getElementById("average");
+            var averageResponse = await fetch("/timerperiodmodel/average");
+            var averageValue = await averageResponse.json();
+            destination.textContent = averageValue.average;
+        }
+        async function GetTimerPeriodGraphData()
+        {
+            var allTimerPeriodsWithUsersResponse = await fetch("http://localhost:5220/timerperiodmodel/users");
+            var allTimerPeriodsWithUsers = await allTimerPeriodsWithUsersResponse.json();
+            var newPeriods = await Promise.all(allTimerPeriodsWithUsers.map(async function(index){
+                var endDate = new Date(index.endDate);
+                var endTime = endDate.getTime();
+                const data = {
+                    UserName: index.UserName,
+                    endDate: index.endDate,
+                    totalTimeElapsed: index.totalTimeElapsed,
+                    endTime: endTime
+                }
+                return data;
+            }));
+            newPeriods.sort(function(a, b){
+                return b.endTime - a.endTime;
+            });
+            userNames = await Promise.all(newPeriods.map(async function(index){
+                var username = index.UserName;
+                return username;
+            }));
+            compoundNameDates = await Promise.all(newPeriods.map(async function(index){
+                var username = index.UserName;
+                var endDate = index.endDate;
+                endDate = String(endDate).slice(0, 25);
+                var compound = username + ": " + endDate;
+                return compound;
+            }));
+            periodsTimeElapsed = await Promise.all(newPeriods.map(async function(index){
+                return index.totalTimeElapsed;
+            }));
+            var numRecords = 5;
+            if (compoundNameDates.length > numRecords)
+            {
+                compoundNameDates = compoundNameDates.slice(0, numRecords);
+            }
+            if (periodsTimeElapsed.length > numRecords)
+            {
+                periodsTimeElapsed = periodsTimeElapsed.slice(0, numRecords);
+            }
+        }
+        async function DisplayTimerPeriodGraph()
+        {
+            var myChart = document.getElementById("timeSpent");
+            new Chart(myChart, {
+                type: 'bar',
+                data: 
+                {
+                    labels: compoundNameDates,
+                    datasets: 
+                    [{
+                        label: 'Time spent on period',
+                        data: periodsTimeElapsed,
+                        borderWidth: 1,
+                        backgroundColor: '#9BD0F5'
+                    }]
+                },
+                options: 
+                {
+                    scales: 
+                    {
+                        y: 
+                        {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        async function DisplayTimerPeriodGraphMobile()
+        {
+            var myChart = document.getElementById("timeSpentMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: 
+                {
+                    labels: compoundNameDates,
+                    datasets: 
+                    [{
+                        label: 'Time spent on period',
+                        data: periodsTimeElapsed,
+                        borderWidth: 1,
+                        backgroundColor: '#9BD0F5'
+                    }]
+                },
+                options: 
+                {
+                    scales: 
+                    {
+                        x: {
+                            ticks: {
+                            //option 2, use callback to change labels to empty string
+                            callback: () => ('')
+                            }
+                        },
+                        y: 
+                        {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        async function TabUp()
+        {
+            const allRecordsResponse = await fetch("http://localhost:5220/timerPeriod");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((allRecords.length) > (Number(index) + interval))
+            {
+                index += interval;
+                ListTimers(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            const allRecordsResponse = await fetch("http://localhost:5220/timerPeriod");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListTimers(Number(index));
+            }
+        }
+        async function ToggleNav()
+        {
+            document.getElementById("mobileNav").classList.toggle("displayNone");
+        }

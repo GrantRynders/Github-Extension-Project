@@ -1,0 +1,223 @@
+extends default
+
+block content
+    div(id="content")
+        h1(id="ContentHeader") PROJECTS DATA
+        div(class="desktop")
+            div(class="CanvasWrapper")
+                h1(class="CanvasHeader") Projects by Number of Issues
+                canvas(id="projectsChart")
+        div(class="mobile")
+            div(class="CanvasWrapper")
+                h1(class="CanvasHeader") Projects by Number of Issues
+                canvas(id="projectsChartMobile")
+        input(type="text" id="nameInput" placeholder="Enter Project Name")
+        button(onclick="CreateNewProject()" class="createBtn") Create Project
+        h1(id="ReferenceListHeader") Tracked Projects
+        div(id="ReferenceList")
+        button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
+        button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        var index;
+        const interval = 2;
+        var teamNames;
+        var userCounts;
+
+        index = 0;
+        Main();
+        async function Main()
+        {
+            await ListReferences(index);
+            await GetProjectsByIssueCountData();
+            await GraphProjectsByIssueCount();
+            await GraphProjectsByIssueCountMobile();
+        }
+        async function CreateNewProject()
+        {
+            const input = await document.getElementById("nameInput");
+            if (input != null)
+            {
+                const inputName = input.value.toLowerCase();
+                if (inputName != null && inputName != "")
+                {
+                    fetch("http://localhost:5220/project/" + inputName, 
+                    {
+                        method: "POST", // *GET, POST, PUT, DELETE, etc.
+                        mode: "cors", // no-cors, *cors, same-origin
+                        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: "same-origin", // include, *same-origin, omit
+                        headers: {
+                            "Content-Type": "application/json",
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: "follow", // manual, *follow, error
+                        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                    })
+                    .then(function (){
+                        console.log(Response);
+
+                    })
+                    .catch( function() {
+                        console.log("New project was unable to save");
+                    });
+                    document.location.reload();
+                }
+                else
+                {
+                    console.log("Invalid project name");
+                }
+            }
+            else
+            {
+                console.log("Input element is null")
+            }
+        }
+        async function GetProjectsByIssueCountData()
+        {
+            const allProjectsResponse = await fetch("http://localhost:5220/project");
+            const allProjects = await allProjectsResponse.json();
+            var projectsWithIssuesArray = await Promise.all(allProjects.map(async function(index){
+                const issuesResponse = await fetch("http://localhost:5220/projectmodel/" + index.id + "/issues");
+                const issues = await issuesResponse.json();
+                const data = {
+                    projectId: index.id,
+                    projectName: index.projectName,
+                    issueCount: issues.length,
+                }
+                return data;
+            }));
+            projectsWithIssuesArray.sort(function(a, b){
+               return b.userCount - a.userCount;
+            });
+            projectNames = projectsWithIssuesArray.map(function(index){
+                return index.projectName;
+            });
+            issueCounts = projectsWithIssuesArray.map(function(index){
+                return index.issueCount;
+            });
+            var numRecords = 5;
+            if (projectNames.length > numRecords)
+            {
+                projectNames = projectNames.slice(0, numRecords);
+            }
+            if (issueCounts.length > numRecords)
+            {
+                issueCounts = issueCounts.slice(0, numRecords);
+            }
+        }
+        async function GraphProjectsByIssueCount()
+        {
+            var myChart = document.getElementById("projectsChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: 
+                {
+                    labels: projectNames,
+                    datasets: [{
+                        label: 'Number of Issues by Project',
+                        data: issueCounts,
+                        borderWidth: 1
+                    }]
+                },
+                options: 
+                {
+                    scales: 
+                    {
+                        y: 
+                        {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        async function GraphProjectsByIssueCountMobile()
+        {
+            var myChart = document.getElementById("projectsChartMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: 
+                {
+                    labels: projectNames,
+                    datasets: [{
+                        label: 'Number of Issues by Project',
+                        data: issueCounts,
+                        borderWidth: 1
+                    }]
+                },
+                options: 
+                {
+                    scales: 
+                    {
+                        x: 
+                        {
+                            ticks: 
+                            {
+                                //option 2, use callback to change labels to empty string
+                                callback: () => ('')
+                            }
+                        },
+                        y: 
+                        {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        async function ListReferences(index)
+        {   
+            const allProjectsResponse = await fetch("http://localhost:5220/project");
+            var allProjects = await allProjectsResponse.json();
+            var destinationDiv = document.getElementById("ReferenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("ReferenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allProjects = allProjects.slice(index, index + interval);
+            for (var i = 0; i < allProjects.length; i++)
+            {
+                var referenceLink = document.createElement('A');
+                referenceLink.className = "ReferenceLink";
+                referenceLink.href = "http://localhost:5220/views/projectmodel/project/" + allProjects[i].id;
+                referenceLink.textContent = "Id: " + allProjects[i].id + ", teamName: " + allProjects[i].projectName + "\n";
+                destinationDiv.appendChild(referenceLink);
+            }
+        }
+        async function TabUp()
+        {
+            const allProjectsResponse = await fetch("http://localhost:5220/project");
+            const projects = await allProjectsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((projects.length) > (Number(index) + interval))
+            {
+                index += interval;
+                ListReferences(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListReferences(Number(index));
+            }
+        }
+        async function ToggleNav()
+        {
+            document.getElementById("mobileNav").classList.toggle("displayNone");
+        }

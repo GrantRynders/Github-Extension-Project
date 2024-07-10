@@ -1,0 +1,201 @@
+extends default
+
+block content
+    div(id="content")
+        h1(id="ContentHeader") RECORDS DATA
+        div(class="statContainer")
+            h1(class="statHeader") Highest Time Spent By User
+            h2(class="stat" id="userTimeSpentRecord")
+        div(class="statContainer")
+            h1(class="statHeader") Highest Issue Count By User
+            h2(class="stat" id="userIssueCountRecord")
+        div(class="statContainer")
+            h1(class="statHeader") Longest Time Spent on an Issue
+            h2(class="stat" id="issueTimeSpentRecord")
+        div(class="statContainer")
+            h1(class="statHeader") Team with the Most Users
+            h2(class="stat" id="teamWithMostUsersRecord")
+        div(class="statContainer")
+            h1(class="statHeader") Project with the Most Issues
+            h2(class="stat" id="projectWithMostIssuesRecord")
+        div(class="statContainer")
+            h1(class="statHeader") Longest Timer Period
+            h2(class="stat" id="longestTimerPeriodRecord")
+    script.
+        Main()
+        async function Main()
+        {
+            await GetHighestTimeSpentByUser();
+            await GetHighestIssueCountByUser();
+            await GetHighestIssueTimeSpent();
+            await GetHighestUserTeam();
+            await GetHighestIssueProject();
+            await GetLongestTimerPeriod();
+        }
+        async function GetHighestTimeSpentByUser()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            usersWithTimesSpentArray = await Promise.all(allUsers.map(async function(index){
+                const userTimeResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/timespent");
+                const userTime = await userTimeResponse.json();
+                const data = {
+                    totalTimeSpent: userTime.totaltimespent,
+                    userName: index.UserName,
+                }
+                return data;
+            }));
+            if (usersWithTimesSpentArray != null)
+            {
+                usersWithTimesSpentArray.sort(function(a, b)
+                {
+                    return b.totalTimeSpent - a.totalTimeSpent;
+                });
+                var totalTime = Number(usersWithTimesSpentArray[0].totalTimeSpent);
+                const timeStringData = await ConvertSeconds(totalTime);
+                const destination = await document.getElementById("userTimeSpentRecord");
+                destination.textContent = "Username: " + usersWithTimesSpentArray[0].userName + ", Days: " + timeStringData.days + ", Hours: " + timeStringData.hours + ", Minutes: " + timeStringData.minutes + ", Seconds: " + timeStringData.seconds;
+            }
+            
+        }
+        async function GetHighestIssueCountByUser()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            var usersWithIssueCounts = await Promise.all(allUsers.map(async function(index){
+                const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
+                const userIssues = await userIssuesResponse.json();
+                const count = userIssues.length;
+                const data = {
+                    count: count,
+                    userName: index.UserName,
+                }
+                return data;
+            }));
+            if (usersWithIssueCounts != null)
+            {
+                usersWithIssueCounts.sort(function(a, b)
+                {
+                    return b.count - a.count;
+                });
+                const destination = await document.getElementById("userIssueCountRecord");
+                destination.textContent = "Username: " + usersWithIssueCounts[0].userName + "Issue Count: " + usersWithIssueCounts[0].count;
+            }
+        }
+        async function GetHighestIssueTimeSpent()
+        {
+            const allIssuesResponse = await fetch("http://localhost:5220/issue");
+            const allIssues = await allIssuesResponse.json();
+            var issuesTimeSpentArray = await Promise.all(allIssues.map(async function(index){
+                const issueTimeResponse = await fetch("http://localhost:5220/issuemodel/" + index.id + "/timespent");
+                const issueTime = await issueTimeResponse.json();
+                const data = {
+                    totalTimeSpent: issueTime.totaltimespent,
+                    issueName: index.issueName,
+                }
+                return data;
+            }));
+            if (issuesTimeSpentArray != null)
+            {
+                issuesTimeSpentArray.sort(function(a, b)
+                {
+                    return b.totalTimeSpent - a.totalTimeSpent;
+                });
+                var time = Number(issuesTimeSpentArray[0].totalTimeSpent);
+                const timeStringData = await ConvertSeconds(time);
+                const destination = await document.getElementById("issueTimeSpentRecord");
+                destination.textContent = "Issue Name: " + issuesTimeSpentArray[0].issueName + ", Days: " + timeStringData.days + ", Hours: " + timeStringData.hours + ", Minutes: " + timeStringData.minutes + ", Seconds: " + timeStringData.seconds;
+            }
+            
+        }
+        async function GetHighestUserTeam()
+        {
+            const allTeamsResponse = await fetch("http://localhost:5220/team");
+            const allTeams = await allTeamsResponse.json();
+            var teamsWithUsersArray = await Promise.all(allTeams.map(async function(index){
+                const usersResponse = await fetch("http://localhost:5220/teammodel/" + index.id + "/users");
+                const users = await usersResponse.json();
+                const data = {
+                    teamId: index.id,
+                    teamName: index.teamName,
+                    userCount: users.length,
+                }
+                return data;
+            }));
+            if (teamsWithUsersArray != null)
+            {
+                teamsWithUsersArray.sort(function(a, b)
+                {
+                    return b.userCount - a.userCount;
+                });
+                const destination = await document.getElementById("teamWithMostUsersRecord");
+                destination.textContent = "Team Name: " + teamsWithUsersArray[0].teamName + ", User Count: " + teamsWithUsersArray[0].userCount;
+            }
+        }
+        async function GetHighestIssueProject()
+        {
+            const allProjectsResponse = await fetch("http://localhost:5220/project");
+            const allProjects = await allProjectsResponse.json();
+            var projectsWithIssuesArray = await Promise.all(allProjects.map(async function(index){
+                const issuesResponse = await fetch("http://localhost:5220/projectmodel/" + index.id + "/issues");
+                const issues = await issuesResponse.json();
+                const data = {
+                    projectId: index.id,
+                    projectName: index.projectName,
+                    issueCount: issues.length,
+                }
+                return data;
+            }));
+            if (projectsWithIssuesArray != null)
+            {
+                projectsWithIssuesArray.sort(function(a, b)
+                {
+                    return b.userCount - a.userCount;
+                });
+                const destination = await document.getElementById("projectWithMostIssuesRecord");
+                destination.textContent = "Project Name: " + projectsWithIssuesArray[0].projectName + ", Issues Count: " + projectsWithIssuesArray[0].issueCount;
+            }
+            
+        }
+        async function GetLongestTimerPeriod()
+        {
+            const periodsReponse = await fetch("/timerperiodmodel/users");
+            var periods = await periodsReponse.json();
+            periods.sort(function(a, b)
+            {
+                return b.totalTimeSpent - a.totalTimeSpent;
+            });
+            if (periods != null)
+            {
+                const destination = await document.getElementById("longestTimerPeriodRecord");
+                destination.textContent = "User Name: " + periods[0].UserName + ", End Date: " + periods[0].endDate + ", Total Time Elapsed: " + periods[0].totalTimeElapsed;
+            }
+        }
+        async function ConvertSeconds(seconds)
+        {
+            var minutes = 0;
+            var hours = 0;   
+            var days = 0;
+            if (seconds == NaN)
+            {
+                console.log("Seconds is null, resetting");
+                seconds = 0;
+            }
+            Number(seconds); //Input number of seconds to be converted
+            days = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
+            hours = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
+            minutes = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
+            seconds = Math.floor(Number(seconds) % 60);
+            const data = {
+                seconds,
+                minutes,
+                hours,
+                days,
+            }
+            console.log(data);
+            return data;
+        }
+        async function ToggleNav()
+        {
+            document.getElementById("mobileNav").classList.toggle("displayNone");
+        }

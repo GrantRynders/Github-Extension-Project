@@ -1,0 +1,280 @@
+extends default
+
+block content
+    div(id="content")
+        h1(id="ContentHeader") USERS DATA
+        div(class="desktop")
+            div(class="CanvasWrapper")
+                h1(class="CanvasHeader") Users Sorted by Issues Worked on
+                canvas(id="issuesChart")
+            div(class="CanvasWrapper")
+                h1(class="CanvasHeader") Users Sorted by Total Time Spent on Our Extension
+                canvas(id="timespentChart")
+        div(class="mobile")
+            div(class="CanvasWrapper")
+                h1(class="CanvasHeader") Users Sorted by Issues Worked on
+                canvas(id="issuesChartMobile")
+            div(class="CanvasWrapper")
+                h1(class="CanvasHeader") Users Sorted by Total Time Spent on Our Extension
+                canvas(id="timespentChartMobile")
+        h1(id="ReferenceListHeader") Tracked Users
+        div(id="ReferenceList")
+        button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
+        button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        var index;
+        var names;
+        var alllength = 0;
+        var issueCounts;
+        var timeSpentArray;
+        const interval = 2;
+        //import Chart from 'chart.js/auto';
+        Main();
+        document.getElementById("backbtn").classList.toggle("show");
+        document.getElementById("nextbtn").classList.toggle("show");
+        async function Main()
+        {
+            index = 0;
+            await UserIssuesDataGet();
+            await DrawUserIssuesInvolvedGraph();
+            await DrawUserIssuesInvolvedGraphMobile();
+            await UserTimeSpentDataGet();
+            await DrawUserTimeSpentGraph();
+            await DrawUserTimeSpentGraphMobile();
+            await DisplayAllUsers(0);
+        }
+        async function DisplayAllUsers(index)
+        {
+            
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            var allUsers = await allUsersResponse.json();
+            var destinationDiv = document.getElementById("ReferenceList");
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("ReferenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allUsers = allUsers.slice(index, index + interval);
+            for (var i = 0; i < allUsers.length; i++)
+            {
+                var userLink = document.createElement('A');
+                userLink.className = "ReferenceLink";
+                userLink.href = "http://localhost:5220/views/usermodel/user/" + allUsers[i].id;
+                userLink.textContent = "Id: " + allUsers[i].id + ", UserName: " + allUsers[i].UserName + "\n";
+                destinationDiv.appendChild(userLink);
+            }
+        }
+        async function UserIssuesDataGet()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            var usersWithIssueCounts = await Promise.all(allUsers.map(async function(index){
+                const userIssuesResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/issues");
+                const userIssues = await userIssuesResponse.json();
+                const count = userIssues.length;
+                const data = {
+                    count: count,
+                    userName: index.UserName,
+                }
+                return data;
+            }));
+            usersWithIssueCounts.sort(function(a, b){
+               return b.count - a.count;
+            });
+            names = usersWithIssueCounts.map(function(index){
+                    return index.userName;
+            });
+            issueCounts = usersWithIssueCounts.map(function(index){
+                    return index.count;
+            });
+            const numRecords = 5;
+            if (issueCounts.length > numRecords)
+            {
+                issueCounts = issueCounts.slice(0, numRecords);
+            }
+            if (names.length > numRecords)
+            {
+                names = names.slice(0, numRecords);
+            }
+        }
+        async function UserTimeSpentDataGet()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            usersWithTimesSpentArray = await Promise.all(allUsers.map(async function(index){
+                const userTimeResponse = await fetch("http://localhost:5220/usermodel/" + index.id + "/timespent");
+                const userTime = await userTimeResponse.json();
+                const data = {
+                    totalTimeSpent: userTime.totaltimespent,
+                    userName: index.UserName,
+                }
+                return data;
+            }));
+            usersWithTimesSpentArray.sort(function(a, b){
+               return b.totalTimeSpent - a.totalTimeSpent;
+            });
+            timeSpentArray = usersWithTimesSpentArray.map(function(index){
+                return index.totalTimeSpent;
+            });
+            names = usersWithTimesSpentArray.map(function(index){
+                return index.userName;
+            });
+            const numRecords = 5;
+            if (timeSpentArray.length > numRecords)
+            {
+                timeSpentArray = timeSpentArray.slice(0, numRecords);
+            }
+            if (names.length > numRecords)
+            {
+                names = names.slice(0, numRecords);
+            }
+        }
+        async function DrawUserIssuesInvolvedGraph() 
+        {
+            var myChart = document.getElementById("issuesChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'ISSUE COUNT FOR EACH USER',
+                    data: issueCounts,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+            
+        }
+        async function DrawUserTimeSpentGraph() 
+        {
+            var myChart = document.getElementById("timespentChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'TOTAL TIME SPENT WORKING ON GITHUB ISSUES IN SECONDS',
+                    data: timeSpentArray,
+                    borderWidth: 1,
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+        }
+        async function DrawUserIssuesInvolvedGraphMobile() 
+        {
+            var myChart = document.getElementById("issuesChartMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'ISSUE COUNT FOR EACH USER',
+                    data: issueCounts,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    x: {
+                        ticks: {
+                        //option 2, use callback to change labels to empty string
+                        callback: () => ('')
+                        }
+                    },
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+            
+        }
+        async function DrawUserTimeSpentGraphMobile() 
+        {
+            var myChart = document.getElementById("timespentChartMobile");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'TOTAL TIME SPENT WORKING ON GITHUB ISSUES IN SECONDS',
+                    data: timeSpentArray,
+                    borderWidth: 1,
+                }]
+                },
+                options: {
+                scales: {
+                    x: {
+                        ticks: {
+                        //option 2, use callback to change labels to empty string
+                        callback: () => ('')
+                        }
+                    },
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+        }
+        async function DisplayButtonsToggle()
+        {
+            document.getElementById("backbtn").style.backgroundColor = "#000000";
+        }
+        async function TabUp()
+        {
+            console.log("index: " + index);
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((allUsers.length) > (Number(index) + interval))
+            {
+                index += interval;
+                DisplayAllUsers(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            const allUsersResponse = await fetch("http://localhost:5220/user");
+            const allUsers = await allUsersResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                DisplayAllUsers(Number(index));
+            }
+        }
+        async function ToggleNav()
+        {
+            document.getElementById("mobileNav").classList.toggle("displayNone");
+        }
+    
+    

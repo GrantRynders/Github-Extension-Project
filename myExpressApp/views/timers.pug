@@ -1,0 +1,144 @@
+extends default
+
+block content
+    div(id="content")
+        H1(id="ContentHeader") TIMERS DATA
+        div(class="CanvasWrapper")
+            h1(class="CanvasHeader") Timers by Number of Periods
+            canvas(id="myChart")
+        h1(id ="ReferenceListHeader") Tracked Timers
+        div(id="ReferenceList")
+        button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
+        button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+        var index;
+        const interval = 2;
+        var names;
+        var periodCounts;
+        Main();
+        async function Main()
+        {
+            await ListTimers(0);
+            await GetTimersWithPeriodCounts();
+            await GraphTimersWithPeriodCounts();
+        }
+        async function ListTimers(index)
+        {
+            const destinationDiv = document.getElementById("ReferenceList");
+            const allTimersResponse = await fetch("http://localhost:5220/timer");
+            var allTimers = await allTimersResponse.json();
+            for (var child of destinationDiv.childNodes)
+            {
+                console.log(child);
+                destinationDiv.removeChild(child);
+            }
+            var links = document.getElementsByClassName("ReferenceLink");
+            for (var child of links)
+            {
+                child.remove();
+            }
+            allTimers = allTimers.slice(index, index + interval);
+            for (let i = 0; i < allTimers.length; i++) 
+            {
+                var timerLink = document.createElement('a');
+                timerLink.className = "ReferenceLink";
+                timerLink.href = "http://localhost:5220/views/timermodel/timer/" + allTimers[i].id;
+                timerLink.textContent = "Id: " + allTimers[i].id + ", UserId: " + allTimers[i].userId + ", IssueId: " + allTimers[i].issueId + "\n";
+                destinationDiv.appendChild(timerLink);
+
+            }
+        }
+        async function GetTimersWithPeriodCounts()
+        {
+            const allTimersResponse = await fetch("http://localhost:5220/timer");
+            const allTimers = await allTimersResponse.json();
+            var timersWithPeriodsArray = await Promise.all(allTimers.map(async function(index){
+                const periodsResponse = await fetch("http://localhost:5220/timermodel/" + index.id + "/timerperiods");
+                const periods = await periodsResponse.json();
+                const periodCount = periods.length;
+                const userAndTimerResponse = await fetch("http://localhost:5220/timermodel/" + index.id + "/userandtimer")
+                const userAndTimer = await userAndTimerResponse.json();
+                const userName = userAndTimer[0].UserName;
+                const timerId = userAndTimer[0].TimerId;
+                const compoundName = userName + ", TimerId: " + timerId
+                const data = {
+                    periodCount: periodCount,
+                    compoundName: compoundName,
+                }
+                return data;
+            }));
+            timersWithPeriodsArray.sort(function(a, b){
+               return b.periodCount - a.periodCount;
+            });
+            periodCounts = timersWithPeriodsArray.map(function(index){
+                return index.periodCount;
+            });
+            names = timersWithPeriodsArray.map(function(index){
+                return index.compoundName;
+            });
+            const numRecords = 5;
+            if (periodCounts.length > numRecords)
+            {
+                periodCounts = periodCounts.slice(0, numRecords);
+            }
+            if (names.length > numRecords)
+            {
+                names = names.slice(0, numRecords);
+            }
+        }
+        async function GraphTimersWithPeriodCounts() 
+        {
+            var myChart = document.getElementById("myChart");
+            new Chart(myChart, {
+                type: 'bar',
+                data: {
+                labels: names,
+                datasets: [{
+                    label: 'Number of Periods Per Timer',
+                    data: periodCounts,
+                    borderWidth: 1,
+                    backgroundColor: '#9BD0F5'
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+        }
+        async function TabUp()
+        {
+            const allRecordsResponse = await fetch("http://localhost:5220/timer");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if ((allRecords.length) > (Number(index) + interval))
+            {
+                index += interval;
+                ListTimers(Number(index));
+            }
+        }
+        async function TabDown()
+        {
+            const allRecordsResponse = await fetch("http://localhost:5220/timer");
+            const allRecords = await allRecordsResponse.json();
+            if (index == null)
+            {
+                index = 0;
+            }
+            if (Number(index - interval) >= 0)
+            {
+                index -= interval;
+                ListTimers(Number(index));
+            }
+        }
+        async function ToggleNav()
+        {
+            document.getElementById("mobileNav").classList.toggle("displayNone");
+        }
