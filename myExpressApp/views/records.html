@@ -8,19 +8,91 @@
         <title>Records</title>
     </head>
     <body>
-        <h1 class="statHeader">Highest Time Spent By User</h1>
-        <h2 class="stat" id="userTimeSpentRecord"></h2>
-        <h1 class="statHeader">Highest Issue Count By User</h1>
-        <h2 class="stat" id="userIssueCountRecord"></h2>
-        <h1 class="statHeader">Longest Time Spent on an Issue</h1>
-        <h2 class="stat" id="issueTimeSpentRecord"></h2>
-        <h1 class="statHeader">Team with the Most Users</h1>
-        <h2 class="stat" id="teamWithMostUsersRecord"></h2>
-        <h1 class="statHeader">Project with the Most Issues</h1>
-        <h2 class="stat" id="projectWithMostIssuesRecord"></h2>
-        <h1 class="statHeader">Longest Timer Period</h1>
-        <h2 class="stat" id="longestTimerPeriodRecord"></h2>
-
+        <header>
+            <h1 id="SiteHeader">Visualization for GitHub Issues Timer Data</h1>
+            <div class="desktop">
+                <nav>
+                    <ul>
+                        <li class="navLi">
+                            <a href="http://localhost:5220/views/main">Home</a>
+                        </li>
+                        <li class="navLi">
+                            <a href="http://localhost:5220/views/users">Users</a>
+                        </li>
+                        <li class="navLi">
+                            <a href="http://localhost:5220/views/issues">Issues</a>
+                        </li>
+                        <li class="navLi">
+                            <a href="http://localhost:5220/views/timers">Timers</a>
+                        </li>
+                        <li class="navLi">
+                            <a href="http://localhost:5220/views/timerperiods">Periods</a>
+                        </li>
+                        <li class="navLi">
+                            <a href="http://localhost:5220/views/teams">Teams</a>
+                        </li>
+                        <li class="navLi" id="CurrentTab">
+                            <a href="http://localhost:5220/views/projects">Projects</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mobile">
+                <button id="navButton" onclick="ToggleNav()">| | |</button>
+                    <nav id="mobileNav" class="displayNone">
+                        <ul>
+                            <li class="navLiMobile">
+                                <a href="http://localhost:5220/views/main">Home</a>
+                            </li>
+                            <li class="navLiMobile">
+                                <a href="http://localhost:5220/views/users">Users</a>
+                            </li>
+                            <li class="navLiMobile">
+                                <a href="http://localhost:5220/views/issues">Issues</a>
+                            </li>
+                            <li class="navLiMobile">
+                                <a href="http://localhost:5220/views/timers">Timers</a>
+                            </li>
+                            <li class="navLiMobile">
+                                <a href="http://localhost:5220/views/timerperiods">Periods</a>
+                            </li>
+                            <li class="navLiMobile">
+                                <a href="http://localhost:5220/views/teams">Teams</a>
+                            </li>
+                            <li class="navLiMobile" id="CurrentTab">
+                                <a href="http://localhost:5220/views/projects">Projects</a>
+                            </li>
+                        </ul>
+                    </nav>            
+            </div>
+        </header>
+        <div id="content">
+            <h1 id="ContentHeader"> RECORDS DATA</h1>
+            <div class="statContainer">
+                <h1 class="statHeader">Highest Time Spent By User</h1>
+                <h2 class="stat" id="userTimeSpentRecord"></h2>
+            </div>
+            <div class="statContainer">
+                <h1 class="statHeader">Highest Issue Count By User</h1>
+                <h2 class="stat" id="userIssueCountRecord"></h2>
+            </div>
+            <div class="statContainer">
+                <h1 class="statHeader">Longest Time Spent on an Issue</h1>
+                <h2 class="stat" id="issueTimeSpentRecord"></h2>
+            </div>
+            <div class="statContainer">
+                <h1 class="statHeader">Team with the Most Users</h1>
+                <h2 class="stat" id="teamWithMostUsersRecord"></h2>
+            </div>
+            <div class="statContainer">
+                <h1 class="statHeader">Project with the Most Issues</h1>
+                <h2 class="stat" id="projectWithMostIssuesRecord"></h2>
+            </div>
+            <div class="statContainer">
+                <h1 class="statHeader">Longest Timer Period</h1>
+                <h2 class="stat" id="longestTimerPeriodRecord"></h2>
+            </div>
+        </div>
     </body>
     <script>
         Main()
@@ -52,7 +124,7 @@
                 {
                     return b.totalTimeSpent - a.totalTimeSpent;
                 });
-                const timeStringData = ConvertSeconds(usersWithTimesSpentArray[0].totalTimeSpent);
+                const timeStringData = ConvertSeconds(Number(usersWithTimesSpentArray[0].totalTimeSpent));
                 const destination = await document.getElementById("userTimeSpentRecord");
                 destination.textContent = "Username: " + usersWithTimesSpentArray[0].userName + ", Days: " + timeStringData.days + ", Hours: " + timeStringData.hours + ", Minutes: " + timeStringData.minutes + ", Seconds: " + timeStringData.seconds;
             }
@@ -101,7 +173,7 @@
                 {
                     return b.totalTimeSpent - a.totalTimeSpent;
                 });
-                const timeStringData = ConvertSeconds(issuesTimeSpentArray[0].totalTimeSpent);
+                const timeStringData = ConvertSeconds(Number(issuesTimeSpentArray[0].totalTimeSpent));
                 const destination = await document.getElementById("issueTimeSpentRecord");
                 destination.textContent = "Issue Name: " + issuesTimeSpentArray[0].issueName + ", Days: " + timeStringData.days + ", Hours: " + timeStringData.hours + ", Minutes: " + timeStringData.minutes + ", Seconds: " + timeStringData.seconds;
             }
@@ -151,14 +223,15 @@
                 {
                     return b.userCount - a.userCount;
                 });
-                const destination = await document.getElementById("projectsWithMostIssuesRecord");
+                const destination = await document.getElementById("projectWithMostIssuesRecord");
                 destination.textContent = "Project Name: " + projectsWithIssuesArray[0].projectName + ", Issues Count: " + projectsWithIssuesArray[0].issueCount;
             }
             
         }
         async function GetLongestTimerPeriod()
         {
-            const periods = await fetch("/timerperiodmodel/users");
+            const periodsReponse = await fetch("/timerperiodmodel/users");
+            var periods = await periodsReponse.json();
             periods.sort(function(a, b)
             {
                 return b.totalTimeSpent - a.totalTimeSpent;
