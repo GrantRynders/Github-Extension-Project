@@ -136,9 +136,7 @@
                     return b.totalTimeSpent - a.totalTimeSpent;
                 });
                 var totalTime = Number(usersWithTimesSpentArray[0].totalTimeSpent);
-                console.log(totalTime);
                 const timeStringData = await ConvertSeconds(totalTime);
-                console.log
                 const destination = await document.getElementById("userTimeSpentRecord");
                 destination.textContent = "Username: " + usersWithTimesSpentArray[0].userName + ", Days: " + timeStringData.days + ", Hours: " + timeStringData.hours + ", Minutes: " + timeStringData.minutes + ", Seconds: " + timeStringData.seconds;
             }
