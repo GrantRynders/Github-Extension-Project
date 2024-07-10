@@ -38,7 +38,7 @@ app.get("/views/usermodel/user/:id", async (req, res) => {
   const formattedTimes = await ConvertSeconds(timeElapsed);
   if (user != null)
   {
-    res.render('user', { id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues, formattedTimes: formattedTimes});
+    res.render('user', { title: "User Record: " + req.params.id, id: req.params.id, username: user.UserName , TotalTimeElapsed: timeElapsed, issues: issues, formattedTimes: formattedTimes});
   }
 });
 app.get("/views/timermodel/timer/:id", async (req, res) => {
@@ -53,7 +53,7 @@ app.get("/views/timermodel/timer/:id", async (req, res) => {
   const totalTimeJson = await totalTimeResponse.json();
   const totalTime = totalTimeJson.totaltimespent;
   const formattedTimes = await ConvertSeconds(totalTime);
-  res.render('timer', { id: req.params.id, issueId: timer.issueId, userId: timer.userId, timerperiods: timerPeriods, totalTimeElapsed: totalTime, formattedTimes: formattedTimes });
+  res.render('timer', { title: "Timer Record: " + req.params.id, id: req.params.id, issueId: timer.issueId, userId: timer.userId, timerperiods: timerPeriods, totalTimeElapsed: totalTime, formattedTimes: formattedTimes });
 });
 app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
   const timerperiod = await prisma.timerPeriod.findFirst({
@@ -65,7 +65,7 @@ app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
   const timerPeriods = await timerPeriodsResponse.json();
   const timeElapsed = timerperiod.totalTimeElapsed
   const formattedTimes = await ConvertSeconds(timeElapsed);
-  res.render('timerperiod', { id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timeElapsed, timerperiods: timerPeriods, formattedTimes: formattedTimes });
+  res.render('timerperiod', { title: "Period Record: " + req.params.id, id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timeElapsed, timerperiods: timerPeriods, formattedTimes: formattedTimes });
 });
 app.get("/views/search", async (req, res) => {
   res.render('search', { title: "Search" });
@@ -82,7 +82,7 @@ app.get("/views/issuemodel/issue/:id", async (req, res) => {
   const timeElapsedJson = await timeElapsedResponse.json();
   const timeElapsed = timeElapsedJson.totaltimespent;
   const formattedTimes = await ConvertSeconds(timeElapsed);
-  res.render('issue', { id: req.params.id, issueUrl: issue.url, issueName: issue.issueName, users: users, TotalTimeElapsed: timeElapsed, formattedTimes: formattedTimes });
+  res.render('issue', { title: "Issue Record: " + req.params.id, id: req.params.id, issueUrl: issue.url, issueName: issue.issueName, users: users, TotalTimeElapsed: timeElapsed, formattedTimes: formattedTimes });
 });
 app.get("/views/teammodel/team/:id", async (req, res) => {
   const team = await prisma.team.findFirst({
@@ -100,7 +100,7 @@ app.get("/views/teammodel/team/:id", async (req, res) => {
     usersCount = users.length;
     teamName = team.teamName
   }
-  res.render('team', { teamId: req.params.id, teamName: teamName, usersCount: usersCount });
+  res.render('team', { title: "Team Record: " + req.params.id, teamId: req.params.id, teamName: teamName, usersCount: usersCount });
 });
 
 app.get("/views/projectmodel/project/:id", async (req, res) => {
@@ -118,7 +118,7 @@ app.get("/views/projectmodel/project/:id", async (req, res) => {
     issueCount = issues.length;
     projectName = project.projectName;
   }
-  res.render('project', { projectId: req.params.id, projectName: projectName, issueCount: issueCount });
+  res.render('project', { title: "Project Record: " + req.params.id, projectId: req.params.id, projectName: projectName, issueCount: issueCount });
 });
 
 app.post("/user/:username", async (req, res) => {
@@ -773,31 +773,31 @@ app.get("/project/projectname/:projectName", async (req, res) => { //returns the
 
 
 app.get("/views/users", async (req, res) => {
-  res.render('users', { });
+  res.render('users', {title: "Users"});
 });
 app.get("/views/issues", async (req, res) => {
-  res.render('issues', { });
+  res.render('issues', {title: "Issues"});
 });
 app.get("/views/timers", async (req, res) => {
-  res.render('timers', { });
+  res.render('timers', {title: "Timers"});
 });
 app.get("/views/timerperiods", async (req, res) => {
-  res.render('timerperiods', { });
+  res.render('timerperiods', {title: "Timer Periods"});
 });
 app.get("/views/teams", async (req, res) => {
-  res.render('teams', { });
+  res.render('teams', {title: "Teams"});
 });
 app.get("/views/projects", async (req, res) => {
-  res.render('projects', { });
+  res.render('projects', {title: "Projects"});
 });
 app.get("/views/records", async (req, res) => {
-  res.render('records', { });
+  res.render('records', {title: "Records"});
 });
 app.get("/views/main", async (req, res) => {
-  res.render('main', { });
+  res.render('main', {title: "ITSC GitHub Timer"});
 });
 app.get("/", async (req, res) => {
-  res.render('main', { });
+  res.render('main', {title: "ITSC GitHub Timer"});
 });
 
 app.listen(5220, () => console.log('Server running on port ${5220}'));
