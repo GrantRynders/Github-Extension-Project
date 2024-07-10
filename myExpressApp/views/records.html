@@ -187,7 +187,8 @@
                 {
                     return b.totalTimeSpent - a.totalTimeSpent;
                 });
-                const timeStringData = await ConvertSeconds(Number(issuesTimeSpentArray[0].totalTimeSpent));
+                var time = Number(issuesTimeSpentArray[0].totalTimeSpent);
+                const timeStringData = await ConvertSeconds(time);
                 const destination = await document.getElementById("issueTimeSpentRecord");
                 destination.textContent = "Issue Name: " + issuesTimeSpentArray[0].issueName + ", Days: " + timeStringData.days + ", Hours: " + timeStringData.hours + ", Minutes: " + timeStringData.minutes + ", Seconds: " + timeStringData.seconds;
             }
