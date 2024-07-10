@@ -39,6 +39,7 @@ block content
         Main();
         async function Main()
         {
+            await document.getElementsByClassName("navLi")[2].classList.toggle("CurrentTab");
             await IssueTimeSpentDataGet();
             await DrawIssueTimeSpentGraph();
             await DrawIssueTimeSpentGraphMobile();

@@ -28,6 +28,7 @@ block content
         Main();
         async function Main()
         {
+            await document.getElementsByClassName("navLi")[6].classList.toggle("CurrentTab");
             await ListReferences(index);
             await GetProjectsByIssueCountData();
             await GraphProjectsByIssueCount();

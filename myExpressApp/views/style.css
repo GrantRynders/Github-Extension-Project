@@ -55,7 +55,7 @@ ul{
     color: #FFFFFF;
     padding: 0.5em;
 }
-#CurrentTab{
+.CurrentTab{
     border-bottom-width: 1px;
     border-bottom: solid;
     border-color: #fa7a18;

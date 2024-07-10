@@ -19,6 +19,7 @@ block content
         Main();
         async function Main()
         {
+            await document.getElementsByClassName("navLi")[3].classList.toggle("CurrentTab");
             await ListTimers(0);
             await GetTimersWithPeriodCounts();
             await GraphTimersWithPeriodCounts();

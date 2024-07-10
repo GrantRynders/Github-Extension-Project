@@ -22,6 +22,11 @@ block content
                 div(class="desktop") Phone: 513.708.0054
             div(class="infoBite") Email: <a href="mailto:grantrynders@outlook.com?subject=Github Timer Extension Report">grantrynders@outlook.com</a>
     script.
+        Main();
+        async function Main()
+        {
+            await document.getElementsByClassName("navLi")[0].classList.toggle("CurrentTab");
+        }
         async function ToggleNav()
         {
             document.getElementById("mobileNav").classList.toggle("displayNone");

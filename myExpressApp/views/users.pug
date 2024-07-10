@@ -31,10 +31,9 @@ block content
         const interval = 2;
         //import Chart from 'chart.js/auto';
         Main();
-        document.getElementById("backbtn").classList.toggle("show");
-        document.getElementById("nextbtn").classList.toggle("show");
         async function Main()
         {
+            await document.getElementsByClassName("navLi")[1].classList.toggle("CurrentTab");
             index = 0;
             await UserIssuesDataGet();
             await DrawUserIssuesInvolvedGraph();
