@@ -139,7 +139,7 @@ footer{
 }
 .dropdown {
     display: inline-block;
-    width: 20%;
+    width: 100%;
 }
 .dropdown-content {
     display: none;
