@@ -773,8 +773,9 @@ app.listen(5220, () => console.log('Server running on port ${5220}'));
 
 
 
-async function main() {
-  
+async function main() 
+{
+  console.log("Starting GitHub Issues Timer Server. . .")
 }
 
 async function ConvertSeconds(seconds)
@@ -791,7 +792,7 @@ async function ConvertSeconds(seconds)
   days = Math.floor(Number(seconds) / (3600*24)); //Convert seconds to days
   hours = Math.floor(Number(seconds) % (3600*24) / 3600);//convert seconds to hours
   minutes = Math.floor(Number(seconds) % 3600 / 60);//convert seconds to minutes
-  seconds = Math.floor(Number(seconds) % 60);
+  seconds = Math.floor(Number(seconds) % 60);//get the remaining seconds
   const data = {
     seconds,
     minutes,
