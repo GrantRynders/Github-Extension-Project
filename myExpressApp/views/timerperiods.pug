@@ -1,14 +1,14 @@
 extends default
 
 block content
-    <div id="content">
+    div(id="content")
         h1(id="ContentHeader") Timer Periods
-         div(class="desktop")
+        div(class="desktop")
             div(class="CanvasWrapper")
-            h1(class="CanvasHeader") Most Recent Timer Periods with Their User and Time Spent
-            canvas(id="timeSpent")
+                h1(class="CanvasHeader") Most Recent Timer Periods with Their User and Time Spent
+                canvas(id="timeSpent")
         div(class="mobile")
-            <div class="CanvasWrapper">
+            div(class="CanvasWrapper")
                 h1(class="CanvasHeader") Most Recent Timer Periods with Their User and Time Spent
                 canvas(id="timeSpentMobile")
         div(id="generalStats")

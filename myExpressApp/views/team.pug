@@ -27,7 +27,7 @@ block content
             button(onclick="AddTeamToProject()" class="inputBtn") Assign Project to Team
         h1 Related Records:
         p#idhidden #{teamId}
-        div(id="referenceList" class="referenceList")
+        div(id="ReferenceList" class="ReferenceList")
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
         button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
@@ -52,13 +52,13 @@ block content
             const id = idReference.textContent;
             const allUsersResponse = await fetch("http://localhost:5220/teammodel/" + id + "/users");
             var allUsers = await allUsersResponse.json();
-            var destinationDiv = document.getElementById("referenceList");
+            var destinationDiv = document.getElementById("ReferenceList");
             for (var child of destinationDiv.childNodes)
             {
                 console.log(child);
                 destinationDiv.removeChild(child);
             }
-            var links = document.getElementsByClassName("referenceLink");
+            var links = document.getElementsByClassName("ReferenceLink");
             for (var child of links)
             {
                 child.remove();
@@ -67,7 +67,7 @@ block content
             for (var i = 0; i < allUsers.length; i++)
             {
                 var userLink = document.createElement('A');
-                userLink.className = "referenceLink";
+                userLink.className = "ReferenceLink";
                 userLink.href = "http://localhost:5220/views/usermodel/user/" + allUsers[i].id;
                 userLink.textContent = "Id: " + allUsers[i].userId + ", UserName: " + allUsers[i].UserName + "\n";
                 destinationDiv.appendChild(userLink);

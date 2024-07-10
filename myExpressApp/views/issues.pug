@@ -2,24 +2,24 @@ extends default
 
 block content
     div(id="content")
-            H1(id="ContentHeader") ISSUES DATA
-            div(class="desktop")
-                div(class="CanvasWrapper")
-                    h1(class="CanvasHeader") Issues Sorted by Time Spent
-                    canvas(id="timeSpent")
-            div(class="mobile")
-                div(class="CanvasWrapper")
-                    h1(class="CanvasHeader") Issues Sorted by Time Spent
-                    canvas(id="timeSpentMobile")
+        h1(id="ContentHeader") ISSUES DATA
+        div(class="desktop")
             div(class="CanvasWrapper")
-                h1(class="CanvasHeader") Contributions by User on Selected Issue
-                canvas(id="timeSpentByUser")
-            div(class="dropdown")
-                button(onclick="ToggleDropdown()" class="dropbtn") Choose A Different Issue
-                div(id="myDropdown" class="dropdown-content")
-                    div(input type="text" placeholder="Search.." id="myInput" onkeyup="FilterDropdown()")
+                h1(class="CanvasHeader") Issues Sorted by Time Spent
+                canvas(id="timeSpent")
+        div(class="mobile")
+            div(class="CanvasWrapper")
+                h1(class="CanvasHeader") Issues Sorted by Time Spent
+                canvas(id="timeSpentMobile")
+        div(class="CanvasWrapper")
+            h1(class="CanvasHeader") Contributions by User on Selected Issue
+            canvas(id="timeSpentByUser")
+        div(class="dropdown")
+            button(onclick="ToggleDropdown()" class="dropbtn") Choose A Different Issue
+            div(id="myDropdown" class="dropdown-content")
+                div(input type="text" placeholder="Search.." id="myInput" onkeyup="FilterDropdown()")
                     div(id="dropdownList")
-        h1(id ="ReferenceListHeader") Tracked Issues
+        h1(id="ReferenceListHeader") Tracked Issues
         div(id="ReferenceList")
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
         button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous

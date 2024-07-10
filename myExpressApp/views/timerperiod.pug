@@ -20,8 +20,8 @@ block content
         p#idhidden #{id}
         p#timerIdHidden #{timerId}
         p#Hidden #{JSON.stringify(timerperiods)}
-        div(id="referenceListUserAndIssue" class="referenceList")
-        div(id="referenceList" class="referenceList")
+        div(id="referenceListUserAndIssue" class="ReferenceList")
+        div(id="ReferenceList" class="ReferenceList")
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
         button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
@@ -43,12 +43,12 @@ block content
         {
             const timerperiodsReference = await document.getElementById("Hidden");
             var timerperiods = await JSON.parse(timerperiodsReference.textContent);
-            const destinationDiv = document.getElementById("referenceList");
+            const destinationDiv = document.getElementById("ReferenceList");
             for (var child of destinationDiv.childNodes)
             {
                 destinationDiv.removeChild(child);
             }
-            var links = destinationDiv.getElementsByClassName("referenceLink");
+            var links = destinationDiv.getElementsByClassName("ReferenceLink");
             for (var child of links)
             {
                 child.remove();
@@ -57,7 +57,7 @@ block content
             for (let i = 0; i < timerperiods.length; i++)
             {
                 var link = document.createElement('a');
-                link.className = "referenceLink";
+                link.className = "ReferenceLink";
                 link.href = "http://localhost:5220/views/timerperiodmodel/timerperiod/" + timerperiods[i].id;
                 link.textContent = "Id: " + timerperiods[i].id + ", StartDate: " + timerperiods[i].startDate + ", EndDate: " + timerperiods[i].endDate + ", TimerId: " + timerperiods[i].timerId + "\n";
                 destinationDiv.appendChild(link);
@@ -75,17 +75,17 @@ block content
             var issue = await issueResponse.json();
             var destinationDiv = await document.getElementById("referenceListUserAndIssue");
             var timerlink = await document.createElement('a');
-            timerlink.className = "referenceLink";
+            timerlink.className = "ReferenceLink";
             timerlink.href = "http://localhost:5220/views/timermodel/timer/" + id;
             timerlink.textContent = "Id: " + timer[0].id + ", userId: " + timer[0].userId + ", issueId: " + timer[0].issueId + "\n";
             destinationDiv.appendChild(timerlink);
             var userlink = await document.createElement('a');
-            userlink.className = "referenceLink";
+            userlink.className = "ReferenceLink";
             userlink.href = "http://localhost:5220/views/usermodel/user/" + user[0].id;
             userlink.textContent = "Id: " + user[0].id + ", UserName: " + user[0].UserName + "\n";
             destinationDiv.appendChild(userlink);
             var issuelink = await document.createElement('a');
-            issuelink.className = "referenceLink";
+            issuelink.className = "ReferenceLink";
             issuelink.href = "http://localhost:5220/views/issuemodel/issue/" + issue[0].id;
             issuelink.textContent = "Id: " + issue[0].id + ", URL: " + issue[0].url + ", Name: " + issue[0].issueName + "\n";
             destinationDiv.appendChild(issuelink);

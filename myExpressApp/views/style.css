@@ -37,6 +37,12 @@ ul{
 .navLi:hover{
     background-color: #383c40;
 }
+#Hidden{
+    display:none;
+}
+#idhidden{
+    display:none;
+}
 .navLi a{
     width: 100%;
    
@@ -144,6 +150,28 @@ footer{
 }
 input{
     background-color: #383c40;
+}
+#myInput{
+    width:100%;
+    padding: 0.5em 0em 0.5em 0em;;
+    background-color:#383c40;
+}
+#nameInput{
+    padding: 1em;
+    background-color:#383c40;
+}
+#myInput2{
+    width:100%;
+    padding: 0.5em 0em 0.5em 0em;;
+    background-color:#383c40;
+}
+#nameInput2{
+    padding: 1em;
+    background-color:#383c40;
+}
+.inputBtn{
+    padding: 1em;
+    background-color:#383c40;
 }
 .show {
     display:block;

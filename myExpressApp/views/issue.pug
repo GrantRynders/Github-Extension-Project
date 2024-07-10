@@ -13,7 +13,7 @@ block content
         h1 Related Users:
         p#idhidden #{id}
         p#Hidden #{JSON.stringify(users)}
-        div#referenceList
+        div#ReferenceList
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
         button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
@@ -34,12 +34,12 @@ block content
         {
             const reference = await document.getElementById("Hidden");
             var users = await JSON.parse(reference.textContent);
-            const destinationDiv = document.getElementById("referenceList");
+            const destinationDiv = document.getElementById("ReferenceList");
             for (var child of destinationDiv.childNodes)
             {
                 destinationDiv.removeChild(child);
             }
-            var links = destinationDiv.getElementsByClassName("referenceLink");
+            var links = destinationDiv.getElementsByClassName("ReferenceLink");
             for (var child of links)
             {
                 child.remove();
@@ -48,7 +48,7 @@ block content
             for (let i = 0; i < users.length; i++) 
             {
                 var userLink = document.createElement('a');
-                userLink.className = "referenceLink";
+                userLink.className = "ReferenceLink";
                 userLink.href = "http://localhost:5220/views/usermodel/user/" + users[i].id;
                 userLink.textContent = "Id: " + users[i].id + ", UserName: " + users[i].UserName + "\n";
                 destinationDiv.appendChild(userLink);

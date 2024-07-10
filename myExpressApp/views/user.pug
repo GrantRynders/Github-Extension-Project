@@ -12,8 +12,8 @@ block content
             canvas#myChart
         p#idhidden #{id}
         p#Hidden #{JSON.stringify(issues)}
-        h1#referenceListHeader Logged Issues:
-        div#referenceList
+        h1#ReferenceListHeader Logged Issues:
+        div#ReferenceList
         button(id="nextbtn" class="tabbtn" onclick="TabUp()") Next
         button(id="backbtn" class="tabbtn" onclick="TabDown()") Previous
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
@@ -34,13 +34,13 @@ block content
         {
             const issuesReference = await document.getElementById("Hidden");
             var issues = await JSON.parse(issuesReference.textContent);
-            const destinationDiv = document.getElementById("referenceList");
+            const destinationDiv = document.getElementById("ReferenceList");
             for (var child of destinationDiv.childNodes)
             {
                 console.log(child);
                 destinationDiv.removeChild(child);
             }
-            var links = document.getElementsByClassName("referenceLink");
+            var links = document.getElementsByClassName("ReferenceLink");
             for (var child of links)
             {
                 child.remove();
@@ -49,7 +49,7 @@ block content
             for (let i = 0; i < issues.length; i++)
             {
                 var link = document.createElement('a');
-                link.className = "referenceLink";
+                link.className = "ReferenceLink";
                 link.href = "http://localhost:5220/views/issuemodel/issue/" + issues[i].id;
                 link.textContent = "Id: " + issues[i].id + ", URL: " + issues[i].url + ", Name: " + issues[i].issueName + "\n";
                 destinationDiv.appendChild(link);

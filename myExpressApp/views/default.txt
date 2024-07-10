@@ -1,0 +1,455 @@
+doctype html
+html
+    head
+      meta(charset='UTF-8')
+      meta(name='viewport' content='width=device-width, initial-scale=1.0')
+      meta(http-equiv='X-UA-Compatible' content='ie=edge')
+      title= title
+      style.
+        *{
+            font-family:Segoe UI, SegoeUI, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+        body{
+            background-color: #161b22;
+        }
+        header{
+            display:inline-block;
+            width: 100%;
+            position: fixed;
+            top: 0;
+        }
+        #content{
+            padding:7em;
+        }
+        nav{
+            padding: 0 1% 0 1%;
+            background-color: #57606a;
+            display:inline-block;
+            width: 100%;
+        }
+        ul{
+            width: 100%;
+        }
+        .navLi{
+            width: 14%;
+            padding: 0.5em 0em 0.5em 0em;
+            background-color: #57606a;
+            list-style-type: none;
+            display:block; 
+            text-align: center;
+            float:left;
+        }
+        .navLiMobile{
+            width:100%;
+            text-align:center;
+            display: inline-block;
+            padding:0.5em 0em 0.5em 0em;
+        }
+        #navButton{
+            background-color: #57606a;
+            width:100%;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        .displayNone{
+            display:none;
+        }
+        #mobileNav ul li{
+            border: 1px solid;
+            border-color: #57606a;
+        }
+        .navLi:hover{
+            border-bottom-width: 1px;
+            border-bottom: solid;
+            border-color: #fa7a18;
+        }
+        .navLi a{
+            width: 100%;
+           
+            color: #FFFFFF;
+            text-decoration:none;
+        }
+        #SiteHeader{
+            text-align: center;
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 0.5em;
+        }
+        #CurrentTab{
+            background-color:#383c40;
+        }
+        canvas{
+            margin: 3em 0em 3em 0em;
+            background-color: #FFFFFF;
+        }
+        .referenceLink{
+            color: white;
+            font-size: 2em;
+            width: 100%;
+            padding: 1em 1em 1em 1em;
+            display: inline-block;
+            text-align:center;
+            border: 1px solid;
+            border-color: #57606a;
+            border-radius: 0.5em;
+            margin: 0.5em 0em 0.5em 0em;
+            background-color: #252c36;
+        }
+        #referenceListHeader{
+            width: 100%;
+            text-align:center;
+        }
+        #referenceList{
+            padding: 1em 0em 1em 0em;
+        }
+        .referenceList{
+            width: 100%;
+            text-align:center;
+        }
+        .CanvasWrapper{
+            background-color: #FFFFFF;
+            padding:2em 2em 2em 2em;
+            margin: 3em 20% 3em 20%;
+            border-radius:3em;
+
+        }
+        footer{
+            background-color:#000000;
+            text-align:center;
+            padding: 1em 1em 1em 1em;
+            font-size:1em;
+        }
+        #Hidden{
+          display:none;
+        }
+        #idhidden{
+          display:none;
+        }
+        .recordHeader{
+          background-color: #252c36;
+          border: 1px solid;
+          border-color: #57606a;
+          border-radius: 0.5em;
+          padding: 1em 1em 1em 1em;
+        }
+        .SearchField{
+          color: #000000;
+          padding: 1em;
+          border-radius: 0em;
+        }
+        .searchdiv{
+          display:inline-block;
+          width:100%;
+          padding: 2em 0em 2em 0em;
+        }
+        .dropbtn {
+            background-color: #3498DB;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown {
+            display: inline-block;
+            width: 20%;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #161b22;
+            z-index: 1;
+            width: 100%;
+        }
+        input{
+            background-color: #383c40;
+        }
+        .show {
+            display:block;
+        }
+        .dropdownElement {
+            background-color:#161b22;
+            color:#FFFFFF;
+            width:100%;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        #myInput{
+            width: 100%;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        #myInput2{
+            width: 100%;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        .dropdownContainer{
+            display:inline-block;
+            width:100%;
+        }
+        #searchLink{
+            display: inline-block;
+            width:100%;
+            font-size: 2em;
+            text-align:center;
+            padding: 1em 0em 1em 0em;
+            border: 1px solid;
+            background-color: #252c36;
+            border-color: #57606a;
+            border-radius: 0.5em;
+        }
+        .tabbtn{
+            padding: 1em;
+            color: #000000;
+            border-radius: 1em;
+            margin: 2em 0em 2em 0em;
+        }
+        .tabbtn{
+            padding: 1em;
+            color: #000000;
+            border-radius: 1em;
+            
+        }
+        .show{
+            display:block;
+        }
+        .CanvasHeader{
+            color: #FFFFFF;
+            border: 1px solid;
+            border-color: #57606a;
+            border-radius: 0.5em;
+            font-size: 1em;
+            padding: 1em 1em 1em 1em;
+            border: 1px solid;
+            background-color: #252c36;
+        }
+        #timerIdHidden{
+            display:none;
+        }
+        .desktop{
+            display:block;
+        }
+        .mobile{
+            display:none;
+        }
+        #searchDiv{
+            margin:0em 0em 10em 0em;
+        }
+        #myInput{
+            width:100%;
+            padding: 0.5em 0em 0.5em 0em;;
+            background-color:#383c40;
+        }
+        #nameInput{
+            padding: 1em;
+            background-color:#383c40;
+        }
+        #myInput2{
+            width:100%;
+            padding: 0.5em 0em 0.5em 0em;;
+            background-color:#383c40;
+        }
+        #nameInput2{
+            padding: 1em;
+            background-color:#383c40;
+        }
+        .inputBtn{
+            padding: 1em;
+            background-color:#383c40;
+        }
+        .navLiMobile{
+            width:100%;
+            text-align:center;
+            display: inline-block;
+            padding:0.5em 0em 0.5em 0em;
+        }
+        #navButton{
+            background-color: #57606a;
+            width:100%;
+            padding: 0.5em 0em 0.5em 0em;
+        }
+        .displayNone{
+            display:none;
+        }
+        #mobileNav ul li{
+            border: 1px solid;
+            border-color: #57606a;
+        }
+        @media only screen and (max-width: 1200px) {
+            *{
+                font-family:Segoe UI, SegoeUI, Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                color: white;
+            }
+            body{
+                background-color: #161b22;
+            }
+            header{
+                display:inline-block;
+                width: 100%;
+                position: fixed;
+                top: 0;
+            }
+            #content{
+                padding:10em 0em 0em 0em;;
+            }
+            canvas{
+                margin: 3em 0em 3em 0em;
+                background-color: #FFFFFF;
+            }
+            .referenceLink{
+                color: white;
+                font-size: 1em;
+                width: 90%;
+                padding: 1em 0em 1em 0em;
+                display: inline-block;
+                text-align:center;
+                border: 1px solid;
+                border-color: #57606a;
+                border-radius: 0.5em;
+                background-color: #252c36;
+            }
+            #referenceListHeader{
+                width: 100%;
+                text-align:center;
+            }
+            #referenceList{
+                text-align: center;
+                padding: 1em 0em 1em 0em;
+            }
+            .CanvasWrapper{
+                background-color: #FFFFFF;
+                padding:2em 2em 2em 2em;
+                margin: 3em 10% 3em 10%;
+                border-radius:3em;
+            }
+            footer{
+                background-color:#000000;
+                text-align:center;
+                padding: 1em 1em 1em 1em;
+                font-size:1em;
+            }
+            #ContentHeader{
+                padding: 5% 0 0 5%
+            }
+             .desktop{
+                display:block;
+            }
+            .mobile{
+                display:none;
+            }
+        }
+        @media only screen and (max-width: 1200px) {
+            *{
+                font-family:Segoe UI, SegoeUI, Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                color: white;
+            }
+            body{
+                background-color: #161b22;
+            }
+            header{
+                display:inline-block;
+                width: 100%;
+                position: fixed;
+                top: 0;
+            }
+            #content{
+                padding:10em 0em 0em 0em;;
+            }
+            canvas{
+                margin: 3em 0em 3em 0em;
+                background-color: #FFFFFF;
+            }
+            .referenceLink{
+                color: white;
+                font-size: 1em;
+                width: 90%;
+                padding: 1em 0em 1em 0em;
+                display: inline-block;
+                text-align:center;
+                border: 1px solid;
+                border-color: #57606a;
+                border-radius: 0.5em;
+                background-color: #252c36;
+            }
+            #referenceListHeader{
+                width: 100%;
+                text-align:center;
+            }
+            #referenceList{
+                text-align: center;
+                padding: 1em 0em 1em 0em;
+            }
+            .CanvasWrapper{
+                background-color: #FFFFFF;
+                padding:2em 2em 2em 2em;
+                margin: 3em 10% 3em 10%;
+                border-radius:3em;
+            }
+            footer{
+                background-color:#000000;
+                text-align:center;
+                padding: 1em 1em 1em 1em;
+                font-size:1em;
+            }
+            #ContentHeader{
+                padding: 5% 0 0 5%
+            }
+             .desktop{
+                display:none;
+            }
+            .mobile{
+                display:block;
+            }
+        }
+    body
+      header
+        h1#SiteHeader Visualization for GitHub Issues Timer Data
+        div.desktop
+            nav
+                ul
+                    li.navLi
+                        a(href="http://localhost:5220/views/main") Home
+                    li.navLi
+                        a(href="http://localhost:5220/views/users") Users
+                    li.navLi
+                        a(href="http://localhost:5220/views/issues") Issues
+                    li.navLi
+                        a(href="http://localhost:5220/views/timers") Timers
+                    li.navLi
+                        a(href="http://localhost:5220/views/timerperiods") Periods
+                    li.navLi
+                        a(href="http://localhost:5220/views/teams") Teams
+                    li.navLi
+                        a(href="http://localhost:5220/views/projects") Projects
+        div.mobile
+            button(id="navButton" onclick="ToggleNav()") | | |
+            nav(id="mobileNav" class="displayNone")
+                ul
+                    li.navLiMobile
+                        a(href="http://localhost:5220/views/main") Home
+                    li.navLiMobile
+                        a(href="http://localhost:5220/views/users") Users
+                    li.navLiMobile
+                        a(href="http://localhost:5220/views/issues") Issues
+                    li.navLiMobile
+                        a(href="http://localhost:5220/views/timers") Timers
+                    li.navLiMobile
+                        a(href="http://localhost:5220/views/timerperiods") Periods
+                    li.navLiMobile
+                        a(href="http://localhost:5220/views/teams") Teams
+                    li.navLiMobile
+                        a(href="http://localhost:5220/views/projects") Projects
+      block content
+    div(id="searchLink")
+      a(href="http://localhost:5220/views/search") Not what you're looking for? Do a search!
+    footer Visualization for data collected through the ITSC's GitHub Issues Timer Extension. Graphing handled through Chart.js. Special thanks to W3 Schools for providing template code and instruction.<br> Project GitHub link: <a href="https://github.com/GrantRynders/Github-Extension-Project">https://github.com/GrantRynders/Github-Extension-Project</a><br>Author: Grant Rynders
+    script.
+        async function ToggleNav()
+        {
+            document.getElementById("mobileNav").classList.toggle("displayNone");
+        }
+      

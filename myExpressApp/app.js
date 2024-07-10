@@ -742,37 +742,65 @@ app.get("/project/projectname/:projectName", async (req, res) => { //returns the
   res.json(project);
 });
 //MODEL MAIN PAGES
-app.get('^/$|/main(.html)?', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'main.html'));
+// app.get('^/$|/main(.html)?', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'main.html'));
+// });
+// app.get('^/$|/views/users(.html)?', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'users.html'));
+// });
+// app.get('^/$|/views/issues(.html)?', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'issues.html'));
+// });
+// app.get('^/$|/views/timers(.html)?', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'timers.html'));
+// });
+// app.get('^/$|/views/timerperiods(.html)?', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+// });
+// app.get('^/$|/views/teams(.html)?', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'teams.html'));
+// });
+// app.get('^/$|/views/projects(.html)?', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'projects.html'));
+// });
+// app.get('^/$|/views/records(.html)?', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'records.html'));
+// });
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'views', 'main.html'));
+// });
+
+
+
+app.get("/views/users", async (req, res) => {
+  res.render('users', { });
 });
-app.get('^/$|/views/users(.html)?', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'users.html'));
+app.get("/views/issues", async (req, res) => {
+  res.render('issues', { });
 });
-app.get('^/$|/views/issues(.html)?', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'issues.html'));
+app.get("/views/timers", async (req, res) => {
+  res.render('timers', { });
 });
-app.get('^/$|/views/timers(.html)?', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'timers.html'));
+app.get("/views/timerperiods", async (req, res) => {
+  res.render('timerperiods', { });
 });
-app.get('^/$|/views/timerperiods(.html)?', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
+app.get("/views/teams", async (req, res) => {
+  res.render('teams', { });
 });
-app.get('^/$|/views/teams(.html)?', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'teams.html'));
+app.get("/views/projects", async (req, res) => {
+  res.render('projects', { });
 });
-app.get('^/$|/views/projects(.html)?', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'projects.html'));
+app.get("/views/records", async (req, res) => {
+  res.render('records', { });
 });
-app.get('^/$|/views/records(.html)?', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'records.html'));
+app.get("/views/main", async (req, res) => {
+  res.render('main', { });
 });
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'main.html'));
+app.get("/", async (req, res) => {
+  res.render('main', { });
 });
+
 app.listen(5220, () => console.log('Server running on port ${5220}'));
-
-
-
 async function main() 
 {
   console.log("Starting GitHub Issues Timer Server. . .")
@@ -823,8 +851,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
   res.status(err.status || 500);
-  res.render('userFriendlyError');
-  //res.render('error');
+  //res.render('userFriendlyError');
+  res.render('error');
 });
 
 module.exports = app;
