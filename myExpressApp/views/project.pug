@@ -277,7 +277,7 @@ block content
                 return data;
             }));
             IssuesWithTimesArray.sort(function(a, b){
-               return b.totaltimespent - a.totaltimespent;
+                return b.totaltimespent - a.totaltimespent;
             });
             issueUrls = IssuesWithTimesArray.map(function(index){
                 return index.url;
