@@ -141,7 +141,7 @@ app.post("/user/:username", async (req, res) => {
   }
 });
 app.post("/issue/:url/:issuename", async (req, res) => {
-  if (await prisma.issue.findUnique({
+  if (await prisma.issue.findFirst({
     where: {
       url: req.params.url,
     },
@@ -161,7 +161,7 @@ app.post("/issue/:url/:issuename", async (req, res) => {
   }
 });
 app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: {
       UserName: req.params.username,
     },
@@ -171,7 +171,6 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
     const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
-      issueName: req.params.issueName,
     },
     });
     if (issue != null)
@@ -219,9 +218,9 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
     const issue = await prisma.issue.findFirst({
     where: {
       url: req.params.issueUrl,
-      issueName: req.params.issueName,
     },
     });
+    console.log(issue);
     if (issue != null)
     {
       const timer = await prisma.timer.findFirst({
@@ -821,8 +820,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
   res.status(err.status || 500);
-  res.render('userFriendlyError', { title: "Page Missing" });
-  // res.render('error', { title: "Page Missing"});
+  //res.render('userFriendlyError', { title: "Page Missing" });
+  res.render('error', { title: "Page Missing"});
 });
 
 module.exports = app;

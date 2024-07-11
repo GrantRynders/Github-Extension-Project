@@ -558,6 +558,7 @@ async function CreateNewUser(inputUserName)
 }
 async function CreateNewIssue(inputUrl, inputIssueName)
 {
+    console.log("ISSUE POST");
     fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
