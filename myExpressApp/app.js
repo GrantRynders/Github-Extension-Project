@@ -743,7 +743,6 @@ app.get("/project/projectname/:projectName", async (req, res) => { //returns the
 });
 //MODEL MAIN PAGES
 
-
 app.get("/views/users", async (req, res) => {
   res.render('users', {title: "Users"});
 });
