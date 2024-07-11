@@ -99,6 +99,14 @@ canvas{
     border-radius: 0.5em;
     margin: 1em 0em 0em 0em;
 }
+.ReferenceList{
+    padding: 1em 1em 1em 1em;
+    text-align:center;
+    border: 1px solid;
+    border-color: #57606a;
+    border-radius: 0.5em;
+    margin: 1em 0em 0em 0em;
+}
 .CanvasWrapper{
     background-color: #FFFFFF;
     padding:2em 2em 2em 2em;
@@ -270,6 +278,16 @@ input{
     border-color: #57606a;
     border-radius: 0.5em;
     padding: 1em 1em 1em 1em;
+}
+.recordHeader{
+    background-color: #252c36;
+    border: 1px solid;
+    border-color: #57606a;
+    border-radius: 0.5em;
+    padding: 1em 1em 1em 1em;
+}
+#timerIdHidden{
+    display:none;
 }
 @media only screen and (max-width: 1200px) and (min-width: 600px) {
     *{
