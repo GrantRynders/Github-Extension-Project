@@ -47,7 +47,7 @@ app.get("/views/timermodel/timer/:id", async (req, res) => {
       id: Number(req.params.id),
     },
   });
-  const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timerperiods")
+  const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timerperiods");
   const timerPeriods = await timerPeriodsResponse.json();
   const totalTimeResponse = await fetch("http://localhost:5220/timermodel/" + req.params.id + "/timespent");
   const totalTimeJson = await totalTimeResponse.json();
@@ -61,9 +61,9 @@ app.get("/views/timerperiodmodel/timerperiod/:id", async (req, res) => {
       id: Number(req.params.id),
     },
   });
-  const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + timerperiod.timerId + "/timerperiods")
+  const timerPeriodsResponse = await fetch("http://localhost:5220/timermodel/" + timerperiod.timerId + "/timerperiods");
   const timerPeriods = await timerPeriodsResponse.json();
-  const timeElapsed = timerperiod.totalTimeElapsed
+  const timeElapsed = timerperiod.totalTimeElapsed;
   const formattedTimes = await ConvertSeconds(timeElapsed);
   res.render('timerperiod', { title: "Period Record: " + req.params.id, id: req.params.id, startDate: timerperiod.startDate, endDate: timerperiod.endDate, timerId: timerperiod.timerId, TotalTimeElapsed: timeElapsed, timerperiods: timerPeriods, formattedTimes: formattedTimes });
 });

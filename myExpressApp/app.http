@@ -18,10 +18,6 @@ GET {{WebApiHost}}/user
 GET {{WebApiHost}}/issue
 
 ###
-//get all Timer Periods
-GET {{WebApiHost}}/timerperiod/GrantRynders/url/timeIstarted/timeIstopped
-
-###
 //get user by username
 GET {{WebApiHost}}/user/GrantRynders
 
