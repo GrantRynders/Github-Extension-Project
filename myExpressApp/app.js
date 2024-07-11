@@ -742,34 +742,6 @@ app.get("/project/projectname/:projectName", async (req, res) => { //returns the
   res.json(project);
 });
 //MODEL MAIN PAGES
-// app.get('^/$|/main(.html)?', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'main.html'));
-// });
-// app.get('^/$|/views/users(.html)?', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'users.html'));
-// });
-// app.get('^/$|/views/issues(.html)?', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'issues.html'));
-// });
-// app.get('^/$|/views/timers(.html)?', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'timers.html'));
-// });
-// app.get('^/$|/views/timerperiods(.html)?', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'timerperiods.html'));
-// });
-// app.get('^/$|/views/teams(.html)?', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'teams.html'));
-// });
-// app.get('^/$|/views/projects(.html)?', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'projects.html'));
-// });
-// app.get('^/$|/views/records(.html)?', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'records.html'));
-// });
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'main.html'));
-// });
-
 
 
 app.get("/views/users", async (req, res) => {
@@ -799,7 +771,6 @@ app.get("/views/main", async (req, res) => {
 app.get("/", async (req, res) => {
   res.render('main', {title: "ITSC GitHub Timer"});
 });
-
 app.listen(5220, () => console.log('Server running on port ${5220}'));
 async function main() 
 {
@@ -851,8 +822,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
   res.status(err.status || 500);
-  //res.render('userFriendlyError');
-  res.render('error');
+  res.render('userFriendlyError', { title: "Page Missing" });
+  // res.render('error', { title: "Page Missing"});
 });
 
 module.exports = app;
