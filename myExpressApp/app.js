@@ -437,10 +437,10 @@ app.get("/issue/url/:issueUrl", async (req, res) => {
         url: req.params.issueUrl,
         issueName: req.params.issueName,
       },
-    })
+    });
     res.json(issue);
   }
-  catch (error) 
+  catch (error)
   {
     console.log("Error getting issue " + error);
   }
@@ -602,7 +602,6 @@ app.get("/usermodel/:id/timespent", async (req, res) => {//Net amount of time sp
   var userTimeSpent = 0;
   for (var j = 0; j < userTimeSpentArray.length; j++)
   {
-    console.log(userTimeSpentArray[j]);
     userTimeSpent += Number(userTimeSpentArray[j].totalTimeElapsed);
   }
   res.json({
@@ -675,7 +674,6 @@ app.get("/timermodel/:id/adjacenttimerperiods", async (req, res) => { //returns 
   var targetDate = targetDateObject.getDate();
   var targetMonth = targetDateObject.getMonth();
   var targetYear = targetDateObject.getFullYear();
-  console.log("Target: " + targetMonth + "-" + targetDate + "-" + targetYear);
   var allPeriods = await prisma.$queryRaw`SELECT TimerPeriod.id, TimerPeriod.totalTimeElapsed, TimerPeriod.startDate, TimerPeriod.endDate, TimerPeriod.TimerId FROM TimerPeriod;`;
   var adjacentPeriods = await Promise.all(allPeriods.map(async function(index){
     if (index.id != req.params.id)
@@ -687,7 +685,6 @@ app.get("/timermodel/:id/adjacenttimerperiods", async (req, res) => { //returns 
       
       if ((indexDate == targetDate) && (indexMonth == targetMonth) && (indexYear == targetYear))
       {
-        console.log("IndexDate: " + indexMonth + "-" + indexDate + "-" + indexYear);
         const data = {
           timerPeriodId: index.id,
           startDate: index.startDate,
