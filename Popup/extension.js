@@ -528,7 +528,7 @@ function CalculateTimeSpent(log)
 async function CreateNewUser(inputUserName)
 {
     console.log("USER POST");
-    fetch("http://localhost:5220/user/" + inputUserName, {
+    await fetch("http://localhost:5220/user/" + inputUserName, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -550,7 +550,7 @@ async function CreateNewUser(inputUserName)
 async function CreateNewIssue(inputUrl, inputIssueName)
 {
     console.log("ISSUE POST");
-    fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
+    await fetch("http://localhost:5220/issue/" + inputUrl + "/" + inputIssueName, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -572,7 +572,7 @@ async function CreateNewIssue(inputUrl, inputIssueName)
 async function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
 {
     console.log("TIMER POST");
-    fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
+    await fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -594,7 +594,7 @@ async function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
 async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate, time)
 {
     console.log("TIMER PERIOD POST");
-    fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate + "/" + time, {
+    await fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate + "/" + time, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
