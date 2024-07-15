@@ -133,12 +133,13 @@ app.post("/user/:username", async (req, res) => {
       {
         UserName: req.params.username,
       },
-      });
+    });
   }
   else
   {
     console.log("User already exists")
   }
+  res.json();
 });
 app.post("/issue/:url/:issuename", async (req, res) => {
   if (await prisma.issue.findFirst({
@@ -154,11 +155,13 @@ app.post("/issue/:url/:issuename", async (req, res) => {
       issueName: req.params.issuename,
     },
     });
+    console.log(issue);
   }
   else
   {
     console.log("Issue already exists");
   }
+  res.json();
 });
 app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
   const user = await prisma.user.findFirst({
@@ -188,8 +191,8 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
             userId: user.id,
             issueId: issue.id,
           },
-          })
-          console.log(timer);
+        });
+        console.log(timer);
       }
       else
       {
@@ -205,6 +208,7 @@ app.post("/timer/:username/:issueUrl/:issueName", async (req, res) => {
   {
     console.log("User was found null when creating timer.")
   }
+  res.json();
 });
 app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time", async (req, res) => {
   console.log("POST TIMER PERIOD");
@@ -223,6 +227,8 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
     console.log(issue);
     if (issue != null)
     {
+      const timers = await prisma.timer.findMany();
+      console.log(timers)
       const timer = await prisma.timer.findFirst({
       where: {
         userId: user.id,
@@ -239,6 +245,7 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
             totalTimeElapsed: Number(req.params.time),
           }, 
         });
+        console.log(newTimerPeriod);
       }
       else
       {
@@ -254,6 +261,7 @@ app.post("/timerPeriod/:username/:issueUrl/:issueName/:startdate/:enddate/:time"
   {
     console.log("User was found null when creating timer period")
   }
+  res.json();
 });
 app.post("/usersTeams/:userId/:teamId", async (req, res) => {
   if (await prisma.usersTeams.findFirst({
@@ -275,6 +283,7 @@ app.post("/usersTeams/:userId/:teamId", async (req, res) => {
   {
     console.log("User already is part of team with id: " + req.params.teamId);
   }
+  res.json();
 });
 app.post("/team/:teamName", async (req, res) => {
   const team = await prisma.team.create({

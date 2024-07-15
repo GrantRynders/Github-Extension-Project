@@ -131,15 +131,7 @@ async function InitializeTimer()
 {
         var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
         var serverStatus = await CheckServer();
-        if (serverStatus <= 304)
-        {
-            await CreateNewUser(userName.toLowerCase());
-            await CreateNewIssue(encodeURIComponent(window.location.href), issueHeader.textContent.toLowerCase().replace("?", ""));
-        }
-        else
-        {
-            console.log("Server is down on initialize");
-        }
+        
         console.log(userName);
         if (localStorage.getItem(userName + window.location.href) == null)
         {
@@ -379,8 +371,6 @@ async function LogEndOfTimer()
     setTimeout(() => {
         EditComment(". . . .\n", "stop", "");
     }, "1000");
-
-
     var issueHeader = document.getElementsByClassName("js-issue-title markdown-title")[0];
     await LogDataToSQLite(userName, window.location.href, issueHeader.textContent, startDate, endDate);
 }
@@ -537,6 +527,7 @@ function CalculateTimeSpent(log)
 
 async function CreateNewUser(inputUserName)
 {
+    console.log("USER POST");
     fetch("http://localhost:5220/user/" + inputUserName, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
@@ -580,6 +571,7 @@ async function CreateNewIssue(inputUrl, inputIssueName)
 }
 async function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
 {
+    console.log("TIMER POST");
     fetch("http://localhost:5220/timer/" + inputUserName + "/" + inputIssueUrl + "/" + inputIssueName, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
@@ -601,7 +593,8 @@ async function CreateNewTimer(inputUserName, inputIssueUrl, inputIssueName)
 }
 async function CreateNewTimerPeriod(inputUserName, inputUrl, inputIssueName, inputStartDate, inputEndDate, time)
 {
-    await fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate + "/" + time, {
+    console.log("TIMER PERIOD POST");
+    fetch("http://localhost:5220/timerPeriod/" + inputUserName + "/" + inputUrl + "/" + inputIssueName + "/" + inputStartDate + "/" + inputEndDate + "/" + time, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -633,6 +626,8 @@ async function LogDataToSQLite(username, url, issuename, startdate, stopdate)
     var serverStatus = await CheckServer();
     if (serverStatus <= 304)
     {
+        console.log(startdate);
+        console.log(stopdate);
         console.log("SAVING DATA TO DATABASE");
         var difference = new Date(stopdate).getTime() - new Date(startdate).getTime();
         var time = Number(Math.round(difference /1000));
