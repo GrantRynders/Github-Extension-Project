@@ -5,6 +5,7 @@
 
 
 ###
+
 //add a user
 POST {{WebApiHost}}/user/AgentEleven
 
@@ -14,10 +15,12 @@ POST {{WebApiHost}}/user/AgentEleven
 GET {{WebApiHost}}/user
 
 ###
+
 //get all issues
 GET {{WebApiHost}}/issue
 
 ###
+
 //get user by username
 GET {{WebApiHost}}/user/GrantRynders
 
